@@ -124,7 +124,6 @@ public class LoginManager {
         @Override
         public void run(){
             while ((!Thread.currentThread().isInterrupted()) && writer == null) {
-
             }
             writer.println(message);
             writer.flush();
