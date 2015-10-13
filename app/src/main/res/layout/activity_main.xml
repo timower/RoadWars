@@ -10,4 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="lol"/>
+    <ProgressBar
+        android:id="@+id/main_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_centerInParent="true" />
 </RelativeLayout>

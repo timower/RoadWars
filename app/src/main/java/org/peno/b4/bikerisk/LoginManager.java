@@ -11,9 +11,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.widget.Toast;
 
@@ -23,28 +23,55 @@ import android.widget.Toast;
  * lol, test
  */
 public class LoginManager {
-
     public interface LoginResultListener {
-        void loginResult(Boolean result);
+        void onLoginResult(Boolean result);
+        void onLoginError(String error);
     }
 
+    private static LoginManager instance;
+
     private PrintWriter writer;
-    private Handler myhandler;
+    private Handler myHandler;
     private Context context;
     private LoginResultListener loginListener;
 
+    private String key;
+    private String user;
+
     public LoginManager(Context context){
-        myhandler = new Handler();
+        myHandler = new Handler();
         this.context = context;
         new Thread(new CommunicationClass()).start();
+        instance = this;
     }
 
-    void checkLogin(LoginResultListener listener, String User, String Key) {
+    public static LoginManager getInstance() {
+        return instance;
+    }
+
+    public boolean loadFromSharedPrefs() {
+        SharedPreferences prefs = context.getSharedPreferences("login", Context.MODE_PRIVATE);
+        this.user = prefs.getString("user", "");
+        this.key = prefs.getString("key", "");
+        if (!this.user.equals("") && !this.key.equals(""))
+            return true;
+        return false;
+    }
+
+    public void saveSharedPrefs() {
+        SharedPreferences prefs = context.getSharedPreferences("login", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("user", user);
+        editor.putString("key", key);
+        editor.commit();
+    }
+
+    public void checkLogin(LoginResultListener listener) {
         JSONObject LogInObject = new JSONObject();
         try {
             LogInObject.put("req", "check-login");
-            LogInObject.put("key", Key);
-            LogInObject.put("user", User);
+            LogInObject.put("key", key);
+            LogInObject.put("user", user);
 
             String message = LogInObject.toString();
             loginListener = listener;
@@ -52,6 +79,25 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
+    public void login(LoginResultListener listener, String user, String pass) {
+        JSONObject LogInObject = new JSONObject();
+        try {
+            LogInObject.put("req", "login");
+            LogInObject.put("pass", pass);
+            LogInObject.put("user", user);
+            this.user = user;
+
+            String message = LogInObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
         }
     }
 
@@ -67,29 +113,40 @@ public class LoginManager {
             try{
                 InetAddress address = InetAddress.getByName("128.199.52.178");
                 this.socket = new Socket(address, 4444);
-                writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
+                writer = new PrintWriter(new BufferedWriter(
+                        new OutputStreamWriter(socket.getOutputStream())));
                 reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 
                 while(!Thread.currentThread().isInterrupted()) {
                     if (reader != null) {
                         String line = reader.readLine();
-                        try {
-                            JSONObject resObj = new JSONObject(line);
-
-                            if (resObj.getString("req").equals("check-login")) {
-                                if (loginListener != null)
-                                    myhandler.post(new LoginResultClass(resObj.getBoolean("res")));
+                        if (line != null) {
+                            try {
+                                JSONObject resObj = new JSONObject(line);
+                                String req = resObj.getString("req");
+                                if (req.equals("check-login")) {
+                                    if (loginListener != null)
+                                        myHandler.post(new LoginResultClass(resObj.getBoolean("res")));
+                                } else if (req.equals("login")) {
+                                    if (resObj.getBoolean("res")) {
+                                        LoginManager.this.key = resObj.getString("key");
+                                        LoginManager.this.saveSharedPrefs();
+                                    }
+                                    if (loginListener != null)
+                                        myHandler.post(new LoginResultClass(resObj.getBoolean("res")));
+                                }
+                            } catch (JSONException err) {
+                                err.printStackTrace();
                             }
-                        } catch (JSONException err) {
-                            err.printStackTrace();
+                            myHandler.post(new toastClass(line));
                         }
-                        myhandler.post(new toastClass(line));
                     }
                 }
-            } catch (UnknownHostException err) {
-                err.printStackTrace();
             } catch (IOException e){
                 e.printStackTrace();
+                if (loginListener != null)
+                    myHandler.post(new ErrorRedirectClass(e.getMessage()));
+                //TODO: redirect to error page
             }
         }
     }
@@ -112,7 +169,7 @@ public class LoginManager {
         }
         @Override
         public void run(){
-            loginListener.loginResult(result);
+            loginListener.onLoginResult(result);
         }
     }
 
@@ -124,9 +181,23 @@ public class LoginManager {
         @Override
         public void run(){
             while ((!Thread.currentThread().isInterrupted()) && writer == null) {
+                //TODO: fix or timeout
             }
             writer.println(message);
             writer.flush();
+        }
+    }
+
+    private class ErrorRedirectClass implements Runnable {
+        private String error;
+
+        public ErrorRedirectClass(String error) {
+            this.error = error;
+        }
+
+        @Override
+        public void run() {
+            loginListener.onLoginError(error);
         }
     }
 }

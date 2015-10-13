@@ -1,18 +1,23 @@
 package org.peno.b4.bikerisk;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LoginActivity extends AppCompatActivity {
-
+public class LoginActivity extends AppCompatActivity implements LoginManager.LoginResultListener {
+    public static final int REQUEST_LOGIN = 5;
+    private LoginManager mLoginManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mLoginManager = LoginManager.getInstance();
     }
 
     public void regClick(View view) {
@@ -28,18 +33,27 @@ public class LoginActivity extends AppCompatActivity {
 
         EditText result1 = (EditText) findViewById(R.id.editText);
         EditText result2 = (EditText) findViewById(R.id.editText2);
-        String res1 = result1.getText().toString();
-        String res2 = result2.getText().toString();
-
-        String res = "login: " + res1 + ", pass: " + res2;
-
-        Context context = getApplicationContext();
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, res, duration);
-        toast.show();
-
-
+        String username = result1.getText().toString();
+        String password = result2.getText().toString();
+        Toast.makeText(this, "login pressed", Toast.LENGTH_SHORT).show();
+        mLoginManager.login(this, username, password);
     }
 
+    @Override
+    public void onLoginResult(Boolean result) {
+        if (result) {
+            setResult(Activity.RESULT_OK);
+            finish();
+        } else {
+            Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onLoginError(String error) {
+        Intent errorIntent = new Intent(this, ErrorActivity.class);
+        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
+        startActivity(errorIntent);
+        finish();
+    }
 }
