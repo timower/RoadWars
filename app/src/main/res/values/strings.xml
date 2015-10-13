@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">BikeRisk</string>
+    <string name="Login">Login</string>
+    <string name="Password">Password</string>
+    <string name="Go">Go!</string>
+    <string name="Register">Register</string>
+    <string name="Or_register">Or register!</string>
 </resources>
