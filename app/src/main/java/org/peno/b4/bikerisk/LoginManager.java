@@ -138,6 +138,25 @@ public class LoginManager {
         }
     }
 
+    public void createUser(LoginResultListener listener, String name, String pass, String email, int color) {
+        JSONObject JObject = new JSONObject();
+        try {
+            JObject.put("req", "create-user");
+            JObject.put("user", name);
+            JObject.put("pass", pass);
+            JObject.put("email", email);
+            JObject.put("color", color);
+
+            String message = JObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
     public void pause() {
         commThread.interrupt();
     }
