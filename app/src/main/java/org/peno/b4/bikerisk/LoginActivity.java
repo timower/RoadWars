@@ -10,8 +10,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 public class LoginActivity extends AppCompatActivity implements LoginManager.LoginResultListener {
     public static final int REQUEST_LOGIN = 5;
+    private static final String TAG = "LoginActivity";
     private LoginManager mLoginManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,12 +24,7 @@ public class LoginActivity extends AppCompatActivity implements LoginManager.Log
     }
 
     public void regClick(View view) {
-        Context context = getApplicationContext();
-        CharSequence text = "register clicked";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        Log.d(TAG, "register clicked");
     }
 
     public void loginClick(View view) {
@@ -35,12 +33,11 @@ public class LoginActivity extends AppCompatActivity implements LoginManager.Log
         EditText result2 = (EditText) findViewById(R.id.editText2);
         String username = result1.getText().toString();
         String password = result2.getText().toString();
-        Toast.makeText(this, "login pressed", Toast.LENGTH_SHORT).show();
         mLoginManager.login(this, username, password);
     }
 
     @Override
-    public void onLoginResult(String req, Boolean result) {
+    public void onLoginResult(String req, Boolean result, JSONObject response) {
         if (req.equals("login")) {
             if (result) {
                 setResult(Activity.RESULT_OK);
@@ -52,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements LoginManager.Log
     }
 
     @Override
-    public void onLoginError(String req, String error) {
+    public void onLoginError(String error) {
         Intent errorIntent = new Intent(this, ErrorActivity.class);
         errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
         startActivity(errorIntent);

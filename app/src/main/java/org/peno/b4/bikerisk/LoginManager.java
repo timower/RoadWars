@@ -15,7 +15,7 @@ import java.net.Socket;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
-import android.widget.Toast;
+import android.util.Log;
 
 
 /**
@@ -23,9 +23,11 @@ import android.widget.Toast;
  * lol, test
  */
 public class LoginManager {
+    private static final String TAG = "LoginManager";
+
     public interface LoginResultListener {
-        void onLoginResult(String req, Boolean result);
-        void onLoginError(String req, String error);
+        void onLoginResult(String req, Boolean result, JSONObject response);
+        void onLoginError(String error);
     }
 
     private static LoginManager instance;
@@ -38,10 +40,12 @@ public class LoginManager {
     private String key;
     private String user;
 
+    private Thread commThread;
+
     public LoginManager(Context context){
         myHandler = new Handler();
         this.context = context;
-        new Thread(new CommunicationClass()).start();
+        start();
         instance = this;
     }
 
@@ -94,7 +98,6 @@ public class LoginManager {
             String message = LogInObject.toString();
             loginListener = listener;
             new Thread(new writeClass(message)).start();
-
         } catch (JSONException e) {
             e.printStackTrace();
             //TODO: retry?
@@ -116,6 +119,32 @@ public class LoginManager {
             e.printStackTrace();
             //TODO: retry?
         }
+    }
+
+    public void getUserInfo(LoginResultListener listener) {
+        JSONObject JObject = new JSONObject();
+        try {
+            JObject.put("req", "user-info");
+            JObject.put("key", key);
+            JObject.put("user", user);
+
+            String message = JObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
+    public void pause() {
+        commThread.interrupt();
+    }
+
+    public void start() {
+        commThread = new Thread(new CommunicationClass());
+        commThread.start();
     }
 
     private class CommunicationClass implements Runnable{
@@ -147,18 +176,21 @@ public class LoginManager {
                                         LoginManager.this.saveSharedPrefs();
                                     }
                                     if (loginListener != null)
-                                        myHandler.post(new LoginResultClass(req, resObj.getBoolean("res")));
+                                        myHandler.post(new LoginResultClass(req, resObj.getBoolean("res"), resObj));
                                 } else {
                                     if (loginListener != null)
-                                        myHandler.post(new LoginResultClass(req, resObj.getBoolean("res")));
+                                        myHandler.post(new LoginResultClass(req, resObj.getBoolean("res"), resObj));
                                 }
                             } catch (JSONException err) {
                                 err.printStackTrace();
                             }
-                            myHandler.post(new toastClass(line));
+                            myHandler.post(new logClass(line));
                         }
                     }
                 }
+                writer.close();
+                reader.close();
+                socket.close();
             } catch (IOException e){
                 e.printStackTrace();
                 if (loginListener != null)
@@ -167,27 +199,29 @@ public class LoginManager {
         }
     }
 
-    private class toastClass implements Runnable {
+    private class logClass implements Runnable {
         private String message;
-        public toastClass(String message) {
+        public logClass(String message) {
             this.message = message;
         }
         @Override
         public void run(){
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+            Log.d(TAG, message);
         }
     }
 
     private class LoginResultClass implements Runnable {
         private Boolean result;
         private String req;
-        public LoginResultClass(String req, Boolean result) {
+        private JSONObject response;
+        public LoginResultClass(String req, Boolean result, JSONObject response) {
             this.result = result;
             this.req = req;
+            this.response = response;
         }
         @Override
         public void run(){
-            loginListener.onLoginResult(req, result);
+            loginListener.onLoginResult(req, result, response);
         }
     }
 
@@ -208,16 +242,14 @@ public class LoginManager {
 
     private class ErrorRedirectClass implements Runnable {
         private String error;
-        private String req;
 
         public ErrorRedirectClass(String error) {
             this.error = error;
-            this.req = req;
         }
 
         @Override
         public void run() {
-            loginListener.onLoginError(req, error);
+            loginListener.onLoginError(error);
         }
     }
 }

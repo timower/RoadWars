@@ -7,4 +7,9 @@
     <string name="Or_register">Or register!</string>
     <string name="Error">Error</string>
     <string name="logout">Logout</string>
+    <string name="title_activity_test_map">Map</string>
+    <string name="user_info">My Profile</string>
+    <string name="user_name">Username:</string>
+    <string name="email">e-mail:</string>
+    <string name="color">Color:</string>
 </resources>

@@ -10,9 +10,20 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements LoginManager.LoginResultListener {
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+
+import org.json.JSONObject;
+
+
+public class MainActivity extends AppCompatActivity
+        implements LoginManager.LoginResultListener, OnMapReadyCallback {
 
     private LoginManager mLoginManager;
+
+    private GoogleMap mMap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +36,10 @@ public class MainActivity extends AppCompatActivity implements LoginManager.Logi
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
         }
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
     }
 
@@ -39,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements LoginManager.Logi
         }
     }
     @Override
-    public void onLoginResult(String req, Boolean result) {
+    public void onLoginResult(String req, Boolean result, JSONObject response) {
         if (req.equals("check-login")) {
             if (result) {
                 hideProgressBar();
@@ -55,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements LoginManager.Logi
     }
 
     @Override
-    public void onLoginError(String req, String error) {
+    public void onLoginError(String error) {
 
         Intent errorIntent = new Intent(this, ErrorActivity.class);
         errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
@@ -82,8 +97,17 @@ public class MainActivity extends AppCompatActivity implements LoginManager.Logi
             case R.id.action_logout:
                 this.mLoginManager.logout(this);
                 return super.onOptionsItemSelected(item);
+            case R.id.action_user_info:
+                Intent intent = new Intent(this, UserInfoActivity.class);
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
     }
 }
