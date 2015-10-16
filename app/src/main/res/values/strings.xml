@@ -6,4 +6,8 @@
     <string name="Register">Register</string>
     <string name="Or_register">Or register!</string>
     <string name="Error">Error</string>
+    <string name="Username">Username</string>
+    <string name="Email_address">Email address</string>
+    <string name="Choose_a_color">Choose a color</string>
+    <string name="Preview">Preview</string>
 </resources>

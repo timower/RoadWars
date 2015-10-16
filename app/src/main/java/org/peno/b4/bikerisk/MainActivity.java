@@ -15,6 +15,10 @@ public class MainActivity extends AppCompatActivity implements LoginManager.Logi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent myIntent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(myIntent);
+
+
         mLoginManager = new LoginManager(this);
         if (mLoginManager.loadFromSharedPrefs()) {
             mLoginManager.checkLogin(this);

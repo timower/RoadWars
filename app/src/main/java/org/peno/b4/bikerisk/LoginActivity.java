@@ -21,12 +21,8 @@ public class LoginActivity extends AppCompatActivity implements LoginManager.Log
     }
 
     public void regClick(View view) {
-        Context context = getApplicationContext();
-        CharSequence text = "register clicked";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
+        startActivity(registerIntent);
     }
 
     public void loginClick(View view) {
