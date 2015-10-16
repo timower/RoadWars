@@ -36,20 +36,30 @@ public class LoginActivity extends AppCompatActivity implements LoginManager.Log
     }
 
     @Override
-    public void onLoginResult(Boolean result) {
-        if (result) {
-            setResult(Activity.RESULT_OK);
-            finish();
-        } else {
-            Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show();
+    public void onLoginResult(String req, Boolean result) {
+        if (req.equals("login")) {
+            if (result) {
+                setResult(Activity.RESULT_OK);
+                finish();
+            } else {
+                Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     @Override
-    public void onLoginError(String error) {
+    public void onLoginError(String req, String error) {
         Intent errorIntent = new Intent(this, ErrorActivity.class);
         errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
         startActivity(errorIntent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }
