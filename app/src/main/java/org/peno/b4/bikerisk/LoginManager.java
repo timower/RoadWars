@@ -24,8 +24,8 @@ import android.widget.Toast;
  */
 public class LoginManager {
     public interface LoginResultListener {
-        void onLoginResult(Boolean result);
-        void onLoginError(String error);
+        void onLoginResult(String req, Boolean result);
+        void onLoginError(String req, String error);
     }
 
     private static LoginManager instance;
@@ -101,6 +101,23 @@ public class LoginManager {
         }
     }
 
+    public void logout(LoginResultListener listener) {
+        JSONObject LogOutObject = new JSONObject();
+        try {
+            LogOutObject.put("req", "logout");
+            LogOutObject.put("key", key);
+            LogOutObject.put("user", user);
+
+            String message = LogOutObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
     private class CommunicationClass implements Runnable{
         private Socket socket;
         private BufferedReader reader;
@@ -124,16 +141,16 @@ public class LoginManager {
                             try {
                                 JSONObject resObj = new JSONObject(line);
                                 String req = resObj.getString("req");
-                                if (req.equals("check-login")) {
-                                    if (loginListener != null)
-                                        myHandler.post(new LoginResultClass(resObj.getBoolean("res")));
-                                } else if (req.equals("login")) {
+                                if (req.equals("login")) {
                                     if (resObj.getBoolean("res")) {
                                         LoginManager.this.key = resObj.getString("key");
                                         LoginManager.this.saveSharedPrefs();
                                     }
                                     if (loginListener != null)
-                                        myHandler.post(new LoginResultClass(resObj.getBoolean("res")));
+                                        myHandler.post(new LoginResultClass(req, resObj.getBoolean("res")));
+                                } else {
+                                    if (loginListener != null)
+                                        myHandler.post(new LoginResultClass(req, resObj.getBoolean("res")));
                                 }
                             } catch (JSONException err) {
                                 err.printStackTrace();
@@ -164,12 +181,14 @@ public class LoginManager {
 
     private class LoginResultClass implements Runnable {
         private Boolean result;
-        public LoginResultClass(Boolean result) {
+        private String req;
+        public LoginResultClass(String req, Boolean result) {
             this.result = result;
+            this.req = req;
         }
         @Override
         public void run(){
-            loginListener.onLoginResult(result);
+            loginListener.onLoginResult(req, result);
         }
     }
 
@@ -190,14 +209,16 @@ public class LoginManager {
 
     private class ErrorRedirectClass implements Runnable {
         private String error;
+        private String req;
 
         public ErrorRedirectClass(String error) {
             this.error = error;
+            this.req = req;
         }
 
         @Override
         public void run() {
-            loginListener.onLoginError(error);
+            loginListener.onLoginError(req, error);
         }
     }
 }

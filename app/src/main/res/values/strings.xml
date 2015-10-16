@@ -6,4 +6,5 @@
     <string name="Register">Register</string>
     <string name="Or_register">Or register!</string>
     <string name="Error">Error</string>
+    <string name="Logout">Logout</string>
 </resources>
