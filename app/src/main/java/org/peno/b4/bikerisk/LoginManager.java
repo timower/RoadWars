@@ -163,7 +163,6 @@ public class LoginManager {
                 e.printStackTrace();
                 if (loginListener != null)
                     myHandler.post(new ErrorRedirectClass(e.getMessage()));
-                //TODO: redirect to error page
             }
         }
     }
