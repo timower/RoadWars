@@ -24,7 +24,8 @@ public class LoginActivity extends AppCompatActivity implements LoginManager.Log
     }
 
     public void regClick(View view) {
-        Log.d(TAG, "register clicked");
+        Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
+        startActivity(registerIntent);
     }
 
     public void loginClick(View view) {

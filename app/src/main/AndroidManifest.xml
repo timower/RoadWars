@@ -44,6 +44,8 @@
         <activity android:name=".UserInfoActivity"
             android:label="@string/user_info">
         </activity>
+        <activity android:name=".RegisterActivity" >
+        </activity>
     </application>
 
 </manifest>
