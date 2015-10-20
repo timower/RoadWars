@@ -96,6 +96,9 @@ public class StreetRankActivity extends AppCompatActivity
                         TableRow nRow = new TableRow(this);
                         nRow.setLayoutParams(tableParams);
 
+                        TextView rankView = new TextView(this);
+                        rankView.setLayoutParams(rowParams);
+
                         TextView streetView = new TextView(this);
                         streetView.setLayoutParams(rowParams);
 
@@ -103,9 +106,11 @@ public class StreetRankActivity extends AppCompatActivity
                         pointsView.setLayoutParams(rowParams);
                         pointsView.setGravity(Gravity.CENTER);
 
+                        rankView.setText(String.format(Locale.getDefault(), "%d", i + 1));
                         streetView.setText(name);
                         pointsView.setText(String.format(Locale.getDefault(), "%d", points));
 
+                        nRow.addView(rankView);
                         nRow.addView(streetView);
                         nRow.addView(pointsView);
                         table.addView(nRow);
