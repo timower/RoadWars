@@ -17,10 +17,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.maps.android.PolyUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +36,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements LoginManager.LoginResultListener, OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
+        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener,
+        GoogleMap.OnCameraChangeListener{
 
     private LoginManager mLoginManager;
 
@@ -101,18 +108,30 @@ public class MainActivity extends AppCompatActivity
         } else if (req.equals("logout")) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
-        } else if (req.equals("get-poly")) {
-            try {
-                String poly = response.getString("poly");
-                PolylineOptions test = new PolylineOptions()
-                        .addAll(PolyUtil.decode(poly))
-                        .width(5)
-                        .color(Color.BLUE);
-                mMap.addPolyline(test);
-            } catch (JSONException e) {
-                e.printStackTrace();
+        } else if (req.equals("get-all-streets")) {
+            if (result) {
+                try {
+                    JSONArray streets = response.getJSONArray("streets");
+                    float[] HSV = new float[3];
+                    for (int i = 0; i < streets.length(); i++) {
+                        JSONArray street = streets.getJSONArray(i);
+                        Color.colorToHSV(street.getInt(3), HSV);
+                        addMarker(HSV[0], street.getDouble(1),
+                                street.getDouble(2), street.getString(0));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
+    }
+
+    private void addMarker(float hue, double lat, double lng, String name) {
+        MarkerOptions markerOptions = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(hue))
+                .position(new LatLng(lat, lng))
+                .title(name);
+        mMap.addMarker(markerOptions);
     }
 
     @Override
@@ -168,6 +187,7 @@ public class MainActivity extends AppCompatActivity
         }
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMapClickListener(this);
+        mMap.setOnCameraChangeListener(this);
     }
 
     private String removeNumbers(String orig) {
@@ -185,7 +205,8 @@ public class MainActivity extends AppCompatActivity
     public void onMapLongClick(LatLng latLng) {
         if (geocoder != null) {
             try {
-                List<Address> locations = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                List<Address> locations = geocoder.getFromLocation(latLng.latitude,
+                        latLng.longitude, 1);
                 if (locations.size() > 0) {
                     Address loc = locations.get(0);
                     if (loc.getMaxAddressLineIndex() >= 2) {
@@ -208,14 +229,15 @@ public class MainActivity extends AppCompatActivity
     public void onMapClick(LatLng latLng) {
         if (geocoder != null) {
             try {
-                List<Address> locations = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                List<Address> locations = geocoder.getFromLocation(latLng.latitude,
+                        latLng.longitude, 1);
                 if (locations.size() > 0) {
                     Address loc = locations.get(0);
                     if (loc.getMaxAddressLineIndex() >= 2) {
                         String street = removeNumbers(loc.getAddressLine(0));
                         String city = removeNumbers(loc.getAddressLine(1));
 
-                        mLoginManager.getPoly(this, street);
+                        mLoginManager.getStreet(this, street);
                     }
 
                 }
@@ -223,5 +245,14 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        //TODO: don't lookup every street again
+        Log.d(TAG, "camera changed");
+        VisibleRegion reg = mMap.getProjection().getVisibleRegion();
+        LatLngBounds bounds = reg.latLngBounds;
+        mLoginManager.getAllStreets(this, bounds);
     }
 }
