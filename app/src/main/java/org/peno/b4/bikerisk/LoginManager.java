@@ -17,6 +17,8 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLngBounds;
+
 
 /**
  * Created by timo on 10/12/15.
@@ -211,13 +213,34 @@ public class LoginManager {
         }
     }
 
-    public void getPoly(LoginResultListener listener, String street) {
+    public void getStreet(LoginResultListener listener, String street) {
         JSONObject JObject = new JSONObject();
         try {
-            JObject.put("req", "get-poly");
+            JObject.put("req", "get-street");
             JObject.put("key", key);
             JObject.put("user", user);
             JObject.put("street", street);
+
+            String message = JObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
+    public void getAllStreets(LoginResultListener listener, LatLngBounds bounds) {
+        JSONObject JObject = new JSONObject();
+        try {
+            JObject.put("req", "get-all-streets");
+            JObject.put("key", key);
+            JObject.put("user", user);
+            JObject.put("neLat", bounds.northeast.latitude);
+            JObject.put("neLong", bounds.northeast.longitude);
+            JObject.put("swLat", bounds.southwest.latitude);
+            JObject.put("swLong", bounds.southwest.longitude);
 
             String message = JObject.toString();
             loginListener = listener;
