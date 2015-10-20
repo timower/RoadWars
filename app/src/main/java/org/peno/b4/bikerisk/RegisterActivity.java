@@ -1,12 +1,15 @@
 package org.peno.b4.bikerisk;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.EditText;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -14,7 +17,8 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 
-public class RegisterActivity extends AppCompatActivity implements LoginManager.LoginResultListener {
+public class RegisterActivity extends AppCompatActivity
+        implements LoginManager.LoginResultListener, View.OnTouchListener {
 
     private LoginManager mLoginManager;
 
@@ -23,14 +27,17 @@ public class RegisterActivity extends AppCompatActivity implements LoginManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mLoginManager = LoginManager.getInstance();
+        ImageView imageView = (ImageView)findViewById(R.id.imageView);
+        imageView.setOnTouchListener(this);
     }
     public void registerClicked(View view){
         String name = ((EditText)findViewById(R.id.user_name)).getText().toString();
         String pass = ((EditText)findViewById(R.id.password)).getText().toString();
         String email = ((EditText)findViewById(R.id.email)).getText().toString();
-        RadioGroup color = (RadioGroup)findViewById(R.id.radio_group1);
-        RadioButton button = (RadioButton)findViewById(color.getCheckedRadioButtonId());
-        int colorCode = ((ColorDrawable)button.getBackground()).getColor();
+        //RadioGroup color = (RadioGroup)findViewById(R.id.radio_group1);
+        //RadioButton button = (RadioButton)findViewById(color.getCheckedRadioButtonId());
+        View color = findViewById(R.id.colorView);
+        int colorCode = ((ColorDrawable)color.getBackground()).getColor();
         //TODO: check if ""
         if (name.equals("") || pass.equals("") || email.equals(""))
             return;
@@ -56,5 +63,21 @@ public class RegisterActivity extends AppCompatActivity implements LoginManager.
         errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
         startActivity(errorIntent);
         finish();
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int action = event.getAction();
+        if (action == MotionEvent.ACTION_MOVE || action == MotionEvent.ACTION_DOWN){
+            float hue = event.getX() * 360/843;
+            //Toast.makeText(this, String.valueOf(hue), Toast.LENGTH_SHORT).show();
+            View colorView = findViewById(R.id.colorView);
+            float[] HSV = new float[3];
+            HSV[0] = hue;
+            HSV[1] = 1;
+            HSV[2] = 1;
+            colorView.setBackgroundColor(Color.HSVToColor(HSV));
+        }
+        return true;
     }
 }
