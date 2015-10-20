@@ -38,7 +38,7 @@ public class LoginManager {
     private LoginResultListener loginListener;
 
     private String key;
-    private String user;
+    public String user;
 
     private Thread commThread;
 
@@ -157,8 +157,81 @@ public class LoginManager {
         }
     }
 
+    public void getAllPoints(LoginResultListener listener) {
+        JSONObject JObject = new JSONObject();
+        try {
+            JObject.put("req", "get-all-points");
+            JObject.put("key", key);
+            JObject.put("user", user);
+
+            String message = JObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
+    public void getStreetRank(LoginResultListener listener, String street) {
+        JSONObject JObject = new JSONObject();
+        try {
+            JObject.put("req", "street-rank");
+            JObject.put("key", key);
+            JObject.put("user", user);
+            JObject.put("street", street);
+
+            String message = JObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
+    public void addPoints(LoginResultListener listener, String street, int points) {
+        JSONObject JObject = new JSONObject();
+        try {
+            JObject.put("req", "add-points");
+            JObject.put("key", key);
+            JObject.put("user", user);
+            JObject.put("street", street);
+            JObject.put("points", points);
+
+            String message = JObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
+    public void getPoly(LoginResultListener listener, String street) {
+        JSONObject JObject = new JSONObject();
+        try {
+            JObject.put("req", "get-poly");
+            JObject.put("key", key);
+            JObject.put("user", user);
+            JObject.put("street", street);
+
+            String message = JObject.toString();
+            loginListener = listener;
+            new Thread(new writeClass(message)).start();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            //TODO: retry?
+        }
+    }
+
     public void pause() {
         commThread.interrupt();
+        Log.d(TAG, "paused, interrupted thread");
     }
 
     public void start() {
@@ -181,7 +254,7 @@ public class LoginManager {
                 writer = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(socket.getOutputStream())));
                 reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-
+                Log.d(TAG, "started comm");
                 while(!Thread.currentThread().isInterrupted()) {
                     if (reader != null) {
                         String line = reader.readLine();
@@ -210,6 +283,7 @@ public class LoginManager {
                 writer.close();
                 reader.close();
                 socket.close();
+                Log.d(TAG, "closed sockets");
             } catch (IOException e){
                 e.printStackTrace();
                 if (loginListener != null)

@@ -1,37 +1,48 @@
 package org.peno.b4.bikerisk;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
-        implements LoginManager.LoginResultListener, OnMapReadyCallback {
+        implements LoginManager.LoginResultListener, OnMapReadyCallback,
+        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
 
     private LoginManager mLoginManager;
 
     private GoogleMap mMap;
+    private Geocoder geocoder;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Intent myIntent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(myIntent);
-
 
         mLoginManager = new LoginManager(this);
         if (mLoginManager.loadFromSharedPrefs()) {
@@ -45,6 +56,26 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(TAG, "on pause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(TAG, "on resume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mLoginManager.pause();
+        Log.d(TAG, "on destroy");
+
+        super.onDestroy();
     }
 
     @Override
@@ -70,6 +101,17 @@ public class MainActivity extends AppCompatActivity
         } else if (req.equals("logout")) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
+        } else if (req.equals("get-poly")) {
+            try {
+                String poly = response.getString("poly");
+                PolylineOptions test = new PolylineOptions()
+                        .addAll(PolyUtil.decode(poly))
+                        .width(5)
+                        .color(Color.BLUE);
+                mMap.addPolyline(test);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -112,6 +154,74 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        geocoder = new Geocoder(this);
+        try {
+            List<Address> leuven = geocoder.getFromLocationName("Leuven", 1);
+            if (leuven.size() > 0) {
+                Address L = leuven.get(0);
+                Log.d(TAG, "got location");
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(L.getLatitude(), L.getLongitude()), 14));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mMap.setOnMapLongClickListener(this);
+        mMap.setOnMapClickListener(this);
+    }
 
+    private String removeNumbers(String orig) {
+        String street = "";
+        for (String sub : orig.split(" ")) {
+            if (!sub.matches("[0-9][0-9]*-?[0-9]*")) {
+                street += sub + " ";
+            }
+        }
+
+        return street.trim();
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        if (geocoder != null) {
+            try {
+                List<Address> locations = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                if (locations.size() > 0) {
+                    Address loc = locations.get(0);
+                    if (loc.getMaxAddressLineIndex() >= 2) {
+                        String street = removeNumbers(loc.getAddressLine(0));
+                        String city = removeNumbers(loc.getAddressLine(1));
+                        Intent intent = new Intent(this, StreetRankActivity.class);
+                        intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
+                        intent.putExtra(StreetRankActivity.EXTRA_CITY, city);
+                        startActivity(intent);
+                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if (geocoder != null) {
+            try {
+                List<Address> locations = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                if (locations.size() > 0) {
+                    Address loc = locations.get(0);
+                    if (loc.getMaxAddressLineIndex() >= 2) {
+                        String street = removeNumbers(loc.getAddressLine(0));
+                        String city = removeNumbers(loc.getAddressLine(1));
+
+                        mLoginManager.getPoly(this, street);
+                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

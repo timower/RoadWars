@@ -41,10 +41,22 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".UserInfoActivity"
-            android:label="@string/user_info">
+        <activity
+            android:name=".UserInfoActivity"
+            android:label="@string/user_info" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
         </activity>
         <activity android:name=".RegisterActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LoginActivity"/>
+        </activity>
+        <activity android:name=".StreetRankActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
         </activity>
     </application>
 

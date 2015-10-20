@@ -16,4 +16,8 @@
     <string name="Email_address">Email address</string>
     <string name="Choose_a_color">Choose a color</string>
     <string name="Preview">Preview</string>
+    <string name="street">Street</string>
+    <string name="points">Points</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="test_add_points">Add 5 Points</string>
 </resources>
