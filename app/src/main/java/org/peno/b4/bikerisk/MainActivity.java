@@ -1,11 +1,19 @@
 package org.peno.b4.bikerisk;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,8 +27,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
@@ -36,15 +46,21 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements LoginManager.LoginResultListener, OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener,
-        GoogleMap.OnCameraChangeListener{
+        GoogleMap.OnMapLongClickListener, LocationListener {
 
     private LoginManager mLoginManager;
+    private LocationManager locationManager;
 
     private GoogleMap mMap;
     private Geocoder geocoder;
 
+    private  boolean started = false;
+
+    private Marker locMarker;
+
     private static final String TAG = "MainActivity";
+
+    private static final int notId = 14;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +74,8 @@ public class MainActivity extends AppCompatActivity
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
         }
+
+        this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -80,8 +98,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         mLoginManager.pause();
+        hideStartedNotification();
+        stopLocation();
         Log.d(TAG, "on destroy");
-
         super.onDestroy();
     }
 
@@ -111,6 +130,9 @@ public class MainActivity extends AppCompatActivity
         } else if (req.equals("get-all-streets")) {
             if (result) {
                 try {
+
+                    mMap.clear();
+
                     JSONArray streets = response.getJSONArray("streets");
                     float[] HSV = new float[3];
                     for (int i = 0; i < streets.length(); i++) {
@@ -127,11 +149,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void addMarker(float hue, double lat, double lng, String name) {
+        /*
         MarkerOptions markerOptions = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.defaultMarker(hue))
                 .position(new LatLng(lat, lng))
                 .title(name);
         mMap.addMarker(markerOptions);
+        */
+        GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
+                .image(BitmapDescriptorFactory.defaultMarker(hue))
+                .position(new LatLng(lat, lng), 20);
+
+        mMap.addGroundOverlay(groundOverlayOptions);
     }
 
     @Override
@@ -165,6 +194,18 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_user_info:
                 Intent intent = new Intent(this, UserInfoActivity.class);
                 startActivity(intent);
+                return super.onOptionsItemSelected(item);
+            case R.id.action_start_stop:
+                started = !started;
+                if (started) {
+                    item.setIcon(R.drawable.ic_pause_dark);
+                    showStartedNotification();
+                    startLocation();
+                } else {
+                    item.setIcon(R.drawable.ic_play_dark);
+                    hideStartedNotification();
+                    stopLocation();
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -186,8 +227,16 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         mMap.setOnMapLongClickListener(this);
-        mMap.setOnMapClickListener(this);
-        mMap.setOnCameraChangeListener(this);
+        mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            @Override
+            public void onCameraChange(CameraPosition cameraPosition) {
+                //TODO: don't lookup every street again
+                Log.d(TAG, "camera changed");
+                VisibleRegion reg = mMap.getProjection().getVisibleRegion();
+                LatLngBounds bounds = reg.latLngBounds;
+                mLoginManager.getAllStreets(MainActivity.this, bounds);
+            }
+        });
     }
 
     private String removeNumbers(String orig) {
@@ -225,34 +274,69 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onMapClick(LatLng latLng) {
-        if (geocoder != null) {
-            try {
-                List<Address> locations = geocoder.getFromLocation(latLng.latitude,
-                        latLng.longitude, 1);
-                if (locations.size() > 0) {
-                    Address loc = locations.get(0);
-                    if (loc.getMaxAddressLineIndex() >= 2) {
-                        String street = removeNumbers(loc.getAddressLine(0));
-                        String city = removeNumbers(loc.getAddressLine(1));
+    private void showStartedNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("RoadWars is running")
+                .setContentText("click to open")
+                .setOngoing(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-                        mLoginManager.getStreet(this, street);
-                    }
 
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        Intent intent = new Intent(this, this.getClass());
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        PendingIntent Pintent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        builder.setContentIntent(Pintent);
+        NotificationManager notificationManager =
+                (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(notId, builder.build());
+    }
+
+    private void hideStartedNotification() {
+        NotificationManager notificationManager =
+                (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancel(notId);
+    }
+
+    private void startLocation() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10 * 1000, 2, this);
+    }
+
+    private void stopLocation() {
+        locationManager.removeUpdates(this);
     }
 
     @Override
-    public void onCameraChange(CameraPosition cameraPosition) {
-        //TODO: don't lookup every street again
-        Log.d(TAG, "camera changed");
-        VisibleRegion reg = mMap.getProjection().getVisibleRegion();
-        LatLngBounds bounds = reg.latLngBounds;
-        mLoginManager.getAllStreets(this, bounds);
+    public void onLocationChanged(Location location) {
+        if (locMarker != null) {
+            locMarker.remove();
+            locMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+        } else {
+
+            locMarker = mMap.addMarker(new MarkerOptions()
+                                .title("bike")
+                                .position(new LatLng(location.getLatitude(),
+                                        location.getLongitude())));
+        }
+        Log.d(TAG, "Acc: " + location.getAccuracy());
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Log.d(TAG, "status changed: " + status + ", sats: " + extras.getInt("satellites"));
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Log.d(TAG, "gps enabled");
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Log.d(TAG, "gps disabled");
     }
 }

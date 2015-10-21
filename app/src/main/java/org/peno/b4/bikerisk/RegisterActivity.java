@@ -3,6 +3,7 @@ package org.peno.b4.bikerisk;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,12 +23,14 @@ public class RegisterActivity extends AppCompatActivity
 
     private LoginManager mLoginManager;
 
+    private ImageView imageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         mLoginManager = LoginManager.getInstance();
-        ImageView imageView = (ImageView)findViewById(R.id.imageView);
+        imageView = (ImageView)findViewById(R.id.imageView);
         imageView.setOnTouchListener(this);
     }
     public void registerClicked(View view){
@@ -69,7 +72,10 @@ public class RegisterActivity extends AppCompatActivity
     public boolean onTouch(View v, MotionEvent event) {
         int action = event.getAction();
         if (action == MotionEvent.ACTION_MOVE || action == MotionEvent.ACTION_DOWN){
-            float hue = event.getX() * 360/843;
+            float width = imageView.getWidth();
+            Log.d("EV", "X: " + event.getX());
+            Log.d("EV", "width: " + width);
+            float hue = (event.getX() / width) * 360f;
             //Toast.makeText(this, String.valueOf(hue), Toast.LENGTH_SHORT).show();
             View colorView = findViewById(R.id.colorView);
             float[] HSV = new float[3];

@@ -22,4 +22,5 @@
     <string name="test_add_points">Add 5 Points</string>
     <string name="rank_number">Rank</string>
     <string name="hue">Hue</string>
+    <string name="start">Start</string>
 </resources>

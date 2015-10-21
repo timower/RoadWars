@@ -101,10 +101,11 @@ public class StreetRankActivity extends AppCompatActivity
 
                         TextView streetView = new TextView(this);
                         streetView.setLayoutParams(rowParams);
+                        streetView.setGravity(Gravity.CENTER);
 
                         TextView pointsView = new TextView(this);
                         pointsView.setLayoutParams(rowParams);
-                        pointsView.setGravity(Gravity.CENTER);
+                        //pointsView.setGravity(Gravity.CENTER);
 
                         rankView.setText(String.format(Locale.getDefault(), "%d", i + 1));
                         streetView.setText(name);

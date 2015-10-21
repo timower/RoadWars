@@ -62,13 +62,11 @@
                         android:text="@string/Username"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginStart="10dp" />
+                        android:gravity="center"/>
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="@string/points"
-                        android:gravity="center"
                         android:textSize="18sp"
                         android:textStyle="bold"/>
                 </TableRow>
