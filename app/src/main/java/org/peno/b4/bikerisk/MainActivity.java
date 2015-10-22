@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -41,12 +43,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
         implements LoginManager.LoginResultListener, OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, LocationListener {
+    private static final String TAG = "MainActivity";
+    private static final int notId = 14;
+
+    private LatLng lastCameraPos;
 
     private LoginManager mLoginManager;
     private LocationManager locationManager;
@@ -58,9 +66,7 @@ public class MainActivity extends AppCompatActivity
 
     private Marker locMarker;
 
-    private static final String TAG = "MainActivity";
-
-    private static final int notId = 14;
+    private HashMap<String, GroundOverlay> streetMarkers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +86,8 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        streetMarkers = new HashMap<>();
 
     }
 
@@ -110,7 +118,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 hideProgressBar();
             } else {
-                // error?
+                // TODO: error/retry?
             }
         }
     }
@@ -131,15 +139,20 @@ public class MainActivity extends AppCompatActivity
             if (result) {
                 try {
 
-                    mMap.clear();
-
                     JSONArray streets = response.getJSONArray("streets");
                     float[] HSV = new float[3];
                     for (int i = 0; i < streets.length(); i++) {
                         JSONArray street = streets.getJSONArray(i);
                         Color.colorToHSV(street.getInt(3), HSV);
-                        addMarker(HSV[0], street.getDouble(1),
-                                street.getDouble(2), street.getString(0));
+                        String name = street.getString(0);
+                        double lat = street.getDouble(1);
+                        double lng = street.getDouble(2);
+                        if (streetMarkers.containsKey(name)){
+                            streetMarkers.get(name)
+                                    .setImage(BitmapDescriptorFactory.defaultMarker(HSV[0]));
+                        } else {
+                            addMarker(HSV[0], lat, lng, name);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -160,7 +173,7 @@ public class MainActivity extends AppCompatActivity
                 .image(BitmapDescriptorFactory.defaultMarker(hue))
                 .position(new LatLng(lat, lng), 20);
 
-        mMap.addGroundOverlay(groundOverlayOptions);
+        streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
     }
 
     @Override
@@ -230,11 +243,23 @@ public class MainActivity extends AppCompatActivity
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                //TODO: don't lookup every street again
                 Log.d(TAG, "camera changed");
+
                 VisibleRegion reg = mMap.getProjection().getVisibleRegion();
                 LatLngBounds bounds = reg.latLngBounds;
-                mLoginManager.getAllStreets(MainActivity.this, bounds);
+                float dist = 0;
+                if (lastCameraPos != null) {
+                    Point p1 = mMap.getProjection().toScreenLocation(lastCameraPos);
+                    dist = p1.x*p1.x + p1.y*p1.y;
+                    Log.d(TAG, "dist: " + dist);
+                }
+
+                if (lastCameraPos == null || dist > 700*700){
+                    Log.d(TAG, "getting street");
+                    mLoginManager.getAllStreets(MainActivity.this, bounds);
+                    lastCameraPos = bounds.northeast;
+                }
+
             }
         });
     }

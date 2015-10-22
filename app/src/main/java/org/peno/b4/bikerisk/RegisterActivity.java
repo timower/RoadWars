@@ -41,7 +41,6 @@ public class RegisterActivity extends AppCompatActivity
         //RadioButton button = (RadioButton)findViewById(color.getCheckedRadioButtonId());
         View color = findViewById(R.id.colorView);
         int colorCode = ((ColorDrawable)color.getBackground()).getColor();
-        //TODO: check if ""
         if (name.equals("") || pass.equals("") || email.equals(""))
             return;
         mLoginManager.createUser(this, name, pass, email, colorCode);
