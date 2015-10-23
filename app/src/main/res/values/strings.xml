@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BikeRisk</string>
+    <string name="app_name">RoadWars</string>
     <string name="Login">Login</string>
     <string name="Password">Password</string>
     <string name="Go">Go!</string>

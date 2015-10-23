@@ -35,6 +35,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 
 import org.json.JSONArray;
@@ -48,22 +50,21 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements LoginManager.LoginResultListener, OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener, LocationListener {
+        GoogleMap.OnMapLongClickListener, PositionManager.PositionListener {
     private static final String TAG = "MainActivity";
     private static final int notId = 14;
 
     private LatLng lastCameraPos;
 
     private LoginManager mLoginManager;
-    private LocationManager locationManager;
+    private PositionManager positionManager;
 
     private GoogleMap mMap;
     private Geocoder geocoder;
 
-    private  boolean started = false;
-
     private Marker locMarker;
     private Circle locRad;
+    private Polyline userRoute;
 
     private HashMap<String, GroundOverlay> streetMarkers;
 
@@ -79,8 +80,16 @@ public class MainActivity extends AppCompatActivity
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
         }
-
-        this.locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (PositionManager.getInstance() == null) {
+            positionManager = new PositionManager(this);
+        } else {
+            positionManager = PositionManager.getInstance();
+            if (positionManager.started) {
+                positionManager.resume(this);
+                showStartedNotification();
+                invalidateOptionsMenu();
+            }
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -106,7 +115,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         mLoginManager.pause();
         hideStartedNotification();
-        stopLocation();
+        positionManager.pause(mMap.getCameraPosition());
         Log.d(TAG, "on destroy");
         super.onDestroy();
     }
@@ -193,6 +202,13 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actions_main, menu);
+        MenuItem item = menu.findItem(R.id.action_start_stop);
+        if (positionManager == null || !positionManager.started) {
+            item.setIcon(R.drawable.ic_play_dark);
+        } else {
+            item.setIcon(R.drawable.ic_pause_dark);
+
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -208,16 +224,14 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
-                started = !started;
-                if (started) {
-                    item.setIcon(R.drawable.ic_pause_dark);
+                if (!positionManager.started) {
                     showStartedNotification();
-                    startLocation();
+                    positionManager.start(this);
                 } else {
-                    item.setIcon(R.drawable.ic_play_dark);
                     hideStartedNotification();
-                    stopLocation();
+                    positionManager.stop();
                 }
+                invalidateOptionsMenu();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -226,18 +240,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        geocoder = new Geocoder(this);
-        try {
-            List<Address> leuven = geocoder.getFromLocationName("Leuven", 1);
-            if (leuven.size() > 0) {
-                Address L = leuven.get(0);
-                Log.d(TAG, "got location");
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(L.getLatitude(), L.getLongitude()), 14));
+
+        if (positionManager != null && positionManager.lastCameraPosition != null) {
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(positionManager.lastCameraPosition));
+        } else {
+            geocoder = new Geocoder(this);
+            try {
+                List<Address> leuven = geocoder.getFromLocationName("Leuven", 1);
+                if (leuven.size() > 0) {
+                    Address L = leuven.get(0);
+                    Log.d(TAG, "got location");
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(L.getLatitude(), L.getLongitude()), 14));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
+
         mMap.setOnMapLongClickListener(this);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
@@ -325,20 +346,18 @@ public class MainActivity extends AppCompatActivity
         notificationManager.cancel(notId);
     }
 
-    private void startLocation() {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
-    }
 
-    private void stopLocation() {
-        locationManager.removeUpdates(this);
-    }
 
     @Override
-    public void onLocationChanged(Location location) {
-        LatLng pos = new LatLng(location.getLatitude(),
-                location.getLongitude());
-        if (locMarker != null) {
+    public void onLocationChanged(Location location, LatLng pos, PolylineOptions pOps) {
+        if (mMap == null)
+            return;
 
+        if (userRoute != null)
+            userRoute.remove();
+
+        userRoute = mMap.addPolyline(pOps);
+        if (locMarker != null) {
             locMarker.setPosition(pos);
             locRad.setCenter(pos);
             locRad.setRadius(location.getAccuracy());
@@ -354,7 +373,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "Acc: " + location.getAccuracy());
 
     }
-
+    /*
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Log.d(TAG, "status changed: " + status + ", sats: " + extras.getInt("satellites"));
@@ -369,4 +388,5 @@ public class MainActivity extends AppCompatActivity
     public void onProviderDisabled(String provider) {
         Log.d(TAG, "gps disabled");
     }
+    */
 }
