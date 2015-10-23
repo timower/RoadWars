@@ -15,11 +15,14 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,13 +47,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
         implements LoginManager.LoginResultListener, OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener, PositionManager.PositionListener {
+        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener,
+        PositionManager.PositionListener {
     private static final String TAG = "MainActivity";
     private static final int notId = 14;
 
@@ -166,6 +171,16 @@ public class MainActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
+        } else if (req.equals("get-street")) {
+            if (result) {
+                try {
+                    JSONArray info = response.getJSONArray("info");
+                    String street = response.getString("street");
+                    Toast.makeText(this, "Owner of " + street + ": " + info.getString(1), Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -261,6 +276,7 @@ public class MainActivity extends AppCompatActivity
 
 
         mMap.setOnMapLongClickListener(this);
+        mMap.setOnMapClickListener(this);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -321,6 +337,28 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onMapClick(LatLng latLng) {
+        if (geocoder != null) {
+            try {
+                List<Address> locations = geocoder.getFromLocation(latLng.latitude,
+                        latLng.longitude, 1);
+                if (locations.size() > 0) {
+                    Address loc = locations.get(0);
+                    if (loc.getMaxAddressLineIndex() >= 2) {
+                        String street = removeNumbers(loc.getAddressLine(0));
+                        mLoginManager.getStreet(this, street);
+
+                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     private void showStartedNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -348,7 +386,13 @@ public class MainActivity extends AppCompatActivity
         notificationManager.cancel(notId);
     }
 
+    private void startLocation() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
+    }
 
+    private void stopLocation() {
+        locationManager.removeUpdates(this);
+    }
 
     @Override
     public void onLocationChanged(Location location, LatLng pos, PolylineOptions pOps) {
@@ -367,6 +411,7 @@ public class MainActivity extends AppCompatActivity
 
             locMarker = mMap.addMarker(new MarkerOptions()
                                 .title("bike")
+                                .snippet(mLoginManager.user + " is here")
                                 .position(pos));
             locRad = mMap.addCircle(new CircleOptions()
                                 .center(pos)

@@ -83,7 +83,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/hue"
-        android:src="@drawable/hue"
+        android:src="@drawable/hue_2"
         android:id="@+id/imageView"
         android:layout_below="@+id/textView"
         android:layout_alignLeft="@+id/textView"
