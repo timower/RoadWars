@@ -386,14 +386,6 @@ public class MainActivity extends AppCompatActivity
         notificationManager.cancel(notId);
     }
 
-    private void startLocation() {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
-    }
-
-    private void stopLocation() {
-        locationManager.removeUpdates(this);
-    }
-
     @Override
     public void onLocationChanged(Location location, LatLng pos, PolylineOptions pOps) {
         if (mMap == null)
