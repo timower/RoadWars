@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void startLocation() {
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10 * 1000, 2, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
     }
 
     private void stopLocation() {
