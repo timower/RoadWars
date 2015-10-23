@@ -192,8 +192,9 @@ public class MainActivity extends AppCompatActivity
                 .title(name);
         mMap.addMarker(markerOptions);
         */
+
         GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.defaultMarker(hue))
+                .image(BitmapDescriptorFactory.fromResource(R.drawable.white_circle))
                 .position(new LatLng(lat, lng), 20);
 
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
