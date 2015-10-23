@@ -12,9 +12,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,22 +27,21 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
-import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     private  boolean started = false;
 
     private Marker locMarker;
+    private Circle locRad;
 
     private HashMap<String, GroundOverlay> streetMarkers;
 
@@ -336,15 +335,21 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
+        LatLng pos = new LatLng(location.getLatitude(),
+                location.getLongitude());
         if (locMarker != null) {
-            locMarker.remove();
-            locMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+
+            locMarker.setPosition(pos);
+            locRad.setCenter(pos);
+            locRad.setRadius(location.getAccuracy());
         } else {
 
             locMarker = mMap.addMarker(new MarkerOptions()
                                 .title("bike")
-                                .position(new LatLng(location.getLatitude(),
-                                        location.getLongitude())));
+                                .position(pos));
+            locRad = mMap.addCircle(new CircleOptions()
+                                .center(pos)
+                                .radius(location.getAccuracy()));
         }
         Log.d(TAG, "Acc: " + location.getAccuracy());
 
