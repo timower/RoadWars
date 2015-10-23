@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -86,7 +87,7 @@ public class StreetRankActivity extends AppCompatActivity
                         JSONArray subA = rank.getJSONArray(i);
                         if (subA.length() != 2)
                             continue;
-                        String name = subA.getString(0);
+                        final String name = subA.getString(0);
                         int points = subA.getInt(1);
 
                         if (name.equals(mLoginManager.user)) {
@@ -102,6 +103,14 @@ public class StreetRankActivity extends AppCompatActivity
                         TextView streetView = new TextView(this);
                         streetView.setLayoutParams(rowParams);
                         streetView.setGravity(Gravity.CENTER);
+                        streetView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent UserInfoActivityIntent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                                UserInfoActivityIntent.putExtra("name", name);
+                                startActivity(UserInfoActivityIntent);
+                            }
+                        });
 
                         TextView pointsView = new TextView(this);
                         pointsView.setLayoutParams(rowParams);

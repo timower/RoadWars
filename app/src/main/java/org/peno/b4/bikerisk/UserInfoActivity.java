@@ -13,19 +13,22 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 
 public class UserInfoActivity extends AppCompatActivity implements LoginManager.LoginResultListener {
 
     private LoginManager mLoginManager;
+    private String infoName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        infoName = getIntent().getStringExtra("name");
         setContentView(R.layout.activity_user_info);
         mLoginManager = LoginManager.getInstance();
-        mLoginManager.getUserInfo(this);
+        mLoginManager.getUserInfo(this, infoName);
     }
 
     @Override
@@ -33,18 +36,24 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
         if (req.equals("user-info")) {
             if (result) {
                 try {
+                    String resName = response.getString("user");
                     TextView name = (TextView) findViewById(R.id.user_name_value);
-                    name.setText(response.getString("user"));
+                    name.setText(resName);
 
-                    TextView email = (TextView) findViewById(R.id.user_email_value);
-                    email.setText(response.getString("email"));
+                    if (resName.equals(mLoginManager.user)) {
+                        TextView email = (TextView) findViewById(R.id.user_email_value);
+                        email.setText(response.getString("email"));
+                    } else  {
+                        TextView email_label = (TextView)findViewById(R.id.email_id);
+                        email_label.setVisibility(View.GONE);
+                    }
 
                     View color = findViewById(R.id.user_color_value);
                     color.setBackgroundColor(response.getInt("color"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                mLoginManager.getAllPoints(this);
+                mLoginManager.getAllPoints(this, infoName);
             } else {
                 //TODO: error?
             }

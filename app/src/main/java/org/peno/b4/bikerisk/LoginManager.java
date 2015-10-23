@@ -123,12 +123,13 @@ public class LoginManager {
         }
     }
 
-    public void getUserInfo(LoginResultListener listener) {
+    public void getUserInfo(LoginResultListener listener, String name) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "user-info");
             JObject.put("key", key);
             JObject.put("user", user);
+            JObject.put("info-user", name);
 
             String message = JObject.toString();
             loginListener = listener;
@@ -159,12 +160,13 @@ public class LoginManager {
         }
     }
 
-    public void getAllPoints(LoginResultListener listener) {
+    public void getAllPoints(LoginResultListener listener, String name) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "get-all-points");
             JObject.put("key", key);
             JObject.put("user", user);
+            JObject.put("info-user", name);
 
             String message = JObject.toString();
             loginListener = listener;

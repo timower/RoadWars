@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
             case R.id.action_user_info:
                 Intent intent = new Intent(this, UserInfoActivity.class);
+                intent.putExtra("name", this.mLoginManager.user);
                 startActivity(intent);
                 return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
@@ -285,6 +286,7 @@ public class MainActivity extends AppCompatActivity
                     if (loc.getMaxAddressLineIndex() >= 2) {
                         String street = removeNumbers(loc.getAddressLine(0));
                         String city = removeNumbers(loc.getAddressLine(1));
+
                         Intent intent = new Intent(this, StreetRankActivity.class);
                         intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
                         intent.putExtra(StreetRankActivity.EXTRA_CITY, city);
