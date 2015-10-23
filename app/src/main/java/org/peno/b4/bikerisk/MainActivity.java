@@ -4,6 +4,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Address;
@@ -73,6 +75,8 @@ public class MainActivity extends AppCompatActivity
 
     private HashMap<String, GroundOverlay> streetMarkers;
 
+    private Bitmap testBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +106,17 @@ public class MainActivity extends AppCompatActivity
 
         streetMarkers = new HashMap<>();
 
+        testBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.white_circle);
+        testBitmap = testBitmap.copy(testBitmap.getConfig(), true);
+        Log.d(TAG, "mutable: " + testBitmap.isMutable());
+
+        for (int x = 0; x < testBitmap.getWidth(); x++) {
+            for (int  y = 0; y < testBitmap.getHeight(); y++) {
+                testBitmap.setPixel(x, y, Color.BLUE);
+                //TODO: change color, move to function, add hashmap
+            }
+        }
+
     }
 
     @Override
@@ -120,6 +135,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         mLoginManager.pause();
         hideStartedNotification();
+        //TODO: fix if turn before mMap exists
         positionManager.pause(mMap.getCameraPosition());
         Log.d(TAG, "on destroy");
         super.onDestroy();
@@ -162,7 +178,7 @@ public class MainActivity extends AppCompatActivity
                         double lng = street.getDouble(2);
                         if (streetMarkers.containsKey(name)){
                             streetMarkers.get(name)
-                                    .setImage(BitmapDescriptorFactory.defaultMarker(HSV[0]));
+                                    .setImage(BitmapDescriptorFactory.fromBitmap(testBitmap));
                         } else {
                             addMarker(HSV[0], lat, lng, name);
                         }
@@ -194,8 +210,8 @@ public class MainActivity extends AppCompatActivity
         */
 
         GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.fromResource(R.drawable.white_circle))
-                .position(new LatLng(lat, lng), 20);
+                .image(BitmapDescriptorFactory.fromBitmap(testBitmap))
+                .position(new LatLng(lat, lng), 40);
 
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
     }
