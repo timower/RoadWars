@@ -1,5 +1,6 @@
 package org.peno.b4.bikerisk;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -12,5 +13,13 @@ public class ErrorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_error);
         TextView message = (TextView)findViewById(R.id.error_text);
         message.setText(getIntent().getStringExtra(EXTRA_MESSAGE));
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }

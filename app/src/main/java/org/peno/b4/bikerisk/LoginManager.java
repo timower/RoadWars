@@ -32,12 +32,21 @@ public class LoginManager {
         void onLoginError(String error);
     }
 
+    public interface LoginConnectListener {
+        void onLoginConnect();
+    }
+
     private static LoginManager instance;
 
     private PrintWriter writer;
+    private BufferedReader reader;
+    private Socket socket;
+
     private Handler myHandler;
     private Context context;
+
     private LoginResultListener loginListener;
+    private LoginConnectListener connectListener;
 
     private String key;
     public String user;
@@ -47,12 +56,33 @@ public class LoginManager {
     public LoginManager(Context context){
         myHandler = new Handler();
         this.context = context;
-        start();
         instance = this;
     }
 
     public static LoginManager getInstance() {
         return instance;
+    }
+
+    public void pause() {
+        commThread.interrupt();
+        loginListener = null;
+        try {
+            if (writer != null)
+                writer.close();
+            if (reader != null)
+                reader.close();
+            if (socket != null)
+                socket.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "paused, interrupted thread");
+    }
+
+    public void start(LoginConnectListener l) {
+        this.connectListener = l;
+        commThread = new Thread(new CommunicationClass());
+        commThread.start();
     }
 
     public boolean loadFromSharedPrefs() {
@@ -81,11 +111,12 @@ public class LoginManager {
 
             String message = LogInObject.toString();
             loginListener = listener;
+            Log.d(TAG, "checcking login...");
             new Thread(new writeClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -102,7 +133,7 @@ public class LoginManager {
             new Thread(new writeClass(message)).start();
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -119,7 +150,7 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -137,7 +168,7 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -156,7 +187,7 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -174,7 +205,7 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -192,7 +223,7 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -211,7 +242,7 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -229,7 +260,7 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -250,23 +281,11 @@ public class LoginManager {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            //TODO: retry?
+            throw new RuntimeException(e.getMessage());
         }
     }
 
-    public void pause() {
-        commThread.interrupt();
-        Log.d(TAG, "paused, interrupted thread");
-    }
-
-    public void start() {
-        commThread = new Thread(new CommunicationClass());
-        commThread.start();
-    }
-
     private class CommunicationClass implements Runnable{
-        private Socket socket;
-        private BufferedReader reader;
 
         public CommunicationClass(){
 
@@ -275,11 +294,17 @@ public class LoginManager {
         public void run(){
             try{
                 InetAddress address = InetAddress.getByName("128.199.52.178");
-                this.socket = new Socket(address, 4444);
+                socket = new Socket(address, 4444);
                 writer = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(socket.getOutputStream())));
-                reader = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+                reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 Log.d(TAG, "started comm");
+                myHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        connectListener.onLoginConnect();
+                    }
+                });
                 while(!Thread.currentThread().isInterrupted()) {
                     if (reader != null) {
                         String line = reader.readLine();
@@ -301,30 +326,30 @@ public class LoginManager {
                             } catch (JSONException err) {
                                 err.printStackTrace();
                             }
-                            myHandler.post(new logClass(line));
+                            Log.d(TAG, line);
                         }
                     }
                 }
-                writer.close();
-                reader.close();
-                socket.close();
-                Log.d(TAG, "closed sockets");
             } catch (IOException e){
+                //TODO: check which error and restart sometimes
                 e.printStackTrace();
                 if (loginListener != null)
                     myHandler.post(new ErrorRedirectClass(e.getMessage()));
+            } finally {
+                Log.d(TAG, "closing sockets");
+                if (socket != null && socket.isConnected()) {
+                    try {
+                        if (writer != null)
+                            writer.close();
+                        if (reader != null)
+                            reader.close();
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.d(TAG, "closed sockets");
             }
-        }
-    }
-
-    private class logClass implements Runnable {
-        private String message;
-        public logClass(String message) {
-            this.message = message;
-        }
-        @Override
-        public void run(){
-            Log.d(TAG, message);
         }
     }
 
@@ -350,9 +375,8 @@ public class LoginManager {
         }
         @Override
         public void run(){
-            while ((!Thread.currentThread().isInterrupted()) && writer == null) {
-                //TODO: fix or timeout
-            }
+            if (writer == null)
+                return;
             writer.println(message);
             writer.flush();
         }

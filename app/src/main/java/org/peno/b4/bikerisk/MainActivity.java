@@ -2,7 +2,6 @@ package org.peno.b4.bikerisk;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,20 +9,15 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,16 +26,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 
 import org.json.JSONArray;
@@ -49,15 +37,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
         implements LoginManager.LoginResultListener, OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener,
-        PositionManager.PositionListener {
+        GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
     private static final String TAG = "MainActivity";
     private static final int notId = 14;
 
@@ -69,13 +55,11 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private Geocoder geocoder;
 
-    private Marker locMarker;
-    private Circle locRad;
-    private Polyline userRoute;
-
     private HashMap<String, GroundOverlay> streetMarkers;
 
-    private Bitmap testBitmap;
+    private HashMap<Float, Bitmap> markerCache;
+
+    private Bitmap originalBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,40 +67,26 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         mLoginManager = new LoginManager(this);
-        if (mLoginManager.loadFromSharedPrefs()) {
-            mLoginManager.checkLogin(this);
-        } else {
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
-        }
-        if (PositionManager.getInstance() == null) {
-            positionManager = new PositionManager(this);
-        } else {
-            positionManager = PositionManager.getInstance();
-            if (positionManager.started) {
-                positionManager.resume(this);
-                showStartedNotification();
-                invalidateOptionsMenu();
+        mLoginManager.start(new LoginManager.LoginConnectListener() {
+            @Override
+            public void onLoginConnect() {
+                if (mLoginManager.loadFromSharedPrefs()) {
+                    mLoginManager.checkLogin(MainActivity.this);
+                } else {
+                    Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
+                }
             }
-        }
+        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         streetMarkers = new HashMap<>();
+        markerCache = new HashMap<>();
 
-        testBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.white_circle);
-        testBitmap = testBitmap.copy(testBitmap.getConfig(), true);
-        Log.d(TAG, "mutable: " + testBitmap.isMutable());
-
-        for (int x = 0; x < testBitmap.getWidth(); x++) {
-            for (int  y = 0; y < testBitmap.getHeight(); y++) {
-                testBitmap.setPixel(x, y, Color.BLUE);
-                //TODO: change color, move to function, add hashmap
-            }
-        }
-
+        originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
     }
 
     @Override
@@ -135,8 +105,11 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         mLoginManager.pause();
         hideStartedNotification();
-        //TODO: fix if turn before mMap exists
-        positionManager.pause(mMap.getCameraPosition());
+        if (mMap != null) {
+            positionManager.pause(mMap.getCameraPosition());
+        } else {
+            positionManager.pause(null);
+        }
         Log.d(TAG, "on destroy");
         super.onDestroy();
     }
@@ -147,7 +120,8 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 hideProgressBar();
             } else {
-                // TODO: error/retry?
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
             }
         }
     }
@@ -178,7 +152,8 @@ public class MainActivity extends AppCompatActivity
                         double lng = street.getDouble(2);
                         if (streetMarkers.containsKey(name)){
                             streetMarkers.get(name)
-                                    .setImage(BitmapDescriptorFactory.fromBitmap(testBitmap));
+                                    .setImage(BitmapDescriptorFactory
+                                            .fromBitmap(getStreetBitmap(HSV[0])));
                         } else {
                             addMarker(HSV[0], lat, lng, name);
                         }
@@ -210,7 +185,7 @@ public class MainActivity extends AppCompatActivity
         */
 
         GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.fromBitmap(testBitmap))
+                .image(BitmapDescriptorFactory.fromBitmap(getStreetBitmap(hue)))
                 .position(new LatLng(lat, lng), 40);
 
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
@@ -259,7 +234,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_start_stop:
                 if (!positionManager.started) {
                     showStartedNotification();
-                    positionManager.start(this);
+                    positionManager.start();
                 } else {
                     hideStartedNotification();
                     positionManager.stop();
@@ -273,11 +248,23 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        geocoder = new Geocoder(this);
+
+        // resume gps:
+        if (PositionManager.getInstance() == null) {
+            positionManager = new PositionManager(this, mMap);
+        } else {
+            positionManager = PositionManager.getInstance();
+            if (positionManager.started) {
+                positionManager.resume(mMap);
+                showStartedNotification();
+                invalidateOptionsMenu();
+            }
+        }
 
         if (positionManager != null && positionManager.lastCameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(positionManager.lastCameraPosition));
         } else {
-            geocoder = new Geocoder(this);
             try {
                 List<Address> leuven = geocoder.getFromLocationName("Leuven", 1);
                 if (leuven.size() > 0) {
@@ -351,6 +338,8 @@ public class MainActivity extends AppCompatActivity
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            Log.d(TAG, "error, geocoder is null!");
         }
     }
 
@@ -372,6 +361,8 @@ public class MainActivity extends AppCompatActivity
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            Log.d(TAG, "error, geocoder is null!");
         }
 
     }
@@ -403,46 +394,27 @@ public class MainActivity extends AppCompatActivity
         notificationManager.cancel(notId);
     }
 
-    @Override
-    public void onLocationChanged(Location location, LatLng pos, PolylineOptions pOps) {
-        if (mMap == null)
-            return;
-
-        if (userRoute != null)
-            userRoute.remove();
-
-        userRoute = mMap.addPolyline(pOps);
-        if (locMarker != null) {
-            locMarker.setPosition(pos);
-            locRad.setCenter(pos);
-            locRad.setRadius(location.getAccuracy());
-        } else {
-
-            locMarker = mMap.addMarker(new MarkerOptions()
-                                .title("bike")
-                                .snippet(mLoginManager.user + " is here")
-                                .position(pos));
-            locRad = mMap.addCircle(new CircleOptions()
-                                .center(pos)
-                                .radius(location.getAccuracy()));
+    private Bitmap getStreetBitmap(float hue) {
+        if (markerCache.containsKey(hue)) {
+            //Log.d(TAG, "cache hit");
+            return markerCache.get(hue);
         }
-        Log.d(TAG, "Acc: " + location.getAccuracy());
+        //Log.d(TAG, "cache miss");
+        int w = originalBitmap.getWidth();
+        int h = originalBitmap.getHeight();
+        int[] pixels = new int[w*h];
+        originalBitmap.getPixels(pixels, 0, w, 0, 0, w, h);
+        float[] HSV = new float[3];
 
-    }
-    /*
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d(TAG, "status changed: " + status + ", sats: " + extras.getInt("satellites"));
+        int len = w*h;
+        for (int i = 0; i < len; i++) {
+            Color.colorToHSV(pixels[i], HSV);
+            HSV[0] = hue;
+            pixels[i] = Color.HSVToColor(Color.alpha(pixels[i]), HSV);
+        }
+        Bitmap ret = Bitmap.createBitmap(pixels, w, h, originalBitmap.getConfig());
+        markerCache.put(hue, ret);
+        return ret;
     }
 
-    @Override
-    public void onProviderEnabled(String provider) {
-        Log.d(TAG, "gps enabled");
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Log.d(TAG, "gps disabled");
-    }
-    */
 }

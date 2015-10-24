@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +56,8 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
                 }
                 mLoginManager.getAllPoints(this, infoName);
             } else {
-                //TODO: error?
+                Toast.makeText(this, "Error getting user info", Toast.LENGTH_SHORT).show();
+                finish();
             }
         } else if (req.equals("get-all-points")) {
             if (result) {

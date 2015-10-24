@@ -138,8 +138,8 @@ public class StreetRankActivity extends AppCompatActivity
             }
         } else if (req.equals("add-points")) {
             if (result) {
+                setContentView(R.layout.activity_street_rank);
                 mLoginManager.getStreetRank(this, street);
-                //TODO: clear ...
             } else {
                 Toast.makeText(this, "Error adding points", Toast.LENGTH_SHORT).show();
 
