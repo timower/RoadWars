@@ -29,6 +29,11 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
         infoName = getIntent().getStringExtra("name");
         setContentView(R.layout.activity_user_info);
         mLoginManager = LoginManager.getInstance();
+        if (!infoName.equals(mLoginManager.user)) {
+            getSupportActionBar().setTitle(getString(R.string.user_info));
+        } else {
+            getSupportActionBar().setTitle(getString(R.string.my_profile));
+        }
         mLoginManager.getUserInfo(this, infoName);
     }
 

@@ -6,7 +6,7 @@
         android:title="@string/start"
         app:showAsAction="always"/>
     <item android:id="@+id/action_user_info"
-        android:title="@string/user_info"
+        android:title="@string/my_profile"
         app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_logout"
     android:title="@string/logout"
