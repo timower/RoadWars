@@ -39,7 +39,6 @@ public class StreetRankActivity extends AppCompatActivity
         Intent intent = getIntent();
         street = intent.getStringExtra(EXTRA_STREET);
         String city = intent.getStringExtra(EXTRA_CITY);
-
         getSupportActionBar().setTitle(street);
 
         mLoginManager.getStreetRank(this, street);

@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity
 
     private Bitmap originalBitmap;
 
+    private TextView streetNameText;
+    private TextView speedText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +91,9 @@ public class MainActivity extends AppCompatActivity
         markerCache = new HashMap<>();
 
         originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
+
+        streetNameText = (TextView)findViewById(R.id.street_text);
+        speedText = (TextView)findViewById(R.id.speed_text);
     }
 
     @Override
@@ -127,51 +134,56 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void onLoginResult(String req, Boolean result, JSONObject response) {
-        if (req.equals("check-login")) {
-            if (result) {
-                hideProgressBar();
-            } else {
-                //login:
+        switch (req) {
+            case "check-login":
+                if (result) {
+                    hideProgressBar();
+                } else {
+                    //login:
+                    Intent loginIntent = new Intent(this, LoginActivity.class);
+                    startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
+                }
+                break;
+            case "logout":
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
-            }
-        } else if (req.equals("logout")) {
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
-        } else if (req.equals("get-all-streets")) {
-            if (result) {
-                try {
+                break;
+            case "get-all-streets":
+                if (result) {
+                    try {
 
-                    JSONArray streets = response.getJSONArray("streets");
-                    float[] HSV = new float[3];
-                    for (int i = 0; i < streets.length(); i++) {
-                        JSONArray street = streets.getJSONArray(i);
-                        Color.colorToHSV(street.getInt(3), HSV);
-                        String name = street.getString(0);
-                        double lat = street.getDouble(1);
-                        double lng = street.getDouble(2);
-                        if (streetMarkers.containsKey(name)){
-                            streetMarkers.get(name)
-                                    .setImage(BitmapDescriptorFactory
-                                            .fromBitmap(getStreetBitmap(HSV[0])));
-                        } else {
-                            addMarker(HSV[0], lat, lng, name);
+                        JSONArray streets = response.getJSONArray("streets");
+                        float[] HSV = new float[3];
+                        for (int i = 0; i < streets.length(); i++) {
+                            JSONArray street = streets.getJSONArray(i);
+                            Color.colorToHSV(street.getInt(3), HSV);
+                            String name = street.getString(0);
+                            double lat = street.getDouble(1);
+                            double lng = street.getDouble(2);
+                            if (streetMarkers.containsKey(name)) {
+                                streetMarkers.get(name)
+                                        .setImage(BitmapDescriptorFactory
+                                                .fromBitmap(getStreetBitmap(HSV[0])));
+                            } else {
+                                addMarker(HSV[0], lat, lng, name);
+                            }
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-        } else if (req.equals("get-street")) {
-            if (result) {
-                try {
-                    JSONArray info = response.getJSONArray("info");
-                    String street = response.getString("street");
-                    Toast.makeText(this, "Owner of " + street + ": " + info.getString(1), Toast.LENGTH_SHORT).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                break;
+            case "get-street":
+                if (result) {
+                    try {
+                        JSONArray info = response.getJSONArray("info");
+                        String street = response.getString("street");
+                        Toast.makeText(this, "Owner of " + street + ": " + info.getString(1), Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
+                break;
         }
     }
 
@@ -234,9 +246,11 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_start_stop:
                 if (!positionManager.started) {
                     showStartedNotification();
+                    showInfoText();
                     positionManager.start();
                 } else {
                     hideStartedNotification();
+                    hideInfoText();
                     positionManager.stop();
                 }
                 invalidateOptionsMenu();
@@ -252,13 +266,14 @@ public class MainActivity extends AppCompatActivity
 
         // resume gps:
         if (PositionManager.getInstance() == null) {
-            positionManager = new PositionManager(this, mMap);
+            positionManager = new PositionManager(this, new PositionManager.UIObjects(mMap, streetNameText, speedText));
         } else {
             positionManager = PositionManager.getInstance();
             if (positionManager.started) {
-                positionManager.resume(mMap);
+                positionManager.resume(new PositionManager.UIObjects(mMap, streetNameText, speedText));
                 showStartedNotification();
                 invalidateOptionsMenu();
+                showInfoText();
             }
         }
 
@@ -305,17 +320,6 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private String removeNumbers(String orig) {
-        String street = "";
-        for (String sub : orig.split(" ")) {
-            if (!sub.matches("[0-9][0-9]*-?[0-9]*")) {
-                street += sub + " ";
-            }
-        }
-
-        return street.trim();
-    }
-
     @Override
     public void onMapLongClick(LatLng latLng) {
         if (geocoder != null) {
@@ -325,8 +329,8 @@ public class MainActivity extends AppCompatActivity
                 if (locations.size() > 0) {
                     Address loc = locations.get(0);
                     if (loc.getMaxAddressLineIndex() >= 2) {
-                        String street = removeNumbers(loc.getAddressLine(0));
-                        String city = removeNumbers(loc.getAddressLine(1));
+                        String street = Utils.removeNumbers(loc.getAddressLine(0));
+                        String city = Utils.removeNumbers(loc.getAddressLine(1));
 
                         Intent intent = new Intent(this, StreetRankActivity.class);
                         intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
@@ -352,7 +356,7 @@ public class MainActivity extends AppCompatActivity
                 if (locations.size() > 0) {
                     Address loc = locations.get(0);
                     if (loc.getMaxAddressLineIndex() >= 2) {
-                        String street = removeNumbers(loc.getAddressLine(0));
+                        String street = Utils.removeNumbers(loc.getAddressLine(0));
                         mLoginManager.getStreet(this, street);
 
                     }
@@ -392,6 +396,16 @@ public class MainActivity extends AppCompatActivity
         NotificationManager notificationManager =
                 (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(notId);
+    }
+
+    private void showInfoText() {
+        streetNameText.setVisibility(View.VISIBLE);
+        speedText.setVisibility(View.VISIBLE);
+    }
+
+    private void hideInfoText() {
+        streetNameText.setVisibility(View.GONE);
+        speedText.setVisibility(View.GONE);
     }
 
     private Bitmap getStreetBitmap(float hue) {
