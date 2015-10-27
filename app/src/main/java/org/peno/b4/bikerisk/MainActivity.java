@@ -67,31 +67,39 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // create activity:
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // start connection with server
         mLoginManager = new LoginManager(this);
+        // login:
         mLoginManager.start(new LoginManager.LoginConnectListener() {
             @Override
             public void onLoginConnect() {
                 if (mLoginManager.loadFromSharedPrefs()) {
+                    // check login with saved key & user
                     mLoginManager.checkLogin(MainActivity.this);
                 } else {
+                    // start login activity (calls on activity result)
                     Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
                 }
             }
         });
 
+        // get map object (calls onMapReady)
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        // init markers and bitmap cache
         streetMarkers = new HashMap<>();
         markerCache = new HashMap<>();
 
         originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
 
+        // find textviews for street and speed
         streetNameText = (TextView)findViewById(R.id.street_text);
         speedText = (TextView)findViewById(R.id.speed_text);
     }
@@ -99,23 +107,35 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         Log.d(TAG, "on pause");
+        //TODO: if not running stop server connection
         super.onPause();
     }
 
     @Override
     protected void onResume() {
         Log.d(TAG, "on resume");
+        //TODO: restart server connection if not running
         super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        mLoginManager.pause();
+        // stop connection with server
+        mLoginManager.stop();
+
+        // hide notification (gets shown again later if running)
         hideStartedNotification();
-        if (mMap != null) {
-            positionManager.pause(mMap.getCameraPosition());
+
+        if (isChangingConfigurations()) {
+            // we will be restarted later again -> save camera position in positionmanager
+            if (mMap != null) {
+                positionManager.pause(mMap.getCameraPosition());
+            } else {
+                positionManager.pause(null);
+            }
         } else {
-            positionManager.pause(null);
+            // we will be destroyed -> kill positionmanager
+            positionManager.destroy();
         }
         Log.d(TAG, "on destroy");
         super.onDestroy();
@@ -125,8 +145,10 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LoginActivity.REQUEST_LOGIN) {
             if (resultCode == RESULT_OK) {
+                // we are logged in (via login)
                 hideProgressBar();
             } else {
+                // somehow user got back here without logging in -> restart login activity
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
             }
@@ -137,19 +159,22 @@ public class MainActivity extends AppCompatActivity
         switch (req) {
             case "check-login":
                 if (result) {
+                    // we are logged in
                     hideProgressBar();
                 } else {
-                    //login:
+                    //login (key not valid anymore):
                     Intent loginIntent = new Intent(this, LoginActivity.class);
                     startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
                 }
                 break;
             case "logout":
+                // we just logged out -> show login activity
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
                 break;
             case "get-all-streets":
                 if (result) {
+                    // show received streets & markers
                     try {
 
                         JSONArray streets = response.getJSONArray("streets");
@@ -161,10 +186,12 @@ public class MainActivity extends AppCompatActivity
                             double lat = street.getDouble(1);
                             double lng = street.getDouble(2);
                             if (streetMarkers.containsKey(name)) {
+                                // maybe owner changed -> update icon
                                 streetMarkers.get(name)
                                         .setImage(BitmapDescriptorFactory
                                                 .fromBitmap(getStreetBitmap(HSV[0])));
                             } else {
+                                // add marker
                                 addMarker(HSV[0], lat, lng, name);
                             }
                         }
@@ -175,6 +202,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case "get-street":
                 if (result) {
+                    // show toast with name of owner
                     try {
                         JSONArray info = response.getJSONArray("info");
                         String street = response.getString("street");
@@ -195,7 +223,7 @@ public class MainActivity extends AppCompatActivity
                 .title(name);
         mMap.addMarker(markerOptions);
         */
-
+        // add ground overlay
         GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
                 .image(BitmapDescriptorFactory.fromBitmap(getStreetBitmap(hue)))
                 .position(new LatLng(lat, lng), 40);
@@ -205,7 +233,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoginError(String error) {
-
+        // error -> start error activity (TODO: restart / retry or something)
         Intent errorIntent = new Intent(this, ErrorActivity.class);
         errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
         startActivity(errorIntent);
@@ -221,6 +249,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actions_main, menu);
+
+        // change icon (if started or not)
         MenuItem item = menu.findItem(R.id.action_start_stop);
         if (positionManager == null || !positionManager.started) {
             item.setIcon(R.drawable.ic_play_dark);
@@ -248,11 +278,13 @@ public class MainActivity extends AppCompatActivity
                     showStartedNotification();
                     showInfoText();
                     positionManager.start();
+                    //TODO: wait for location??
                 } else {
                     hideStartedNotification();
                     hideInfoText();
                     positionManager.stop();
                 }
+                // redraw options menu:
                 invalidateOptionsMenu();
             default:
                 return super.onOptionsItemSelected(item);
@@ -266,20 +298,26 @@ public class MainActivity extends AppCompatActivity
 
         // resume gps:
         if (PositionManager.getInstance() == null) {
+            // start new positionManager
             positionManager = new PositionManager(this, new PositionManager.UIObjects(mMap, streetNameText, speedText));
         } else {
+            // resume:
             positionManager = PositionManager.getInstance();
+            positionManager.resume(new PositionManager.UIObjects(mMap, streetNameText, speedText));
             if (positionManager.started) {
-                positionManager.resume(new PositionManager.UIObjects(mMap, streetNameText, speedText));
+                // show notification
                 showStartedNotification();
                 invalidateOptionsMenu();
                 showInfoText();
             }
         }
 
-        if (positionManager != null && positionManager.lastCameraPosition != null) {
+        // set camera position:
+        if (positionManager.lastCameraPosition != null) {
+            // last position:
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(positionManager.lastCameraPosition));
         } else {
+            // lookup Leuven (TODO: change to fixed coordinates)
             try {
                 List<Address> leuven = geocoder.getFromLocationName("Leuven", 1);
                 if (leuven.size() > 0) {
@@ -293,14 +331,16 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-
+        // set up listeners:
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 Log.d(TAG, "camera changed");
-
+                // TODO: fix dist calculation
+                // we can't rely on just distance (because of zoom)
+                // so I use pixels -> different between devices / unreliable
                 VisibleRegion reg = mMap.getProjection().getVisibleRegion();
                 LatLngBounds bounds = reg.latLngBounds;
                 float dist = 0;
@@ -322,6 +362,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMapLongClick(LatLng latLng) {
+        // lookup street and start streetRankActivity:
         if (geocoder != null) {
             try {
                 List<Address> locations = geocoder.getFromLocation(latLng.latitude,
@@ -349,6 +390,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMapClick(LatLng latLng) {
+        // lookup street & show toast (in onLoginResult)
         if (geocoder != null) {
             try {
                 List<Address> locations = geocoder.getFromLocation(latLng.latitude,

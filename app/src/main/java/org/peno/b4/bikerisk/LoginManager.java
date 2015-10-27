@@ -63,7 +63,7 @@ public class LoginManager {
         return instance;
     }
 
-    public void pause() {
+    public void stop() {
         commThread.interrupt();
         loginListener = null;
         try {
@@ -76,6 +76,7 @@ public class LoginManager {
         } catch(IOException e) {
             e.printStackTrace();
         }
+        instance = null;
         Log.d(TAG, "paused, interrupted thread");
     }
 

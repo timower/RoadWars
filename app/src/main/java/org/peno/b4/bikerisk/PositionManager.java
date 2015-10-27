@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -35,25 +36,6 @@ import java.util.List;
 public class PositionManager implements LocationListener, LoginManager.LoginResultListener {
     private static PositionManager instance;
 
-    @Override
-    public void onLoginResult(String req, Boolean result, JSONObject response) {
-        if (req.equals("add-points")) {
-            if (result) {
-                Toast.makeText(context, "saved points", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(context, "error saving points", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void onLoginError(String error) {
-        Intent errorIntent = new Intent(context, ErrorActivity.class);
-        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
-        context.startActivity(errorIntent);
-        stop();
-    }
-
     public static class UIObjects {
         public GoogleMap mMap;
         public TextView streetText;
@@ -65,8 +47,6 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
             this.speedText = spt;
         }
     }
-
-
 
     public boolean started = false;
 
@@ -134,10 +114,12 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
                 if (curStreet.equals(lastStreet)){
                     msecondsInStreet += curmSeconds;
                 } else {
-                    //TODO: calc points
+                    //TODO: calc points( fix algo)
                     int points = Math.round((msecondsInStreet / 1000) * curSpeed);
                     Toast.makeText(context, "Points: " + points, Toast.LENGTH_SHORT).show();
+
                     mLoginManager.addPoints(PositionManager.this, lastStreet, points);
+
                     msecondsInStreet = curmSeconds;
                     lastStreet = curStreet;
                 }
@@ -157,6 +139,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
 
     public static PositionManager getInstance() {
         return instance;
+
     }
 
     public void start() {
@@ -166,21 +149,48 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
     }
 
     public void stop() {
+        //TODO: save points
         started = false;
+        if (locMarker != null)
+            locMarker.remove();
+        if (locRad != null)
+            locRad.remove();
+
+        if (UIobjects != null && pOptions != null) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            List<LatLng> points = pOptions.getPoints();
+            for (LatLng p : points) {
+                builder.include(p);
+            }
+            UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 5));
+        }
         locationManager.removeUpdates(this);
+    }
+
+    public void destroy() {
+        if (started)
+            stop();
+        pause(null);
+        instance = null;
     }
 
     public  void pause(CameraPosition pos) {
         this.lastCameraPosition = pos;
         this.UIobjects = null;
+
         this.locMarker = null;
         this.locRad = null;
+
+        this.mLoginManager = null;
         //this.lastLocation = null;
     }
 
     public void resume(UIObjects uiobj) {
         this.UIobjects = uiobj;
-        if (lastLocation != null) {
+
+        mLoginManager = LoginManager.getInstance();
+
+        if (this.started && lastLocation != null) {
             onLocationChanged(lastLocation);
         }
     }
@@ -243,11 +253,30 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        //TODO: hide error or something
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        //TODO: error or something (gps is off)
+    }
 
+    @Override
+    public void onLoginResult(String req, Boolean result, JSONObject response) {
+        if (req.equals("add-points")) {
+            if (result) {
+                Toast.makeText(context, "saved points", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "error saving points", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onLoginError(String error) {
+        Intent errorIntent = new Intent(context, ErrorActivity.class);
+        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
+        context.startActivity(errorIntent);
+        stop();
     }
 }
