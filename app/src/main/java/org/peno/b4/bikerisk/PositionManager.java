@@ -204,8 +204,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         curSpeed = location.getSpeed();
         float speed = curSpeed * Utils.MPS_TO_KMH;
 
-
-        if (speed > 10.0f && speed < 45.0f) {
+        if (lastLocation != null && speed > 10.0f && speed < 45.0f) {
             curmSeconds = (location.getTime() - lastLocation.getTime());
         } else {
             curmSeconds = 0;
