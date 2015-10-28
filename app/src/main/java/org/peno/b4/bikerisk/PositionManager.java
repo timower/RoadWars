@@ -157,12 +157,14 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
             locRad.remove();
 
         if (UIobjects != null && pOptions != null) {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
             List<LatLng> points = pOptions.getPoints();
-            for (LatLng p : points) {
-                builder.include(p);
+            if (points.size() > 1) {
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                for (LatLng p : points) {
+                    builder.include(p);
+                }
+                UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 5));
             }
-            UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 5));
         }
         locationManager.removeUpdates(this);
     }
