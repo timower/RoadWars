@@ -82,7 +82,7 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
                         JSONArray subA = points.getJSONArray(i);
                         if (subA.length() != 2)
                             continue;
-                        String street = subA.getString(0);
+                        final String street = subA.getString(0);
                         int pointsS = subA.getInt(1);
 
                         TableRow nRow = new TableRow(this);
@@ -90,6 +90,14 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
 
                         TextView streetView = new TextView(this);
                         streetView.setLayoutParams(rowParams);
+                        streetView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(UserInfoActivity.this, StreetRankActivity.class);
+                                intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
+                                startActivity(intent);
+                            }
+                        });
 
                         TextView pointsView = new TextView(this);
                         pointsView.setLayoutParams(rowParams);
