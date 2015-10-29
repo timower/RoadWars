@@ -39,12 +39,10 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
 
     public static class UIObjects {
         public GoogleMap mMap;
-        public TextView streetText;
         public TextView speedText;
 
-        public UIObjects(GoogleMap mMap, TextView st, TextView spt) {
+        public UIObjects(GoogleMap mMap, TextView spt) {
             this.mMap = mMap;
-            this.streetText = st;
             this.speedText = spt;
         }
     }
@@ -95,23 +93,45 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         @Override
         protected Void doInBackground(LocationInfo... params) {
             String lastStreet = "";
+            int points = 0;
+            LatLng lastPos = null;
+
+            float[] results = new float[3];
+
             for (LocationInfo point : params) {
                 String street = Utils.lookupStreet(geocoder, point.pos);
                 if (street != null) {
-                    publishProgress(new StreetPoints(street,..));
-                    lastStreet = street;
+                    if (!street.equals("") && lastStreet.equals("")) {
+                        lastStreet = street;
+                    } else if (street.equals(lastStreet) && lastPos != null) {
+                        if (point.speed > (10.0f / Utils.MPS_TO_KMH) &&
+                                point.speed < (45.0f / Utils.MPS_TO_KMH)) {
+                            Location.distanceBetween(lastPos.latitude, lastPos.longitude,
+                                    point.pos.latitude, point.pos.longitude, results);
+                            points += results[0] * point.speed;
+                        }
+                    } else if (!street.equals(lastStreet) && !lastStreet.equals("")) {
+                        publishProgress(new StreetPoints(lastStreet, points));
+                        points = 0;
+                        lastStreet = street;
+                    }
                 }
+                lastPos = point.pos;
             }
+            return null;
         }
 
         @Override
         protected void onProgressUpdate(StreetPoints... params) {
-
+            String street = params[0].street;
+            int points = params[0].points;
+            mLoginManager.addPoints(PositionManager.this, street, points);
+            Toast.makeText(context, "Street: " + street + " points: " + points, Toast.LENGTH_SHORT).show();
         }
 
         @Override
-        protected void onPostExecute(void) {
-            //TODO: add points
+        protected void onPostExecute(Void t) {
+            Toast.makeText(context, "finished adding points", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -140,6 +160,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
     public void stop() {
         //TODO: save points here and not during ride
         started = false;
+        locationManager.removeUpdates(this);
         if (locMarker != null)
             locMarker.remove();
         if (locRad != null)
@@ -164,7 +185,6 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
                     .toArray(new LocationInfo[routePoints.size()]);
             new LookupAddressTask().execute(routeArray);
         }
-        locationManager.removeUpdates(this);
     }
 
     public void destroy() {
@@ -202,13 +222,16 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         LocationInfo locInfo = new LocationInfo(pos, speed);
 
         pOptions.add(pos);
-        routePoints.add(new LocationInfo(pos, speed));
+        routePoints.add(locInfo);
 
         lastLocation = location;
 
         // UI code:
         if (UIobjects == null)
             return;
+
+        // convert to km/h
+        speed *= Utils.MPS_TO_KMH;
 
         UIobjects.speedText.setText(String.format("%.2f km/h", speed));
         UIobjects.speedText.setTextColor((speed > 10.0f && speed < 45.0f)? Color.GREEN : Color.RED);

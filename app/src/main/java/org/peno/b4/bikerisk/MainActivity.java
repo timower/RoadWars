@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
 
     private Bitmap originalBitmap;
 
-    private TextView streetNameText;
+
     private TextView speedText;
 
     @Override
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity
         originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
 
         // find textviews for street and speed
-        streetNameText = (TextView)findViewById(R.id.street_text);
         speedText = (TextView)findViewById(R.id.speed_text);
     }
 
@@ -299,11 +298,11 @@ public class MainActivity extends AppCompatActivity
         // resume gps:
         if (PositionManager.getInstance() == null) {
             // start new positionManager
-            positionManager = new PositionManager(this, new PositionManager.UIObjects(mMap, streetNameText, speedText));
+            positionManager = new PositionManager(this, new PositionManager.UIObjects(mMap, speedText));
         } else {
             // resume:
             positionManager = PositionManager.getInstance();
-            positionManager.resume(new PositionManager.UIObjects(mMap, streetNameText, speedText));
+            positionManager.resume(new PositionManager.UIObjects(mMap, speedText));
             if (positionManager.started) {
                 // show notification
                 showStartedNotification();
@@ -441,15 +440,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showInfoText() {
-        streetNameText.setVisibility(View.VISIBLE);
         speedText.setVisibility(View.VISIBLE);
     }
 
     private void hideInfoText() {
-        streetNameText.setVisibility(View.GONE);
         speedText.setVisibility(View.GONE);
     }
 
+
+    //TODO: move to utils, add original bitmap as parameter
     private Bitmap getStreetBitmap(float hue) {
         if (markerCache.containsKey(hue)) {
             //Log.d(TAG, "cache hit");
