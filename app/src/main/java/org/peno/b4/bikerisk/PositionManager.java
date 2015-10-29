@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -48,12 +49,33 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         }
     }
 
+    public static class LocationInfo {
+        public LatLng pos;
+        public float speed;
+        public LocationInfo(LatLng pos, float speed) {
+            this.pos = pos;
+            this.speed = speed;
+        }
+    }
+
+    public static class StreetPoints {
+        public String street;
+        public int points;
+        public StreetPoints(String street, int points) {
+            this.street = street;
+            this.points = points;
+        }
+    }
+
     public boolean started = false;
 
     private LoginManager mLoginManager;
 
     private LocationManager locationManager;
+
     private Location lastLocation;
+
+    private ArrayList<LocationInfo> routePoints;
 
     private PolylineOptions pOptions;
 
@@ -66,64 +88,30 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
     private Circle locRad;
     private Polyline userRoute;
 
-    private String lastStreet;
-    private long msecondsInStreet;
-    private long curmSeconds;
-    private float curSpeed;
-
     private Context context;
 
-    private class LookupAddressTask extends AsyncTask<LatLng, Void, String> {
+    private class LookupAddressTask extends AsyncTask<LocationInfo, StreetPoints, Void> {
 
         @Override
-        protected String doInBackground(LatLng... params) {
-            LatLng pos = params[0];
-            if (geocoder != null) {
-                try {
-                    List<Address> locations = geocoder.getFromLocation(pos.latitude,
-                            pos.longitude, 1);
-                    if (locations.size() > 0) {
-                        Address loc = locations.get(0);
-                        if (loc.getMaxAddressLineIndex() >= 2) {
-                            String street = Utils.removeNumbers(loc.getAddressLine(0));
-                            //String city = removeNumbers(loc.getAddressLine(1));
-                            return street;
-                        }
-
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        protected Void doInBackground(LocationInfo... params) {
+            String lastStreet = "";
+            for (LocationInfo point : params) {
+                String street = Utils.lookupStreet(geocoder, point.pos);
+                if (street != null) {
+                    publishProgress(new StreetPoints(street,..));
+                    lastStreet = street;
                 }
-            } else {
-                Log.d("POS", "error, geocoder is null!");
             }
-            return null;
         }
 
         @Override
-        protected void onPostExecute(String curStreet) {
-            //TODO: fix for off-road ...
-            if (curStreet == null || curStreet.equals("")) {
-                if (UIobjects != null)
-                    UIobjects.streetText.setText("off-road");
-                msecondsInStreet += curmSeconds;
-            }else {
-                if (UIobjects != null)
-                    UIobjects.streetText.setText(curStreet);
+        protected void onProgressUpdate(StreetPoints... params) {
 
-                if (curStreet.equals(lastStreet)){
-                    msecondsInStreet += curmSeconds;
-                } else {
-                    //TODO: calc points( fix algo)
-                    int points = Math.round((msecondsInStreet / 1000) * curSpeed);
-                    Toast.makeText(context, "Points: " + points, Toast.LENGTH_SHORT).show();
+        }
 
-                    mLoginManager.addPoints(PositionManager.this, lastStreet, points);
-
-                    msecondsInStreet = curmSeconds;
-                    lastStreet = curStreet;
-                }
-            }
+        @Override
+        protected void onPostExecute(void) {
+            //TODO: add points
         }
     }
 
@@ -133,6 +121,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         this.UIobjects = o;
         this.context = ctx.getApplicationContext();
         this.geocoder = new Geocoder(ctx);
+        this.routePoints = new ArrayList<>();
 
         instance = this;
     }
@@ -149,7 +138,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
     }
 
     public void stop() {
-        //TODO: save points
+        //TODO: save points here and not during ride
         started = false;
         if (locMarker != null)
             locMarker.remove();
@@ -165,6 +154,15 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
                 }
                 UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 5));
             }
+        }
+
+        if (routePoints.size() > 1) {
+            //TODO: snap to road
+            // for each points: seek distance and calc points -> add points
+            lastLocation = null;
+            LocationInfo[] routeArray = routePoints
+                    .toArray(new LocationInfo[routePoints.size()]);
+            new LookupAddressTask().execute(routeArray);
         }
         locationManager.removeUpdates(this);
     }
@@ -199,19 +197,12 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
 
     @Override
     public void onLocationChanged(Location location) {
-
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
+        float speed = location.getSpeed();
+        LocationInfo locInfo = new LocationInfo(pos, speed);
+
         pOptions.add(pos);
-
-        curSpeed = location.getSpeed();
-        float speed = curSpeed * Utils.MPS_TO_KMH;
-
-        if (lastLocation != null && speed > 10.0f && speed < 45.0f) {
-            curmSeconds = (location.getTime() - lastLocation.getTime());
-        } else {
-            curmSeconds = 0;
-        }
-        new LookupAddressTask().execute(pos);
+        routePoints.add(new LocationInfo(pos, speed));
 
         lastLocation = location;
 
@@ -244,7 +235,8 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
                     .center(pos)
                     .radius(location.getAccuracy()));
         }
-        UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16.5f));
+        //UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16.5f));
+        UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
     }
 
     @Override
