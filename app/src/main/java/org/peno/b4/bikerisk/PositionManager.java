@@ -11,6 +11,10 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,7 @@ import org.w3c.dom.Text;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class PositionManager implements LocationListener, LoginManager.LoginResultListener {
@@ -40,10 +45,11 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
     public static class UIObjects {
         public GoogleMap mMap;
         public TextView speedText;
-
-        public UIObjects(GoogleMap mMap, TextView spt) {
+        public TableLayout table;
+        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table) {
             this.mMap = mMap;
             this.speedText = spt;
+            this.table = table;
         }
     }
 
@@ -111,7 +117,8 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
                             points += results[0] * point.speed;
                         }
                     } else if (!street.equals(lastStreet) && !lastStreet.equals("")) {
-                        publishProgress(new StreetPoints(lastStreet, points));
+                        if (points != 0)
+                            publishProgress(new StreetPoints(lastStreet, points));
                         points = 0;
                         lastStreet = street;
                     }
@@ -125,8 +132,34 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         protected void onProgressUpdate(StreetPoints... params) {
             String street = params[0].street;
             int points = params[0].points;
+
             mLoginManager.addPoints(PositionManager.this, street, points);
             Toast.makeText(context, "Street: " + street + " points: " + points, Toast.LENGTH_SHORT).show();
+
+            TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.WRAP_CONTENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
+                    TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT);
+
+            TableRow nRow = new TableRow(context);
+            nRow.setLayoutParams(tableParams);
+
+            TextView streetView = new TextView(context);
+            streetView.setLayoutParams(rowParams);
+
+            TextView pointsView = new TextView(context);
+            pointsView.setLayoutParams(rowParams);
+            pointsView.setGravity(Gravity.CENTER);
+
+            streetView.setText(street);
+            pointsView.setText(String.format(Locale.getDefault(), "%d", points));
+
+            nRow.addView(streetView);
+            nRow.addView(pointsView);
+            UIobjects.table.addView(nRow);
+            UIobjects.table.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -163,8 +196,10 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         locationManager.removeUpdates(this);
         if (locMarker != null)
             locMarker.remove();
+        locMarker = null;
         if (locRad != null)
             locRad.remove();
+        locRad = null;
 
         if (UIobjects != null && pOptions != null) {
             List<LatLng> points = pOptions.getPoints();

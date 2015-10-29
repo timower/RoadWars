@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity
 
     private Bitmap originalBitmap;
 
-
+    private TableLayout pointsTable;
     private TextView speedText;
 
     @Override
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity
         originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ball);
 
         // find textviews for street and speed
+        pointsTable = (TableLayout)findViewById(R.id.streets_table);
         speedText = (TextView)findViewById(R.id.speed_text);
     }
 
@@ -298,11 +300,11 @@ public class MainActivity extends AppCompatActivity
         // resume gps:
         if (PositionManager.getInstance() == null) {
             // start new positionManager
-            positionManager = new PositionManager(this, new PositionManager.UIObjects(mMap, speedText));
+            positionManager = new PositionManager(this, new PositionManager.UIObjects(mMap, speedText, pointsTable));
         } else {
             // resume:
             positionManager = PositionManager.getInstance();
-            positionManager.resume(new PositionManager.UIObjects(mMap, speedText));
+            positionManager.resume(new PositionManager.UIObjects(mMap, speedText, pointsTable));
             if (positionManager.started) {
                 // show notification
                 showStartedNotification();
@@ -389,6 +391,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMapClick(LatLng latLng) {
+        pointsTable.setVisibility(View.GONE);
         // lookup street & show toast (in onLoginResult)
         if (geocoder != null) {
             try {

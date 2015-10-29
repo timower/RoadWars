@@ -40,6 +40,7 @@
         android:stretchColumns="1"
         android:padding="8dp"
         android:visibility="gone"
+        android:background="#707070"
         android:id="@+id/streets_table">
         <TableRow>
             <TextView
