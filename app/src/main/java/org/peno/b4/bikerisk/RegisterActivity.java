@@ -1,9 +1,7 @@
 package org.peno.b4.bikerisk;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,17 +9,15 @@ import android.view.MotionEvent;
 import android.widget.EditText;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import org.json.JSONObject;
 
 
 public class RegisterActivity extends AppCompatActivity
-        implements LoginManager.LoginResultListener, View.OnTouchListener {
+        implements ConnectionManager.ResponseListener, View.OnTouchListener {
 
-    private LoginManager mLoginManager;
+    private ConnectionManager connectionManager;
 
     private ImageView imageView;
 
@@ -29,26 +25,34 @@ public class RegisterActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        mLoginManager = LoginManager.getInstance();
+
+        connectionManager = ConnectionManager.getInstance(this);
+
         imageView = (ImageView)findViewById(R.id.imageView);
         imageView.setOnTouchListener(this);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectionManager = ConnectionManager.getInstance(this);
+    }
+
     public void registerClicked(View view){
         String name = ((EditText)findViewById(R.id.user_name)).getText().toString();
         String pass = ((EditText)findViewById(R.id.password)).getText().toString();
         String email = ((EditText)findViewById(R.id.email)).getText().toString();
-        //RadioGroup color = (RadioGroup)findViewById(R.id.radio_group1);
-        //RadioButton button = (RadioButton)findViewById(color.getCheckedRadioButtonId());
+
         View color = findViewById(R.id.colorView);
         int colorCode = ((ColorDrawable)color.getBackground()).getColor();
         if (name.equals("") || pass.equals("") || email.equals(""))
             return;
-        mLoginManager.createUser(this, name, pass, email, colorCode);
+        connectionManager.createUser(name, pass, email, colorCode);
         //create account with username, password, email and color
     }
 
     @Override
-    public void onLoginResult(String req, Boolean result, JSONObject response) {
+    public void onResponse(String req, Boolean result, JSONObject response) {
         if (req.equals("create-user")) {
             if (result) {
                 Toast.makeText(this, "successfully created user", Toast.LENGTH_SHORT).show();
@@ -60,11 +64,8 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoginError(String error) {
-        Intent errorIntent = new Intent(this, ErrorActivity.class);
-        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
-        startActivity(errorIntent);
-        finish();
+    public void onConnectionLost(String reason) {
+        Log.d("REG", "connection lost: " + reason);
     }
 
     @Override

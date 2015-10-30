@@ -21,27 +21,34 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 public class StreetRankActivity extends AppCompatActivity
-        implements LoginManager.LoginResultListener {
+        implements ConnectionManager.ResponseListener {
     public static final String EXTRA_STREET = "org.peno.b4.bikerisk.STREET";
     public static final String EXTRA_CITY  ="org.peno.b4.bikerisk.CITY";
 
     public static final String TAG = "StreetRankActivity";
 
-    private LoginManager mLoginManager;
+    private ConnectionManager connectionManager;
     private String street;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_street_rank);
 
-        mLoginManager = LoginManager.getInstance();
+        connectionManager = ConnectionManager.getInstance(this);
 
         Intent intent = getIntent();
         street = intent.getStringExtra(EXTRA_STREET);
         String city = intent.getStringExtra(EXTRA_CITY);
         getSupportActionBar().setTitle(street);
 
-        mLoginManager.getStreetRank(this, street);
+        connectionManager.getStreetRank(street);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectionManager = ConnectionManager.getInstance(this);
     }
 
     @Override
@@ -55,7 +62,7 @@ public class StreetRankActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_points:
-                mLoginManager.addPoints(this, street , 5);
+                connectionManager.addPoints(street, 5);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -64,7 +71,7 @@ public class StreetRankActivity extends AppCompatActivity
 
 
     @Override
-    public void onLoginResult(String req, Boolean result, JSONObject response) {
+    public void onResponse(String req, Boolean result, JSONObject response) {
         if (req.equals("street-rank")) {
             if (result) {
                 Log.d(TAG, response.toString());
@@ -89,7 +96,7 @@ public class StreetRankActivity extends AppCompatActivity
                         final String name = subA.getString(0);
                         int points = subA.getInt(1);
 
-                        if (name.equals(mLoginManager.user)) {
+                        if (name.equals(connectionManager.user)) {
                             userPoints = points;
                         }
 
@@ -138,7 +145,7 @@ public class StreetRankActivity extends AppCompatActivity
         } else if (req.equals("add-points")) {
             if (result) {
                 setContentView(R.layout.activity_street_rank);
-                mLoginManager.getStreetRank(this, street);
+                connectionManager.getStreetRank(street);
             } else {
                 Toast.makeText(this, "Error adding points", Toast.LENGTH_SHORT).show();
 
@@ -147,10 +154,7 @@ public class StreetRankActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoginError(String error) {
-        Intent errorIntent = new Intent(this, ErrorActivity.class);
-        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
-        startActivity(errorIntent);
-        finish();
+    public void onConnectionLost(String reason) {
+        Log.d(TAG, "connection lost: " + reason);
     }
 }

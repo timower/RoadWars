@@ -19,25 +19,30 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLngBounds;
 
-//TODO: fix, restart connection when lost
-
 /**
  * Created by timo on 10/12/15.
  * lol, test
  */
-public class LoginManager {
+public class ConnectionManager {
     private static final String TAG = "LoginManager";
 
-    public interface LoginResultListener {
-        void onLoginResult(String req, Boolean result, JSONObject response);
-        void onLoginError(String error);
+    public interface ResponseListener {
+        /**
+         * called when server sends response -> update UI
+         * @param req the original request
+         * @param result if the result succeeded
+         * @param response the complete response object
+         */
+        void onResponse(String req, Boolean result, JSONObject response);
+
+        /**
+         * called when connection is lost -> show banner
+         * @param reason reason why the connection was dropped
+         */
+        void onConnectionLost(String reason);
     }
 
-    public interface LoginConnectListener {
-        void onLoginConnect();
-    }
-
-    private static LoginManager instance;
+    private static ConnectionManager instance;
 
     private PrintWriter writer;
     private BufferedReader reader;
@@ -46,47 +51,79 @@ public class LoginManager {
     private Handler myHandler;
     private Context context;
 
-    private LoginResultListener loginListener;
-    private LoginConnectListener connectListener;
+    private ResponseListener responseListener;
 
     private String key;
     public String user;
 
     private Thread commThread;
 
-    public LoginManager(Context context){
+    /**
+     * create a new LoginManager (should only be called if instance is null)
+     * @param context the context from wich the loginManager is created
+     * @param listener the listener for responses
+     */
+    public ConnectionManager(Context context, ResponseListener listener) {
         myHandler = new Handler();
-        this.context = context;
+        this.context = context.getApplicationContext();
+        this.responseListener = listener;
         instance = this;
+
+        start();
     }
 
-    public static LoginManager getInstance() {
+    /**
+     * get the instance of the loginManager singleton.
+     * @param listener the new listener for results
+     * @return the static instance
+     */
+    public static ConnectionManager getInstance(ResponseListener listener) {
+        instance.responseListener = listener;
         return instance;
     }
 
+    /**
+     * get the instance of the loginManager singleton.
+     * @return the static instance
+     */
+    public static ConnectionManager getInstance() {
+        return instance;
+    }
+
+    //TODO: reimplement to pause?
+    /**
+     * stops the communication thread and closes all sockets (use in onPause)
+     */
     public void stop() {
         commThread.interrupt();
-        loginListener = null;
+        responseListener = null;
         try {
-            if (writer != null)
-                writer.close();
-            if (reader != null)
-                reader.close();
             if (socket != null)
                 socket.close();
         } catch(IOException e) {
             e.printStackTrace();
         }
-        instance = null;
+        socket = null;
+        writer = null;
+        reader = null;
         Log.d(TAG, "paused, interrupted thread");
     }
 
-    public void start(LoginConnectListener l) {
-        this.connectListener = l;
-        commThread = new Thread(new CommunicationClass());
-        commThread.start();
+    /**
+     * start the communication thread.
+     */
+    public void start() {
+        // don't start if we are already running...
+        if (commThread == null) {
+            commThread = new Thread(new CommunicationClass(Utils.HOST, Utils.PORT));
+            commThread.start();
+        }
     }
 
+    /**
+     * load the username and key from shared preferences
+     * @return true if there was a previous user & key false otherwise
+     */
     public boolean loadFromSharedPrefs() {
         SharedPreferences prefs = context.getSharedPreferences("login", Context.MODE_PRIVATE);
         this.user = prefs.getString("user", "");
@@ -96,6 +133,9 @@ public class LoginManager {
         return false;
     }
 
+    /**
+     * save the user and key to shared preferences
+     */
     public void saveSharedPrefs() {
         SharedPreferences prefs = context.getSharedPreferences("login", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -104,7 +144,8 @@ public class LoginManager {
         editor.commit();
     }
 
-    public void checkLogin(LoginResultListener listener) {
+
+    public void checkLogin() {
         JSONObject LogInObject = new JSONObject();
         try {
             LogInObject.put("req", "check-login");
@@ -112,9 +153,8 @@ public class LoginManager {
             LogInObject.put("user", user);
 
             String message = LogInObject.toString();
-            loginListener = listener;
-            Log.d(TAG, "checcking login...");
-            new Thread(new writeClass(message)).start();
+            Log.d(TAG, "checking login...");
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -122,7 +162,7 @@ public class LoginManager {
         }
     }
 
-    public void login(LoginResultListener listener, String user, String pass) {
+    public void login(String user, String pass) {
         JSONObject LogInObject = new JSONObject();
         try {
             LogInObject.put("req", "login");
@@ -131,15 +171,14 @@ public class LoginManager {
             this.user = user;
 
             String message = LogInObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
         } catch (JSONException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    public void logout(LoginResultListener listener) {
+    public void logout() {
         JSONObject LogOutObject = new JSONObject();
         try {
             LogOutObject.put("req", "logout");
@@ -147,8 +186,7 @@ public class LoginManager {
             LogOutObject.put("user", user);
 
             String message = LogOutObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -156,7 +194,7 @@ public class LoginManager {
         }
     }
 
-    public void getUserInfo(LoginResultListener listener, String name) {
+    public void getUserInfo(String name) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "user-info");
@@ -165,8 +203,7 @@ public class LoginManager {
             JObject.put("info-user", name);
 
             String message = JObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -174,7 +211,7 @@ public class LoginManager {
         }
     }
 
-    public void createUser(LoginResultListener listener, String name, String pass, String email, int color) {
+    public void createUser(String name, String pass, String email, int color) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "create-user");
@@ -184,8 +221,7 @@ public class LoginManager {
             JObject.put("color", color);
 
             String message = JObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -193,7 +229,7 @@ public class LoginManager {
         }
     }
 
-    public void getAllPoints(LoginResultListener listener, String name) {
+    public void getAllPoints(String name) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "get-all-points");
@@ -202,8 +238,7 @@ public class LoginManager {
             JObject.put("info-user", name);
 
             String message = JObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -211,7 +246,7 @@ public class LoginManager {
         }
     }
 
-    public void getStreetRank(LoginResultListener listener, String street) {
+    public void getStreetRank(String street) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "street-rank");
@@ -220,8 +255,7 @@ public class LoginManager {
             JObject.put("street", street);
 
             String message = JObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -229,7 +263,7 @@ public class LoginManager {
         }
     }
 
-    public void addPoints(LoginResultListener listener, String street, int points) {
+    public void addPoints(String street, int points) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "add-points");
@@ -239,8 +273,7 @@ public class LoginManager {
             JObject.put("points", points);
 
             String message = JObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -248,7 +281,7 @@ public class LoginManager {
         }
     }
 
-    public void getStreet(LoginResultListener listener, String street) {
+    public void getStreet(String street) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "get-street");
@@ -257,8 +290,7 @@ public class LoginManager {
             JObject.put("street", street);
 
             String message = JObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -266,7 +298,7 @@ public class LoginManager {
         }
     }
 
-    public void getAllStreets(LoginResultListener listener, LatLngBounds bounds) {
+    public void getAllStreets(LatLngBounds bounds) {
         JSONObject JObject = new JSONObject();
         try {
             JObject.put("req", "get-all-streets");
@@ -278,8 +310,7 @@ public class LoginManager {
             JObject.put("swLong", bounds.southwest.longitude);
 
             String message = JObject.toString();
-            loginListener = listener;
-            new Thread(new writeClass(message)).start();
+            new Thread(new WriteClass(message)).start();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -287,64 +318,63 @@ public class LoginManager {
         }
     }
 
-    private class CommunicationClass implements Runnable{
+    private class CommunicationClass implements Runnable {
+        private String host;
+        private int port;
 
-        public CommunicationClass(){
-
+        public CommunicationClass(String host, int port) {
+            this.host = host;
+            this.port = port;
         }
+
         @Override
-        public void run(){
+        public void run() {
             try{
-                InetAddress address = InetAddress.getByName("128.199.52.178");
-                socket = new Socket(address, 4444);
+                // create socket & connect
+                InetAddress address = InetAddress.getByName(host);
+                socket = new Socket(address, port);
                 writer = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(socket.getOutputStream())));
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 Log.d(TAG, "started comm");
-                myHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        connectListener.onLoginConnect();
-                    }
-                });
+
                 while(!Thread.currentThread().isInterrupted()) {
-                    if (reader != null) {
-                        String line = reader.readLine();
-                        if (line != null) {
-                            try {
-                                JSONObject resObj = new JSONObject(line);
-                                String req = resObj.getString("req");
-                                if (req.equals("login")) {
-                                    if (resObj.getBoolean("res")) {
-                                        LoginManager.this.key = resObj.getString("key");
-                                        LoginManager.this.saveSharedPrefs();
-                                    }
-                                    if (loginListener != null)
-                                        myHandler.post(new LoginResultClass(req, resObj.getBoolean("res"), resObj));
-                                } else {
-                                    if (loginListener != null)
-                                        myHandler.post(new LoginResultClass(req, resObj.getBoolean("res"), resObj));
+                    if (reader == null)
+                        continue;
+
+                    String line = reader.readLine();
+                    Log.d("RES", line);
+                    if (line != null) {
+                        try {
+                            JSONObject resObj = new JSONObject(line);
+                            String req = resObj.getString("req");
+
+                            // save key and user if succeeded
+                            if (req.equals("login")) {
+                                if (resObj.getBoolean("res")) {
+                                    ConnectionManager.this.key = resObj.getString("key");
+                                    ConnectionManager.this.saveSharedPrefs();
                                 }
-                            } catch (JSONException err) {
-                                err.printStackTrace();
                             }
-                            Log.d(TAG, line);
+                            if (responseListener != null)
+                                myHandler.post(new LoginResultClass(req, resObj.getBoolean("res"), resObj));
+
+                        } catch (JSONException err) {
+                            err.printStackTrace();
+                            // ignore wrong json..
                         }
                     }
                 }
             } catch (IOException e){
-                //TODO: check which error and restart sometimes
                 e.printStackTrace();
-                if (loginListener != null)
-                    myHandler.post(new ErrorRedirectClass(e.getMessage()));
+                if (responseListener != null)
+                    myHandler.post(new ConnectionLostClass(e.getMessage()));
             } finally {
+                // clear commthread so we can restart
+                commThread = null;
                 Log.d(TAG, "closing sockets");
                 if (socket != null && socket.isConnected()) {
                     try {
-                        if (writer != null)
-                            writer.close();
-                        if (reader != null)
-                            reader.close();
                         socket.close();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -359,6 +389,7 @@ public class LoginManager {
         private Boolean result;
         private String req;
         private JSONObject response;
+
         public LoginResultClass(String req, Boolean result, JSONObject response) {
             this.result = result;
             this.req = req;
@@ -366,34 +397,50 @@ public class LoginManager {
         }
         @Override
         public void run(){
-            loginListener.onLoginResult(req, result, response);
+            responseListener.onResponse(req, result, response);
         }
     }
 
-    private class writeClass implements Runnable {
+    private class WriteClass implements Runnable {
         private String message;
-        public writeClass(String message) {
+
+        public WriteClass(String message) {
             this.message = message;
         }
+
         @Override
         public void run(){
-            if (writer == null)
-                return;
+            if (socket == null || !socket.isConnected() || writer == null) {
+                // restart connection
+                start();
+            }
+            // wait while connecting:
+            //TODO: timeout??
+
+            while (writer == null || socket == null || !socket.isConnected()) {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
             writer.println(message);
             writer.flush();
         }
     }
 
-    private class ErrorRedirectClass implements Runnable {
+    private class ConnectionLostClass implements Runnable {
+
         private String error;
 
-        public ErrorRedirectClass(String error) {
+        public ConnectionLostClass(String error) {
             this.error = error;
         }
 
         @Override
         public void run() {
-            loginListener.onLoginError(error);
+            responseListener.onConnectionLost(error);
         }
     }
 }

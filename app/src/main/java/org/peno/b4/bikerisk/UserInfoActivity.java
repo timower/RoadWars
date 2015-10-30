@@ -14,13 +14,13 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.Locale;
 
-public class UserInfoActivity extends AppCompatActivity implements LoginManager.LoginResultListener {
+public class UserInfoActivity extends AppCompatActivity
+        implements ConnectionManager.ResponseListener {
 
-    private LoginManager mLoginManager;
+    private ConnectionManager connectionManager;
     private String infoName;
 
     @Override
@@ -28,17 +28,25 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
         super.onCreate(savedInstanceState);
         infoName = getIntent().getStringExtra("name");
         setContentView(R.layout.activity_user_info);
-        mLoginManager = LoginManager.getInstance();
-        if (!infoName.equals(mLoginManager.user)) {
+
+        connectionManager = ConnectionManager.getInstance(this);
+
+        if (!infoName.equals(connectionManager.user)) {
             getSupportActionBar().setTitle(getString(R.string.user_info));
         } else {
             getSupportActionBar().setTitle(getString(R.string.my_profile));
         }
-        mLoginManager.getUserInfo(this, infoName);
+        connectionManager.getUserInfo(infoName);
     }
 
     @Override
-    public void onLoginResult(String req, Boolean result, JSONObject response) {
+    protected void onResume() {
+        super.onResume();
+        connectionManager = ConnectionManager.getInstance(this);
+    }
+
+    @Override
+    public void onResponse(String req, Boolean result, JSONObject response) {
         if (req.equals("user-info")) {
             if (result) {
                 try {
@@ -46,7 +54,7 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
                     TextView name = (TextView) findViewById(R.id.user_name_value);
                     name.setText(resName);
 
-                    if (resName.equals(mLoginManager.user)) {
+                    if (resName.equals(connectionManager.user)) {
                         TextView email = (TextView) findViewById(R.id.user_email_value);
                         email.setText(response.getString("email"));
                     } else  {
@@ -59,7 +67,7 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                mLoginManager.getAllPoints(this, infoName);
+                connectionManager.getAllPoints(infoName);
             } else {
                 Toast.makeText(this, "Error getting user info", Toast.LENGTH_SHORT).show();
                 finish();
@@ -121,11 +129,7 @@ public class UserInfoActivity extends AppCompatActivity implements LoginManager.
     }
 
     @Override
-    public void onLoginError(String error) {
-
-        Intent errorIntent = new Intent(this, ErrorActivity.class);
-        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
-        startActivity(errorIntent);
-        finish();
+    public void onConnectionLost(String reason) {
+        Log.d("CON", "connection lost: " + reason);
     }
 }

@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class Utils {
     public static final float MPS_TO_KMH = 3.6f;
+    public static final String HOST = "128.199.52.178";
+    public static final int PORT = 4444;
 
     public static String removeNumbers(String orig) {
         String street = "";

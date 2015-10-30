@@ -1,16 +1,13 @@
 package org.peno.b4.bikerisk;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -31,20 +28,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import com.google.maps.GeoApiContext;
-import com.google.maps.PendingResult;
 import com.google.maps.RoadsApi;
 import com.google.maps.model.SnappedPoint;
 
-public class PositionManager implements LocationListener, LoginManager.LoginResultListener {
+public class PositionManager implements LocationListener {
     private static PositionManager instance;
 
     public static class UIObjects {
@@ -87,7 +79,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
 
     public boolean started = false;
 
-    private LoginManager mLoginManager;
+    private ConnectionManager connectionManager;
 
     private LocationManager locationManager;
 
@@ -203,7 +195,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
             String street = params[0].street;
             int points = params[0].points;
 
-            mLoginManager.addPoints(PositionManager.this, street, points);
+            connectionManager.addPoints(street, points);
             Toast.makeText(context, "Street: " + street + " points: " + points, Toast.LENGTH_SHORT).show();
 
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
@@ -241,7 +233,9 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
 
     public PositionManager(Context ctx, UIObjects o) {
         this.locationManager = (LocationManager)ctx.getSystemService(Context.LOCATION_SERVICE);
-        mLoginManager = LoginManager.getInstance();
+
+        connectionManager = ConnectionManager.getInstance();
+
         this.UIobjects = o;
         this.context = ctx.getApplicationContext();
         this.geocoder = new Geocoder(ctx);
@@ -306,14 +300,15 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         this.locMarker = null;
         this.locRad = null;
 
-        this.mLoginManager = null;
+        this.connectionManager = null;
         //this.lastLocation = null;
     }
 
     public void resume(UIObjects uiobj) {
         this.UIobjects = uiobj;
 
-        mLoginManager = LoginManager.getInstance();
+        // don't modify listener:
+        connectionManager = ConnectionManager.getInstance();
 
         if (this.started && lastLocation != null) {
             onLocationChanged(lastLocation);
@@ -353,7 +348,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
 
             locMarker = UIobjects.mMap.addMarker(new MarkerOptions()
                     .title("bike")
-                    .snippet(mLoginManager.user + " is here")
+                    .snippet(connectionManager.user + " is here")
                     .position(pos));
             locRad = UIobjects.mMap.addCircle(new CircleOptions()
                     .strokeColor(Color.BLUE)
@@ -379,24 +374,5 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
     @Override
     public void onProviderDisabled(String provider) {
         //TODO: error or something (gps is off)
-    }
-
-    @Override
-    public void onLoginResult(String req, Boolean result, JSONObject response) {
-        if (req.equals("add-points")) {
-            if (result) {
-                Toast.makeText(context, "saved points", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(context, "error saving points", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void onLoginError(String error) {
-        Intent errorIntent = new Intent(context, ErrorActivity.class);
-        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
-        context.startActivity(errorIntent);
-        stop();
     }
 }

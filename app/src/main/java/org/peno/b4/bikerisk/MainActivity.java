@@ -44,14 +44,15 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
-        implements LoginManager.LoginResultListener, OnMapReadyCallback,
+        implements ConnectionManager.ResponseListener, OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
+
     private static final String TAG = "MainActivity";
     private static final int notId = 14;
 
     private LatLng lastCameraPos;
 
-    private LoginManager mLoginManager;
+    private ConnectionManager connectionManager;
     private PositionManager positionManager;
 
     private GoogleMap mMap;
@@ -74,21 +75,22 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // start connection with server
-        mLoginManager = new LoginManager(this);
+
+        if (ConnectionManager.getInstance() == null) {
+            connectionManager = new ConnectionManager(this, this);
+        } else {
+            connectionManager = ConnectionManager.getInstance(this);
+        }
+
         // login:
-        mLoginManager.start(new LoginManager.LoginConnectListener() {
-            @Override
-            public void onLoginConnect() {
-                if (mLoginManager.loadFromSharedPrefs()) {
-                    // check login with saved key & user
-                    mLoginManager.checkLogin(MainActivity.this);
-                } else {
-                    // start login activity (calls on activity result)
-                    Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
-                }
-            }
-        });
+        if (connectionManager.loadFromSharedPrefs()) {
+            // check login with saved key & user
+            connectionManager.checkLogin();
+        } else {
+            // start login activity (calls on activity result)
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
+        }
 
         // get map object (calls onMapReady)
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -118,15 +120,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "on resume");
-        //TODO: restart server connection if not running
         super.onResume();
+        connectionManager = ConnectionManager.getInstance(this);
+        //TODO: restart connection if not running
     }
 
     @Override
     protected void onDestroy() {
         // stop connection with server
-        mLoginManager.stop();
+        connectionManager.stop();
 
         // hide notification (gets shown again later if running)
         hideStartedNotification();
@@ -159,8 +161,9 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
     @Override
-    public void onLoginResult(String req, Boolean result, JSONObject response) {
+    public void onResponse(String req, Boolean result, JSONObject response) {
         switch (req) {
             case "check-login":
                 if (result) {
@@ -217,32 +220,22 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
                 break;
+            case "add-points":
+                if (result) {
+                    Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "error saving points", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
         }
     }
 
-    private void addMarker(float hue, double lat, double lng, String name) {
-        /*
-        MarkerOptions markerOptions = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.defaultMarker(hue))
-                .position(new LatLng(lat, lng))
-                .title(name);
-        mMap.addMarker(markerOptions);
-        */
-        // add ground overlay
-        GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.fromBitmap(getStreetBitmap(hue)))
-                .position(new LatLng(lat, lng), 40);
-
-        streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
-    }
 
     @Override
-    public void onLoginError(String error) {
-        // error -> start error activity (TODO: restart / retry or something)
-        Intent errorIntent = new Intent(this, ErrorActivity.class);
-        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
-        startActivity(errorIntent);
-        finish();
+    public void onConnectionLost(String reason) {
+        //TODO: implement
+        Log.d(TAG, "connection lost: " + reason);
     }
 
 
@@ -268,11 +261,11 @@ public class MainActivity extends AppCompatActivity
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_logout:
-                this.mLoginManager.logout(this);
+                this.connectionManager.logout();
                 return super.onOptionsItemSelected(item);
             case R.id.action_user_info:
                 Intent intent = new Intent(this, UserInfoActivity.class);
-                intent.putExtra("name", this.mLoginManager.user);
+                intent.putExtra("name", this.connectionManager.user);
                 startActivity(intent);
                 return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
@@ -356,7 +349,7 @@ public class MainActivity extends AppCompatActivity
 
                 if (lastCameraPos == null || dist > 700*700){
                     Log.d(TAG, "getting street");
-                    mLoginManager.getAllStreets(MainActivity.this, bounds);
+                    connectionManager.getAllStreets(bounds);
                     lastCameraPos = bounds.northeast;
                 }
 
@@ -404,7 +397,7 @@ public class MainActivity extends AppCompatActivity
                     Address loc = locations.get(0);
                     if (loc.getMaxAddressLineIndex() >= 2) {
                         String street = Utils.removeNumbers(loc.getAddressLine(0));
-                        mLoginManager.getStreet(this, street);
+                        connectionManager.getStreet(street);
 
                     }
 
@@ -461,6 +454,21 @@ public class MainActivity extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
     }
 
+    private void addMarker(float hue, double lat, double lng, String name) {
+        /*
+        MarkerOptions markerOptions = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(hue))
+                .position(new LatLng(lat, lng))
+                .title(name);
+        mMap.addMarker(markerOptions);
+        */
+        // add ground overlay
+        GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
+                .image(BitmapDescriptorFactory.fromBitmap(getStreetBitmap(hue)))
+                .position(new LatLng(lat, lng), 40);
+
+        streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
+    }
 
     //TODO: move to utils, add original bitmap as parameter
     private Bitmap getStreetBitmap(float hue) {

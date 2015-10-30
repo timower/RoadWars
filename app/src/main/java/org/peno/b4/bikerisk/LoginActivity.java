@@ -1,7 +1,6 @@
 package org.peno.b4.bikerisk;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,15 +11,22 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity implements LoginManager.LoginResultListener {
+public class LoginActivity extends AppCompatActivity implements ConnectionManager.ResponseListener {
     public static final int REQUEST_LOGIN = 5;
     private static final String TAG = "LoginActivity";
-    private LoginManager mLoginManager;
+    private ConnectionManager connectionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mLoginManager = LoginManager.getInstance();
+        connectionManager = ConnectionManager.getInstance(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectionManager = ConnectionManager.getInstance(this);
     }
 
     public void regClick(View view) {
@@ -34,11 +40,11 @@ public class LoginActivity extends AppCompatActivity implements LoginManager.Log
         EditText result2 = (EditText) findViewById(R.id.editText2);
         String username = result1.getText().toString();
         String password = result2.getText().toString();
-        mLoginManager.login(this, username, password);
+        connectionManager.login(username, password);
     }
 
     @Override
-    public void onLoginResult(String req, Boolean result, JSONObject response) {
+    public void onResponse(String req, Boolean result, JSONObject response) {
         if (req.equals("login")) {
             if (result) {
                 setResult(Activity.RESULT_OK);
@@ -50,11 +56,8 @@ public class LoginActivity extends AppCompatActivity implements LoginManager.Log
     }
 
     @Override
-    public void onLoginError(String error) {
-        Intent errorIntent = new Intent(this, ErrorActivity.class);
-        errorIntent.putExtra(ErrorActivity.EXTRA_MESSAGE, error);
-        startActivity(errorIntent);
-        finish();
+    public void onConnectionLost(String reason) {
+        Log.d(TAG, "connection lost: " + reason);
     }
 
     @Override
