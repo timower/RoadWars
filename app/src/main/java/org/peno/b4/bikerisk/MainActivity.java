@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
 
     private TableLayout pointsTable;
     private TextView speedText;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,8 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        hideStartedNotification();
+
         // init markers and bitmap cache
         streetMarkers = new HashMap<>();
         markerCache = new HashMap<>();
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity
         // find textviews for street and speed
         pointsTable = (TableLayout)findViewById(R.id.streets_table);
         speedText = (TextView)findViewById(R.id.speed_text);
+        progressBar = (ProgressBar)findViewById(R.id.main_progressbar);
     }
 
     @Override
@@ -241,10 +245,7 @@ public class MainActivity extends AppCompatActivity
         finish();
     }
 
-    private void hideProgressBar() {
-        ProgressBar main = (ProgressBar)findViewById(R.id.main_progressbar);
-        main.setVisibility(View.GONE);
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -300,11 +301,13 @@ public class MainActivity extends AppCompatActivity
         // resume gps:
         if (PositionManager.getInstance() == null) {
             // start new positionManager
-            positionManager = new PositionManager(this, new PositionManager.UIObjects(mMap, speedText, pointsTable));
+            positionManager = new PositionManager(this,
+                    new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar));
         } else {
             // resume:
             positionManager = PositionManager.getInstance();
-            positionManager.resume(new PositionManager.UIObjects(mMap, speedText, pointsTable));
+            positionManager.resume(
+                    new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar));
             if (positionManager.started) {
                 // show notification
                 showStartedNotification();
@@ -448,6 +451,14 @@ public class MainActivity extends AppCompatActivity
 
     private void hideInfoText() {
         speedText.setVisibility(View.GONE);
+    }
+
+    private void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
     }
 
 

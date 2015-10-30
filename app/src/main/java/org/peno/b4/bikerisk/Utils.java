@@ -18,7 +18,7 @@ public class Utils {
     public static String removeNumbers(String orig) {
         String street = "";
         for (String sub : orig.split(" ")) {
-            if (!sub.matches("[0-9][0-9]*[A-Z]?-?[0-9]*[A-Z]?")) {
+            if (!sub.matches("[0-9][0-9]*[a-zA-Z]?-?[0-9]*[a-zA-Z]?")) {
                 street += sub + " ";
             }
         }

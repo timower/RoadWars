@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLngBounds;
 
+//TODO: fix, restart connection when lost
 
 /**
  * Created by timo on 10/12/15.

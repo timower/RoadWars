@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -38,6 +39,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.RoadsApi;
+import com.google.maps.model.SnappedPoint;
 
 public class PositionManager implements LocationListener, LoginManager.LoginResultListener {
     private static PositionManager instance;
@@ -46,28 +51,37 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         public GoogleMap mMap;
         public TextView speedText;
         public TableLayout table;
-        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table) {
+        public ProgressBar progressBar;
+
+        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, ProgressBar p) {
             this.mMap = mMap;
             this.speedText = spt;
             this.table = table;
+            this.progressBar = p;
         }
     }
 
-    public static class LocationInfo {
-        public LatLng pos;
-        public float speed;
-        public LocationInfo(LatLng pos, float speed) {
-            this.pos = pos;
-            this.speed = speed;
-        }
-    }
-
-    public static class StreetPoints {
+    private static class StreetPoints {
         public String street;
         public int points;
         public StreetPoints(String street, int points) {
             this.street = street;
             this.points = points;
+        }
+    }
+
+    private static class RouteInfo {
+        private ArrayList<com.google.maps.model.LatLng> routePoints;
+        private ArrayList<Float> routeSpeeds;
+
+        public RouteInfo() {
+            routePoints = new ArrayList<>();
+            routeSpeeds = new ArrayList<>();
+        }
+
+        public void add(LatLng pos, float speed) {
+            routePoints.add(new com.google.maps.model.LatLng(pos.latitude, pos.longitude));
+            routeSpeeds.add(speed);
         }
     }
 
@@ -79,7 +93,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
 
     private Location lastLocation;
 
-    private ArrayList<LocationInfo> routePoints;
+    private RouteInfo routeInfo;
 
     private PolylineOptions pOptions;
 
@@ -93,28 +107,84 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
     private Polyline userRoute;
 
     private Context context;
+    private GeoApiContext geoApiContext;
 
-    private class LookupAddressTask extends AsyncTask<LocationInfo, StreetPoints, Void> {
+    private class SnapToRoadTask extends AsyncTask<Void, Void, PolylineOptions> {
+        @Override
+        protected PolylineOptions doInBackground(Void... params) {
+            //TODO: if size > 100: multiple requests
+            try {
+                PolylineOptions snappedRoute = new PolylineOptions()
+                        .color(Color.RED)
+                        .width(8);
+                int idx = 0;
+                while (idx < routeInfo.routePoints.size()) {
+                    if (idx > 4)
+                        idx -= 5; // overlay between requests
+
+                    int lower = idx;
+                    int upper = Math.min(idx + 100, routeInfo.routePoints.size());
+                    int length = upper - lower;
+
+                    com.google.maps.model.LatLng[] points =
+                            routeInfo.routePoints.subList(lower,  upper)
+                            .toArray(new com.google.maps.model.LatLng[length]);
+
+                    SnappedPoint[] result = RoadsApi.snapToRoads(geoApiContext, false, points).await();
+
+                    for (SnappedPoint p : result) {
+                        if (idx == 0 || p.originalIndex > 4) { // account for overlap (idx = 5 is index 0)
+                            routeInfo.routePoints.set(p.originalIndex + idx, p.location);
+                            snappedRoute.add(new LatLng(p.location.lat, p.location.lng));
+                        }
+                    }
+
+                    idx = upper;
+                }
+                return snappedRoute;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
         @Override
-        protected Void doInBackground(LocationInfo... params) {
+        protected void onPostExecute(PolylineOptions res) {
+            if (res != null && UIobjects != null) {
+                userRoute.remove();
+                UIobjects.mMap.addPolyline(res);
+            }
+            new LookupAddressTask().execute(routeInfo);
+        }
+    }
+
+    private class LookupAddressTask extends AsyncTask<RouteInfo, StreetPoints, Void> {
+
+        @Override
+        protected Void doInBackground(RouteInfo... params) {
+            RouteInfo mRouteInfo = params[0];
+
             String lastStreet = "";
             int points = 0;
-            LatLng lastPos = null;
+            com.google.maps.model.LatLng lastPos = null;
 
             float[] results = new float[3];
 
-            for (LocationInfo point : params) {
-                String street = Utils.lookupStreet(geocoder, point.pos);
+            for (int i = 0; i < mRouteInfo.routePoints.size(); i++) {
+                com.google.maps.model.LatLng pos = mRouteInfo.routePoints.get(i);
+                float speed = mRouteInfo.routeSpeeds.get(i);
+
+                String street = Utils.lookupStreet(geocoder, new LatLng(pos.lat, pos.lng));
+                //TODO: fix ifs
                 if (street != null) {
                     if (!street.equals("") && lastStreet.equals("")) {
                         lastStreet = street;
-                    } else if (street.equals(lastStreet) && lastPos != null) {
-                        if (point.speed > (10.0f / Utils.MPS_TO_KMH) &&
-                                point.speed < (45.0f / Utils.MPS_TO_KMH)) {
-                            Location.distanceBetween(lastPos.latitude, lastPos.longitude,
-                                    point.pos.latitude, point.pos.longitude, results);
-                            points += results[0] * point.speed;
+                    } else if (!lastStreet.equals("") && street.equals(lastStreet) && lastPos != null) {
+                        if (speed > (10.0f / Utils.MPS_TO_KMH) &&
+                                speed < (45.0f / Utils.MPS_TO_KMH)) {
+                            Location.distanceBetween(lastPos.lat, lastPos.lng,
+                                    pos.lat, pos.lng, results);
+                            points += results[0] * speed;
                         }
                     } else if (!street.equals(lastStreet) && !lastStreet.equals("")) {
                         if (points != 0)
@@ -123,7 +193,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
                         lastStreet = street;
                     }
                 }
-                lastPos = point.pos;
+                lastPos = pos;
             }
             return null;
         }
@@ -165,6 +235,7 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         @Override
         protected void onPostExecute(Void t) {
             Toast.makeText(context, "finished adding points", Toast.LENGTH_SHORT).show();
+            UIobjects.progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -174,7 +245,9 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
         this.UIobjects = o;
         this.context = ctx.getApplicationContext();
         this.geocoder = new Geocoder(ctx);
-        this.routePoints = new ArrayList<>();
+        this.routeInfo = new RouteInfo();
+        this.geoApiContext = new GeoApiContext().setApiKey(
+                context.getString(R.string.google_maps_key));
 
         instance = this;
     }
@@ -212,13 +285,10 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
             }
         }
 
-        if (routePoints.size() > 1) {
-            //TODO: snap to road
-            // for each points: seek distance and calc points -> add points
+        if (routeInfo.routePoints.size() > 1) {
             lastLocation = null;
-            LocationInfo[] routeArray = routePoints
-                    .toArray(new LocationInfo[routePoints.size()]);
-            new LookupAddressTask().execute(routeArray);
+            UIobjects.progressBar.setVisibility(View.VISIBLE);
+            new SnapToRoadTask().execute();
         }
     }
 
@@ -254,10 +324,9 @@ public class PositionManager implements LocationListener, LoginManager.LoginResu
     public void onLocationChanged(Location location) {
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
         float speed = location.getSpeed();
-        LocationInfo locInfo = new LocationInfo(pos, speed);
 
         pOptions.add(pos);
-        routePoints.add(locInfo);
+        routeInfo.add(pos, speed);
 
         lastLocation = location;
 
