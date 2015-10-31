@@ -20,13 +20,12 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        connectionManager = ConnectionManager.getInstance(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        connectionManager = ConnectionManager.getInstance(this);
+        connectionManager = ConnectionManager.getInstance(this, this);
     }
 
     public void regClick(View view) {

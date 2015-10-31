@@ -28,21 +28,21 @@ public class UserInfoActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         infoName = getIntent().getStringExtra("name");
         setContentView(R.layout.activity_user_info);
+    }
 
-        connectionManager = ConnectionManager.getInstance(this);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectionManager = ConnectionManager.getInstance(this, this);
 
         if (!infoName.equals(connectionManager.user)) {
             getSupportActionBar().setTitle(getString(R.string.user_info));
         } else {
             getSupportActionBar().setTitle(getString(R.string.my_profile));
         }
+        // clear ui:
+        setContentView(R.layout.activity_user_info);
         connectionManager.getUserInfo(infoName);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        connectionManager = ConnectionManager.getInstance(this);
     }
 
     @Override

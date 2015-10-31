@@ -35,20 +35,20 @@ public class StreetRankActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_street_rank);
 
-        connectionManager = ConnectionManager.getInstance(this);
-
         Intent intent = getIntent();
         street = intent.getStringExtra(EXTRA_STREET);
         String city = intent.getStringExtra(EXTRA_CITY);
         getSupportActionBar().setTitle(street);
 
-        connectionManager.getStreetRank(street);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        connectionManager = ConnectionManager.getInstance(this);
+
+        connectionManager = ConnectionManager.getInstance(this, this);
+        connectionManager.getStreetRank(street);
     }
 
     @Override
@@ -74,6 +74,9 @@ public class StreetRankActivity extends AppCompatActivity
     public void onResponse(String req, Boolean result, JSONObject response) {
         if (req.equals("street-rank")) {
             if (result) {
+                // clear layout:
+                setContentView(R.layout.activity_street_rank);
+
                 Log.d(TAG, response.toString());
                 try {
                     JSONArray rank = response.getJSONArray("rank");

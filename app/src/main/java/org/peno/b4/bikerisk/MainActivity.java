@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-
 public class MainActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
@@ -74,23 +73,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // start connection with server
-
-        if (ConnectionManager.getInstance() == null) {
-            connectionManager = new ConnectionManager(this, this);
-        } else {
-            connectionManager = ConnectionManager.getInstance(this);
-        }
-
-        // login:
-        if (connectionManager.loadFromSharedPrefs()) {
-            // check login with saved key & user
-            connectionManager.checkLogin();
-        } else {
-            // start login activity (calls on activity result)
-            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
-        }
 
         // get map object (calls onMapReady)
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -112,17 +94,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // start connection with server
+        connectionManager = ConnectionManager.getInstance(this, this);
+
+        // login:
+        if (connectionManager.loadFromSharedPrefs()) {
+            // check login with saved key & user
+            connectionManager.checkLogin();
+        } else {
+            // start login activity (calls on activity result)
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
+        }
+    }
+
+    @Override
     protected void onPause() {
         Log.d(TAG, "on pause");
         //TODO: if not running stop server connection
         super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        connectionManager = ConnectionManager.getInstance(this);
-        //TODO: restart connection if not running
     }
 
     @Override
@@ -234,7 +227,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionLost(String reason) {
-        //TODO: implement
+        //TODO: implement ovelay with connection lost
         Log.d(TAG, "connection lost: " + reason);
     }
 

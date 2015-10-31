@@ -20,8 +20,9 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 /**
- * Created by timo on 10/12/15.
- * lol, test
+ * Singleton that manages the connection with the server.
+ * It stores the username and password and also provides methods to send request to the server.
+ * When the server responds the Response listener gets called.
  */
 public class ConnectionManager {
     private static final String TAG = "LoginManager";
@@ -54,16 +55,20 @@ public class ConnectionManager {
     private ResponseListener responseListener;
 
     private String key;
+
+    /**
+     * Username of connected user.
+     */
     public String user;
 
     private Thread commThread;
 
     /**
      * create a new LoginManager (should only be called if instance is null)
-     * @param context the context from wich the loginManager is created
+     * @param context the context from which the loginManager is created
      * @param listener the listener for responses
      */
-    public ConnectionManager(Context context, ResponseListener listener) {
+    private ConnectionManager(Context context, ResponseListener listener) {
         myHandler = new Handler();
         this.context = context.getApplicationContext();
         this.responseListener = listener;
@@ -74,11 +79,16 @@ public class ConnectionManager {
 
     /**
      * get the instance of the loginManager singleton.
+     * @param context the context to create the connection manager in
      * @param listener the new listener for results
      * @return the static instance
      */
-    public static ConnectionManager getInstance(ResponseListener listener) {
-        instance.responseListener = listener;
+    public static ConnectionManager getInstance(Context context, ResponseListener listener) {
+        if (instance == null) {
+            instance = new ConnectionManager(context, listener);
+        } else {
+            instance.responseListener = listener;
+        }
         return instance;
     }
 
@@ -87,6 +97,9 @@ public class ConnectionManager {
      * @return the static instance
      */
     public static ConnectionManager getInstance() {
+        if (instance == null) {
+            throw new NullPointerException("The connection manager was not initialized yet");
+        }
         return instance;
     }
 
@@ -95,7 +108,8 @@ public class ConnectionManager {
      * stops the communication thread and closes all sockets (use in onPause)
      */
     public void stop() {
-        commThread.interrupt();
+        if (commThread != null)
+            commThread.interrupt();
         responseListener = null;
         try {
             if (socket != null)
@@ -318,6 +332,11 @@ public class ConnectionManager {
         }
     }
 
+
+    /**
+     * main communication class,
+     *  the class starts a connection with the server and listens for responses
+     */
     private class CommunicationClass implements Runnable {
         private String host;
         private int port;
@@ -415,11 +434,12 @@ public class ConnectionManager {
                 start();
             }
             // wait while connecting:
-            //TODO: timeout??
+            //TODO: timeout??!!!!!!!!!! -> error activity
 
             while (writer == null || socket == null || !socket.isConnected()) {
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(100);
+                    start();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

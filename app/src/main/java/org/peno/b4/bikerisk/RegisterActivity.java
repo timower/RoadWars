@@ -26,8 +26,6 @@ public class RegisterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        connectionManager = ConnectionManager.getInstance(this);
-
         imageView = (ImageView)findViewById(R.id.imageView);
         imageView.setOnTouchListener(this);
     }
@@ -35,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        connectionManager = ConnectionManager.getInstance(this);
+        connectionManager = ConnectionManager.getInstance(this, this);
     }
 
     public void registerClicked(View view){
