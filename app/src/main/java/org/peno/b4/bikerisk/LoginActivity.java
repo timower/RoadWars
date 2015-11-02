@@ -16,6 +16,8 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
     private static final String TAG = "LoginActivity";
     private ConnectionManager connectionManager;
 
+    private String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,16 +30,17 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
         connectionManager = ConnectionManager.getInstance(this, this);
     }
 
+    //register button
     public void regClick(View view) {
         Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
         startActivity(registerIntent);
     }
 
+    //login button
     public void loginClick(View view) {
-
         EditText result1 = (EditText) findViewById(R.id.editText);
         EditText result2 = (EditText) findViewById(R.id.editText2);
-        String username = result1.getText().toString();
+        username = result1.getText().toString();
         String password = result2.getText().toString();
         connectionManager.login(username, password);
     }
@@ -46,10 +49,11 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
     public void onResponse(String req, Boolean result, JSONObject response) {
         if (req.equals("login")) {
             if (result) {
+                Toast.makeText(this, "Welcome "+ username+ "!",Toast.LENGTH_LONG).show();
                 setResult(Activity.RESULT_OK);
                 finish();
             } else {
-                Toast.makeText(this, "Failed to login", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Failed to login.", Toast.LENGTH_SHORT).show();
             }
         }
     }
