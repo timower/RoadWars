@@ -30,6 +30,8 @@ public class StreetRankActivity extends AppCompatActivity
     private ConnectionManager connectionManager;
     private String street;
 
+    private TextView connectionLostBanner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +41,7 @@ public class StreetRankActivity extends AppCompatActivity
         street = intent.getStringExtra(EXTRA_STREET);
         String city = intent.getStringExtra(EXTRA_CITY);
         getSupportActionBar().setTitle(street);
-
-
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
 
     @Override
@@ -72,6 +73,7 @@ public class StreetRankActivity extends AppCompatActivity
 
     @Override
     public void onResponse(String req, Boolean result, JSONObject response) {
+        connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("street-rank")) {
             if (result) {
                 // clear layout:
@@ -159,5 +161,6 @@ public class StreetRankActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         Log.d(TAG, "connection lost: " + reason);
+        connectionLostBanner.setVisibility(View.VISIBLE);
     }
 }

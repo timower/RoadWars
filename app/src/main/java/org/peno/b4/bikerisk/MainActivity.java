@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity
     private TextView speedText;
     private ProgressBar progressBar;
 
+    private TextView connectionLostBanner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // create activity:
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity
         pointsTable = (TableLayout)findViewById(R.id.streets_table);
         speedText = (TextView)findViewById(R.id.speed_text);
         progressBar = (ProgressBar)findViewById(R.id.main_progressbar);
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
 
     @Override
@@ -159,6 +162,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onResponse(String req, Boolean result, JSONObject response) {
+        connectionLostBanner.setVisibility(View.GONE);
         switch (req) {
             case "check-login":
                 if (result) {
@@ -232,6 +236,7 @@ public class MainActivity extends AppCompatActivity
         //TODO: !!!!!!!!!!!!!!!implement ovelay with connection lost!!!!!!!!!!
         //TODO: !!!!!!!! in every activity !!!!!!!!!!!!!!
         Log.d(TAG, "connection lost: " + reason);
+        connectionLostBanner.setVisibility(View.VISIBLE);
     }
 
 
