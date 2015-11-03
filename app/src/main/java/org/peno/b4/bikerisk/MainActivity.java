@@ -467,6 +467,11 @@ public class MainActivity extends AppCompatActivity
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
     }
 
+    /**
+     * Creates a new bitmap with the hue of the user
+     * @param hue The users color(hue)
+     * @return the created bitmap
+     */
     //TODO: move to utils, add original bitmap and cache as parameter -> use player color to draw arrow when running
     private Bitmap getStreetBitmap(float hue) {
         if (markerCache.containsKey(hue)) {

@@ -143,7 +143,7 @@ public class PositionManager implements LocationListener {
         protected void onPostExecute(PolylineOptions res) {
             if (res != null && UIobjects != null) {
                 userRoute.remove();
-                UIobjects.mMap.addPolyline(res);
+                userRoute = UIobjects.mMap.addPolyline(res);
             }
             new LookupAddressTask().execute(routeInfo);
         }
@@ -195,6 +195,7 @@ public class PositionManager implements LocationListener {
             int points = params[0].points;
 
             connectionManager.addPoints(street, points);
+
             Toast.makeText(context, "Street: " + street + " points: " + points, Toast.LENGTH_SHORT).show();
 
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
@@ -251,6 +252,8 @@ public class PositionManager implements LocationListener {
     }
 
     public void start() {
+        if (userRoute != null)
+            userRoute.remove();
         started = true;
         pOptions = new PolylineOptions().color(Color.BLUE).width(5);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
@@ -279,7 +282,8 @@ public class PositionManager implements LocationListener {
 
         if (routeInfo.routePoints.size() > 1) {
             lastLocation = null;
-            UIobjects.progressBar.setVisibility(View.VISIBLE);
+            if (UIobjects != null)
+                UIobjects.progressBar.setVisibility(View.VISIBLE);
             new SnapToRoadTask().execute();
         }
     }
