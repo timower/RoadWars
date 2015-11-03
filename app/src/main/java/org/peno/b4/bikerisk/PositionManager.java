@@ -104,7 +104,6 @@ public class PositionManager implements LocationListener {
     private class SnapToRoadTask extends AsyncTask<Void, Void, PolylineOptions> {
         @Override
         protected PolylineOptions doInBackground(Void... params) {
-            //TODO: if size > 100: multiple requests
             try {
                 PolylineOptions snappedRoute = new PolylineOptions()
                         .color(Color.RED)
@@ -258,7 +257,6 @@ public class PositionManager implements LocationListener {
     }
 
     public void stop() {
-        //TODO: save points here and not during ride
         started = false;
         locationManager.removeUpdates(this);
         if (locMarker != null)
