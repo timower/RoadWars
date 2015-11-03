@@ -311,18 +311,9 @@ public class MainActivity extends AppCompatActivity
             // last position:
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(positionManager.lastCameraPosition));
         } else {
-            // lookup Leuven (TODO: !!!!!!!!!!!change to fixed coordinates!!!!!!!!)
-            try {
-                List<Address> leuven = geocoder.getFromLocationName("Leuven", 1);
-                if (leuven.size() > 0) {
-                    Address L = leuven.get(0);
-                    Log.d(TAG, "got location");
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(L.getLatitude(), L.getLongitude()), 14));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // camera centered at Sint-Pieterskerk, Leuven
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(50.879549, 4.701242), 14));
         }
 
         // set up listeners:
