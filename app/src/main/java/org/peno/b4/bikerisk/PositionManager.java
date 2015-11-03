@@ -231,7 +231,7 @@ public class PositionManager implements LocationListener {
         }
     }
 
-    public PositionManager(Context ctx, UIObjects o) {
+    private PositionManager(Context ctx, UIObjects o) {
         this.locationManager = (LocationManager)ctx.getSystemService(Context.LOCATION_SERVICE);
 
         connectionManager = ConnectionManager.getInstance();
@@ -246,7 +246,13 @@ public class PositionManager implements LocationListener {
         instance = this;
     }
 
-    public static PositionManager getInstance() {
+    public static PositionManager getInstance(Context ctx, UIObjects objects) {
+        if (instance == null) {
+            instance = new PositionManager(ctx, objects);
+        } else {
+            instance.UIobjects = objects;
+            instance.connectionManager = ConnectionManager.getInstance();
+        }
         return instance;
 
     }
@@ -304,17 +310,6 @@ public class PositionManager implements LocationListener {
 
         this.connectionManager = null;
         //this.lastLocation = null;
-    }
-
-    public void resume(UIObjects uiobj) {
-        this.UIobjects = uiobj;
-
-        // don't modify listener:
-        connectionManager = ConnectionManager.getInstance();
-
-        if (this.started && lastLocation != null) {
-            onLocationChanged(lastLocation);
-        }
     }
 
     @Override

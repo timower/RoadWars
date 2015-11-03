@@ -292,23 +292,13 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
         geocoder = new Geocoder(this);
 
-        //TODO: fix position manager -> full singleton
-        // resume gps:
-        if (PositionManager.getInstance() == null) {
-            // start new positionManager
-            positionManager = new PositionManager(this,
-                    new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar));
-        } else {
-            // resume:
-            positionManager = PositionManager.getInstance();
-            positionManager.resume(
-                    new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar));
-            if (positionManager.started) {
-                // show notification
-                showStartedNotification();
-                invalidateOptionsMenu();
-                showInfoText();
-            }
+        positionManager = PositionManager.getInstance(this,
+                new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar));
+        if (positionManager.started) {
+            // show notification
+            showStartedNotification();
+            invalidateOptionsMenu();
+            showInfoText();
         }
 
         // set camera position:
