@@ -103,7 +103,7 @@ public class ConnectionManager {
         return instance;
     }
 
-    //TODO: reimplement to pause?
+    //TODO: !!!!!!!!!!!rename to pause?!!!!!!!!!!!!!!
     /**
      * stops the communication thread and closes all sockets (use in onPause)
      */
@@ -434,7 +434,7 @@ public class ConnectionManager {
                 start();
             }
             // wait while connecting:
-            //TODO: timeout??!!!!!!!!!! -> error activity
+            //TODO: i!!!!!!!!!!!!!ncrease sleep time each iteration, timeout after 5  seconds -> Error activity!!!!!!!!!!!!!!!!!
 
             while (writer == null || socket == null || !socket.isConnected()) {
                 try {
