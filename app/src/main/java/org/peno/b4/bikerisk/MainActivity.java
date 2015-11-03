@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity
     protected void onPause() {
         Log.d(TAG, "on pause");
         //TODO: if not running stop server connection
+        //TODO: stop positionManager from calling ui code
         super.onPause();
     }
 
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity
         // hide notification (gets shown again later if running)
         hideStartedNotification();
 
+        //check if we are just rotation screens:
         if (isChangingConfigurations()) {
             // we will be restarted later again -> save camera position in positionmanager
             if (mMap != null) {
@@ -227,7 +229,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionLost(String reason) {
-        //TODO: implement ovelay with connection lost
+        //TODO: !!!!!!!!!!!!!!!implement ovelay with connection lost!!!!!!!!!!
+        //TODO: !!!!!!!! in every activity !!!!!!!!!!!!!!
         Log.d(TAG, "connection lost: " + reason);
     }
 
@@ -284,6 +287,7 @@ public class MainActivity extends AppCompatActivity
         mMap = googleMap;
         geocoder = new Geocoder(this);
 
+        //TODO: fix position manager -> full singleton
         // resume gps:
         if (PositionManager.getInstance() == null) {
             // start new positionManager
@@ -307,7 +311,7 @@ public class MainActivity extends AppCompatActivity
             // last position:
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(positionManager.lastCameraPosition));
         } else {
-            // lookup Leuven (TODO: change to fixed coordinates)
+            // lookup Leuven (TODO: !!!!!!!!!!!change to fixed coordinates!!!!!!!!)
             try {
                 List<Address> leuven = geocoder.getFromLocationName("Leuven", 1);
                 if (leuven.size() > 0) {
@@ -463,7 +467,7 @@ public class MainActivity extends AppCompatActivity
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
     }
 
-    //TODO: move to utils, add original bitmap as parameter
+    //TODO: move to utils, add original bitmap and cache as parameter -> use player color to draw arrow when running
     private Bitmap getStreetBitmap(float hue) {
         if (markerCache.containsKey(hue)) {
             //Log.d(TAG, "cache hit");
