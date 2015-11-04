@@ -161,6 +161,7 @@ public class StreetRankActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         Log.d(TAG, "connection lost: " + reason);
+        //TODO: fix
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 }

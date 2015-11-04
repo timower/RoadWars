@@ -135,6 +135,7 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         Log.d("CON", "connection lost: " + reason);
+        //TODO: fix
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 }

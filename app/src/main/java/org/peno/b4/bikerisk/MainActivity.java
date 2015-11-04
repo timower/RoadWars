@@ -117,15 +117,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         Log.d(TAG, "on pause");
-        //TODO: if not running stop server connection
+        // stop connection with server
+        connectionManager.stop();
         //TODO: stop positionManager from calling ui code
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        // stop connection with server
-        connectionManager.stop();
+
 
         // hide notification (gets shown again later if running)
         hideStartedNotification();
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                                 // maybe owner changed -> update icon
                                 streetMarkers.get(name)
                                         .setImage(BitmapDescriptorFactory
-                                                .fromBitmap(getStreetBitmap(HSV[0])));
+                                                .fromBitmap(Utils.getStreetBitmap(markerCache, originalBitmap, HSV[0])));
                             } else {
                                 // add marker
                                 addMarker(HSV[0], lat, lng, name);
@@ -233,8 +233,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionLost(String reason) {
-        //TODO: !!!!!!!!!!!!!!!implement ovelay with connection lost!!!!!!!!!!
-        //TODO: !!!!!!!! in every activity !!!!!!!!!!!!!!
         Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
@@ -343,28 +341,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapLongClick(LatLng latLng) {
         // lookup street and start streetRankActivity:
-        if (geocoder != null) {
-            try {
-                List<Address> locations = geocoder.getFromLocation(latLng.latitude,
-                        latLng.longitude, 1);
-                if (locations.size() > 0) {
-                    Address loc = locations.get(0);
-                    if (loc.getMaxAddressLineIndex() >= 2) {
-                        String street = Utils.removeNumbers(loc.getAddressLine(0));
-                        String city = Utils.removeNumbers(loc.getAddressLine(1));
-
-                        Intent intent = new Intent(this, StreetRankActivity.class);
-                        intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
-                        intent.putExtra(StreetRankActivity.EXTRA_CITY, city);
-                        startActivity(intent);
-                    }
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.d(TAG, "error, geocoder is null!");
+        String street = Utils.lookupStreet(geocoder, latLng);
+        if (street != null) {
+            Intent intent = new Intent(this, StreetRankActivity.class);
+            intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
+            //intent.putExtra(StreetRankActivity.EXTRA_CITY, city);
+            startActivity(intent);
         }
     }
 
@@ -372,26 +354,9 @@ public class MainActivity extends AppCompatActivity
     public void onMapClick(LatLng latLng) {
         pointsTable.setVisibility(View.GONE);
         // lookup street & show toast (in onLoginResult)
-        if (geocoder != null) {
-            try {
-                List<Address> locations = geocoder.getFromLocation(latLng.latitude,
-                        latLng.longitude, 1);
-                if (locations.size() > 0) {
-                    Address loc = locations.get(0);
-                    if (loc.getMaxAddressLineIndex() >= 2) {
-                        String street = Utils.removeNumbers(loc.getAddressLine(0));
-                        connectionManager.getStreet(street);
-
-                    }
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.d(TAG, "error, geocoder is null!");
-        }
-
+        String street = Utils.lookupStreet(geocoder, latLng);
+        if (street != null)
+            connectionManager.getStreet(street);
     }
 
     private void showStartedNotification() {
@@ -447,39 +412,11 @@ public class MainActivity extends AppCompatActivity
         */
         // add ground overlay
         GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
-                .image(BitmapDescriptorFactory.fromBitmap(getStreetBitmap(hue)))
+                .image(BitmapDescriptorFactory.fromBitmap(Utils.getStreetBitmap(markerCache, originalBitmap, hue)))
                 .position(new LatLng(lat, lng), 40);
 
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
     }
 
-    /**
-     * Creates a new bitmap with the hue of the user
-     * @param hue The users color(hue)
-     * @return the created bitmap
-     */
-    //TODO: move to utils, add original bitmap and cache as parameter -> use player color to draw arrow when running
-    private Bitmap getStreetBitmap(float hue) {
-        if (markerCache.containsKey(hue)) {
-            //Log.d(TAG, "cache hit");
-            return markerCache.get(hue);
-        }
-        //Log.d(TAG, "cache miss");
-        int w = originalBitmap.getWidth();
-        int h = originalBitmap.getHeight();
-        int[] pixels = new int[w*h];
-        originalBitmap.getPixels(pixels, 0, w, 0, 0, w, h);
-        float[] HSV = new float[3];
-
-        int len = w*h;
-        for (int i = 0; i < len; i++) {
-            Color.colorToHSV(pixels[i], HSV);
-            HSV[0] = hue;
-            pixels[i] = Color.HSVToColor(Color.alpha(pixels[i]), HSV);
-        }
-        Bitmap ret = Bitmap.createBitmap(pixels, w, h, originalBitmap.getConfig());
-        markerCache.put(hue, ret);
-        return ret;
-    }
 
 }
