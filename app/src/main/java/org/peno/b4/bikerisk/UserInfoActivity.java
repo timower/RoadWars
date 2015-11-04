@@ -23,11 +23,14 @@ public class UserInfoActivity extends AppCompatActivity
     private ConnectionManager connectionManager;
     private String infoName;
 
+    private TextView connectionLostBanner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         infoName = getIntent().getStringExtra("name");
         setContentView(R.layout.activity_user_info);
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
 
     @Override
@@ -47,6 +50,7 @@ public class UserInfoActivity extends AppCompatActivity
 
     @Override
     public void onResponse(String req, Boolean result, JSONObject response) {
+        connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("user-info")) {
             if (result) {
                 try {
@@ -131,5 +135,7 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         Log.d("CON", "connection lost: " + reason);
+        //TODO: fix
+        connectionLostBanner.setVisibility(View.VISIBLE);
     }
 }

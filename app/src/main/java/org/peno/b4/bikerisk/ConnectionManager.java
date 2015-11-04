@@ -109,7 +109,6 @@ public class ConnectionManager {
         return instance;
     }
 
-    //TODO: !!!!!!!!!!!rename to pause?!!!!!!!!!!!!!!
     /**
      * stops the communication thread and closes all sockets (use in onPause)
      */

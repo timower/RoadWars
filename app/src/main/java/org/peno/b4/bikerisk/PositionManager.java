@@ -143,7 +143,7 @@ public class PositionManager implements LocationListener {
         protected void onPostExecute(PolylineOptions res) {
             if (res != null && UIobjects != null) {
                 userRoute.remove();
-                UIobjects.mMap.addPolyline(res);
+                userRoute = UIobjects.mMap.addPolyline(res);
             }
             new LookupAddressTask().execute(routeInfo);
         }
@@ -195,6 +195,7 @@ public class PositionManager implements LocationListener {
             int points = params[0].points;
 
             connectionManager.addPoints(street, points);
+
             Toast.makeText(context, "Street: " + street + " points: " + points, Toast.LENGTH_SHORT).show();
 
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
@@ -230,7 +231,7 @@ public class PositionManager implements LocationListener {
         }
     }
 
-    public PositionManager(Context ctx, UIObjects o) {
+    private PositionManager(Context ctx, UIObjects o) {
         this.locationManager = (LocationManager)ctx.getSystemService(Context.LOCATION_SERVICE);
 
         connectionManager = ConnectionManager.getInstance();
@@ -245,12 +246,20 @@ public class PositionManager implements LocationListener {
         instance = this;
     }
 
-    public static PositionManager getInstance() {
+    public static PositionManager getInstance(Context ctx, UIObjects objects) {
+        if (instance == null) {
+            instance = new PositionManager(ctx, objects);
+        } else {
+            instance.UIobjects = objects;
+            instance.connectionManager = ConnectionManager.getInstance();
+        }
         return instance;
 
     }
 
     public void start() {
+        if (userRoute != null)
+            userRoute.remove();
         started = true;
         pOptions = new PolylineOptions().color(Color.BLUE).width(5);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
@@ -279,7 +288,8 @@ public class PositionManager implements LocationListener {
 
         if (routeInfo.routePoints.size() > 1) {
             lastLocation = null;
-            UIobjects.progressBar.setVisibility(View.VISIBLE);
+            if (UIobjects != null)
+                UIobjects.progressBar.setVisibility(View.VISIBLE);
             new SnapToRoadTask().execute();
         }
     }
@@ -300,17 +310,6 @@ public class PositionManager implements LocationListener {
 
         this.connectionManager = null;
         //this.lastLocation = null;
-    }
-
-    public void resume(UIObjects uiobj) {
-        this.UIobjects = uiobj;
-
-        // don't modify listener:
-        connectionManager = ConnectionManager.getInstance();
-
-        if (this.started && lastLocation != null) {
-            onLocationChanged(lastLocation);
-        }
     }
 
     @Override
