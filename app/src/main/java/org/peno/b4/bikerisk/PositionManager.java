@@ -101,6 +101,8 @@ public class PositionManager implements LocationListener {
     private Context context;
     private GeoApiContext geoApiContext;
 
+    private boolean gotFirstLocation;
+
     private class SnapToRoadTask extends AsyncTask<Void, Void, PolylineOptions> {
         @Override
         protected PolylineOptions doInBackground(Void... params) {
@@ -314,6 +316,14 @@ public class PositionManager implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+
+        if (!gotFirstLocation && location.getAccuracy() < 10) {
+            gotFirstLocation = true;
+            UIobjects.progressBar.setVisibility(View.GONE);
+        } else if (!gotFirstLocation){
+            return;
+        }
+
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
         float speed = location.getSpeed();
 
@@ -371,5 +381,6 @@ public class PositionManager implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
         //TODO: error or something (gps is off)
+        UIobjects.progressBar.setVisibility(View.VISIBLE);
     }
 }

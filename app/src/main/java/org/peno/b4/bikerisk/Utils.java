@@ -32,7 +32,7 @@ public class Utils {
     }
 
     public static String lookupStreet(Geocoder geocoder, LatLng pos) {
-        //TODO: support diffrent cities
+        //TODO: support different cities
         if (geocoder != null) {
             try {
                 List<Address> locations = geocoder.getFromLocation(pos.latitude,

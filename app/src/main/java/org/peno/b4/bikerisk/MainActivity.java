@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity
                     showStartedNotification();
                     showInfoText();
                     positionManager.start();
-                    //TODO: wait for location??
+                    showProgressBar();
                 } else {
                     hideStartedNotification();
                     hideInfoText();
