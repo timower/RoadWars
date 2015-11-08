@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity
     private TextView speedText;
     private ProgressBar progressBar;
 
+    /** Creates the activity, initializes the map and searches for certain text views. (UNFINISHED)
+     *
+     * @param savedInstanceState:
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // create activity:
@@ -93,6 +97,9 @@ public class MainActivity extends AppCompatActivity
         progressBar = (ProgressBar)findViewById(R.id.main_progressbar);
     }
 
+    /** Resumes the activity. Restarts server connection and checks login.
+     * If the user is not logged in, it will start the login activity.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -111,6 +118,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /** Pauses the activity.
+     */
     @Override
     protected void onPause() {
         Log.d(TAG, "on pause");
@@ -119,6 +128,10 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
     }
 
+    /** Destroys the activity. Stops server connection and position manager.
+     * If the screen is merely rotated, it saves the current camera position
+     * and pauses the position manager.
+     */
     @Override
     protected void onDestroy() {
         // stop connection with server
@@ -143,6 +156,12 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
+    /** Allows the activity to communicate with other activities. (UNFINISHED)
+     *
+     * @param requestCode: request send by MainActivity
+     * @param resultCode: result received from other activity
+     * @param data:
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LoginActivity.REQUEST_LOGIN) {
@@ -157,6 +176,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /** Allows the activity to handle different requests from outside
+     * (the user, other activities or managers,...).
+     *
+     * @param req the original request string
+     * @param result if the result succeeded
+     * @param response the complete response object
+     */
     @Override
     public void onResponse(String req, Boolean result, JSONObject response) {
         switch (req) {
@@ -226,7 +252,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
+    /** (UNFINISHED)
+     *
+     * @param reason reason why the connection was dropped
+     */
     @Override
     public void onConnectionLost(String reason) {
         //TODO: !!!!!!!!!!!!!!!implement ovelay with connection lost!!!!!!!!!!
@@ -235,7 +264,11 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
+    /** Creates the options menu (at the top of the screen). (UNFINISHED)
+     *
+     * @param menu: the menu object which contains all options.
+     * @return ?
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
@@ -252,6 +285,11 @@ public class MainActivity extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    /** Executes the selected option of the menu. (UNFINISHED)
+     *
+     * @param item: the selected option
+     * @return ?
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
@@ -282,6 +320,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /** Configures the map and camera. Starts/resumes the position manager, sets camera view and
+     * listeners.
+     *
+     * @param googleMap: the map object
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -320,6 +363,10 @@ public class MainActivity extends AppCompatActivity
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMapClickListener(this);
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+            /** (UNFINISHED)
+             *
+             * @param cameraPosition:
+             */
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 Log.d(TAG, "camera changed");
@@ -345,6 +392,10 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    /** Starts the Street Rank Activity for the selected street.
+     *
+     * @param latLng: coordinates of the point which was clicked
+     */
     @Override
     public void onMapLongClick(LatLng latLng) {
         // lookup street and start streetRankActivity:
@@ -373,6 +424,10 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /** Shows the street name and owner of the selected street.
+     *
+     * @param latLng: coordinates of the point which was clicked
+     */
     @Override
     public void onMapClick(LatLng latLng) {
         pointsTable.setVisibility(View.GONE);
@@ -399,6 +454,8 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    /** Displays a notification on the smartphone notification screen.
+     */
     private void showStartedNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -420,28 +477,46 @@ public class MainActivity extends AppCompatActivity
         notificationManager.notify(notId, builder.build());
     }
 
+    /** Hides the notification on the smartphone notification screen.
+     *
+     */
     private void hideStartedNotification() {
         NotificationManager notificationManager =
                 (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
         notificationManager.cancel(notId);
     }
 
+    /** Shows the info text.(UNFINISHED)
+     */
     private void showInfoText() {
         speedText.setVisibility(View.VISIBLE);
     }
 
+    /** Hides the info text. (UNFINISHED)
+     */
     private void hideInfoText() {
         speedText.setVisibility(View.GONE);
     }
 
+    /** Hides the progressbar. (UNFINISHED)
+     */
     private void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
 
+    /** Shows the progressbar. (UNFINISHED)
+     */
     private void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
+    /** Adds a marker on a street in the color of the owner. (UNFINISHED)
+     *
+     * @param hue: color of the owner
+     * @param lat: latitude coordinate of the street
+     * @param lng: longitude coordinate of the street
+     * @param name: name of street/ name of owner?
+     */
     private void addMarker(float hue, double lat, double lng, String name) {
         /*
         MarkerOptions markerOptions = new MarkerOptions()
@@ -459,6 +534,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     //TODO: move to utils, add original bitmap and cache as parameter -> use player color to draw arrow when running
+    /** Returns a bitmap of a picture colored in the user's color.
+     * If it already exists in the marker cache, it will be reused.
+     * Otherwise, a new bitmap is created and added to the marker cache.
+     * @param hue: the color of the user
+     * @return The colored bitmap
+     */
     private Bitmap getStreetBitmap(float hue) {
         if (markerCache.containsKey(hue)) {
             //Log.d(TAG, "cache hit");
