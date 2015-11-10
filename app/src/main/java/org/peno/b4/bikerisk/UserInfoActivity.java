@@ -50,6 +50,7 @@ public class UserInfoActivity extends AppCompatActivity
 
     @Override
     public void onResponse(String req, Boolean result, JSONObject response) {
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("user-info")) {
             if (result) {
@@ -134,8 +135,8 @@ public class UserInfoActivity extends AppCompatActivity
 
     @Override
     public void onConnectionLost(String reason) {
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         Log.d("CON", "connection lost: " + reason);
-        //TODO: fix
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 }

@@ -73,6 +73,7 @@ public class StreetRankActivity extends AppCompatActivity
 
     @Override
     public void onResponse(String req, Boolean result, JSONObject response) {
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("street-rank")) {
             if (result) {
@@ -160,8 +161,8 @@ public class StreetRankActivity extends AppCompatActivity
 
     @Override
     public void onConnectionLost(String reason) {
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         Log.d(TAG, "connection lost: " + reason);
-        //TODO: fix
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 }
