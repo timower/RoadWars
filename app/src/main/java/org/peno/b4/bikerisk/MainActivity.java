@@ -295,6 +295,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
+        if(progressBar.getVisibility() == View.VISIBLE){
+            return super.onOptionsItemSelected(item);
+        }
         switch (item.getItemId()) {
             case R.id.action_logout:
                 this.connectionManager.logout();
@@ -361,6 +364,9 @@ public class MainActivity extends AppCompatActivity
              */
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
+                if(progressBar.getVisibility() == View.VISIBLE){
+                    return;
+                }
                 Log.d(TAG, "camera changed");
                 // TODO: fix dist calculation
                 // we can't rely on just distance (because of zoom)
@@ -370,11 +376,11 @@ public class MainActivity extends AppCompatActivity
                 float dist = 0;
                 if (lastCameraPos != null) {
                     Point p1 = mMap.getProjection().toScreenLocation(lastCameraPos);
-                    dist = p1.x*p1.x + p1.y*p1.y;
+                    dist = p1.x * p1.x + p1.y * p1.y;
                     Log.d(TAG, "dist: " + dist);
                 }
 
-                if (lastCameraPos == null || dist > 700*700){
+                if (lastCameraPos == null || dist > 700 * 700) {
                     Log.d(TAG, "getting street");
                     connectionManager.getAllStreets(bounds);
                     lastCameraPos = bounds.northeast;
@@ -391,6 +397,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapLongClick(LatLng latLng) {
         // lookup street and start streetRankActivity:
+        if(progressBar.getVisibility() == View.VISIBLE){
+            return;
+        }
         String street = Utils.lookupStreet(geocoder, latLng);
         if (street != null) {
             Intent intent = new Intent(this, StreetRankActivity.class);
@@ -406,6 +415,9 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onMapClick(LatLng latLng) {
+        if(progressBar.getVisibility() == View.VISIBLE){
+            return;
+        }
         pointsTable.setVisibility(View.GONE);
         // lookup street & show toast (in onLoginResult)
         String street = Utils.lookupStreet(geocoder, latLng);
