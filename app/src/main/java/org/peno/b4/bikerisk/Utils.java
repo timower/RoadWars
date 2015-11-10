@@ -56,9 +56,11 @@ public class Utils {
     }
 
     /**
-     * Creates a new bitmap with the hue of the user
-     * @param hue The users color(hue)
-     * @return the created bitmap
+     * Returns a bitmap of a picture colored in the user's color.
+     * If it already exists in the marker cache, it will be reused.
+     * Otherwise, a new bitmap is created and added to the marker cache.
+     * @param hue: the color(hue) of the user
+     * @return The created bitmap
      */
     public static Bitmap getStreetBitmap(HashMap<Float, Bitmap> markerCache,
                                    Bitmap originalBitmap, float hue) {

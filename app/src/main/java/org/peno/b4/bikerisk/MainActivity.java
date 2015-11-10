@@ -126,8 +126,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         Log.d(TAG, "on pause");
-        // stop connection with server
-        connectionManager.stop();
         //TODO: stop positionManager from calling ui code
         super.onPause();
     }
@@ -297,6 +295,14 @@ public class MainActivity extends AppCompatActivity
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_logout:
+                if (positionManager.started) {
+                    hideStartedNotification();
+                    hideInfoText();
+                    hideProgressBar();
+                    positionManager.stop();
+
+                    invalidateOptionsMenu();
+                }
                 this.connectionManager.logout();
                 return super.onOptionsItemSelected(item);
             case R.id.action_user_info:
@@ -370,11 +376,11 @@ public class MainActivity extends AppCompatActivity
                 float dist = 0;
                 if (lastCameraPos != null) {
                     Point p1 = mMap.getProjection().toScreenLocation(lastCameraPos);
-                    dist = p1.x*p1.x + p1.y*p1.y;
+                    dist = p1.x * p1.x + p1.y * p1.y;
                     Log.d(TAG, "dist: " + dist);
                 }
 
-                if (lastCameraPos == null || dist > 700*700){
+                if (lastCameraPos == null || dist > 700 * 700) {
                     Log.d(TAG, "getting street");
                     connectionManager.getAllStreets(bounds);
                     lastCameraPos = bounds.northeast;
