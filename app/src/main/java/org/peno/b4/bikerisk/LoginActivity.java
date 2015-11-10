@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -18,10 +19,14 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
 
     private String username;
 
+    private TextView connectionLostBanner;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
 
     @Override
@@ -47,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
 
     @Override
     public void onResponse(String req, Boolean result, JSONObject response) {
+        connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("login")) {
             if (result) {
                 Toast.makeText(this, "Welcome "+ username+ "!",Toast.LENGTH_LONG).show();
@@ -60,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
 
     @Override
     public void onConnectionLost(String reason) {
+        connectionLostBanner.setVisibility(View.VISIBLE);
         Log.d(TAG, "connection lost: " + reason);
     }
 

@@ -11,8 +11,11 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.util.Log;
@@ -63,6 +66,8 @@ public class ConnectionManager {
 
     private Thread commThread;
 
+    private Lock writeLock;
+
     /**
      * create a new LoginManager (should only be called if instance is null)
      * @param context the context from which the loginManager is created
@@ -73,6 +78,7 @@ public class ConnectionManager {
         this.context = context.getApplicationContext();
         this.responseListener = listener;
         instance = this;
+        writeLock = new ReentrantLock();
 
         start();
     }
@@ -103,7 +109,6 @@ public class ConnectionManager {
         return instance;
     }
 
-    //TODO: !!!!!!!!!!!rename to pause?!!!!!!!!!!!!!!
     /**
      * stops the communication thread and closes all sockets (use in onPause)
      */
@@ -424,29 +429,38 @@ public class ConnectionManager {
         private String message;
 
         public WriteClass(String message) {
+
             this.message = message;
         }
 
         @Override
         public void run(){
-            if (socket == null || !socket.isConnected() || writer == null) {
-                // restart connection
-                start();
-            }
-            // wait while connecting:
-            //TODO: i!!!!!!!!!!!!!ncrease sleep time each iteration, timeout after 5  seconds -> Error activity!!!!!!!!!!!!!!!!!
+            writeLock.lock();
+            try {
 
-            while (writer == null || socket == null || !socket.isConnected()) {
-                try {
-                    Thread.sleep(100);
-                    start();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                int time = 100;
+                int tot_time = 0;
+                while (writer == null || socket == null || !socket.isConnected()) {
+                    try {
+                        start();
+                        Thread.sleep(time);
+                        tot_time += time;
+                        time *= 2;
+                        Log.d(TAG, "reconnect attempt");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (tot_time > 2000) {
+                        Log.d(TAG, "connection failed");
+                        return;
+                    }
                 }
-            }
 
-            writer.println(message);
-            writer.flush();
+                writer.println(message);
+                writer.flush();
+            } finally {
+                writeLock.unlock();
+            }
         }
     }
 

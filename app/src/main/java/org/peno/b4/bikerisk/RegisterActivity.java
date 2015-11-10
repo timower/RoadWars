@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.widget.EditText;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -21,6 +22,8 @@ public class RegisterActivity extends AppCompatActivity
 
     private ImageView imageView;
 
+    private TextView connectionLostBanner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +31,7 @@ public class RegisterActivity extends AppCompatActivity
 
         imageView = (ImageView)findViewById(R.id.imageView);
         imageView.setOnTouchListener(this);
+        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
 
     @Override
@@ -51,6 +55,7 @@ public class RegisterActivity extends AppCompatActivity
 
     @Override
     public void onResponse(String req, Boolean result, JSONObject response) {
+        connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("create-user")) {
             if (result) {
                 Toast.makeText(this, "successfully created user", Toast.LENGTH_SHORT).show();
@@ -63,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity
 
     @Override
     public void onConnectionLost(String reason) {
+        connectionLostBanner.setVisibility(View.VISIBLE);
         Log.d("REG", "connection lost: " + reason);
     }
 

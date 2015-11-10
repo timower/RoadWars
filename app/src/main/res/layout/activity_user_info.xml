@@ -1,110 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:paddingTop="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    tools:context=".UserInfoActivity">
-    <LinearLayout
+    android:orientation="vertical">
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:context="org.peno.b4.bikerisk.UserInfoActivity">
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:text="@string/connection_lost"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:visibility="gone"
+        android:id="@+id/connectionLost"
+        android:padding="8dp"
+        android:background="#777777" />
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        tools:context=".UserInfoActivity">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            card_view:cardCornerRadius="4dp"
-            android:layout_marginBottom="8dp">
-            <LinearLayout
+            android:orientation="vertical"
+            tools:context="org.peno.b4.bikerisk.UserInfoActivity">
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
+                card_view:cardCornerRadius="4dp"
+                android:layout_marginBottom="8dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/user_name"
-                        android:textSize="25sp"
-                        android:paddingRight="8dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/user_name"
+                            android:textSize="25sp"
+                            android:paddingRight="8dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/user_name_value"
+                            android:textSize="25sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/user_name_value"
-                        android:textSize="25sp"
-                        android:textStyle="bold"/>
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/email_id"
+                            android:text="@string/email"
+                            android:textSize="25sp"
+                            android:paddingRight="8dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/user_email_value"
+                            android:textSize="25sp"
+                            android:textStyle="bold"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/color"
+                            android:textSize="25sp"
+                            android:paddingRight="8dp"/>
+                        <View
+                            android:layout_width="50dp"
+                            android:layout_height="match_parent"
+                            android:background="#000000"
+                            android:id="@+id/user_color_value" />
+                    </LinearLayout>
                 </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/email_id"
-                        android:text="@string/email"
-                        android:textSize="25sp"
-                        android:paddingRight="8dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/user_email_value"
-                        android:textSize="25sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/color"
-                        android:textSize="25sp"
-                        android:paddingRight="8dp"/>
-                    <View
-                        android:layout_width="50dp"
-                        android:layout_height="match_parent"
-                        android:background="#000000"
-                        android:id="@+id/user_color_value" />
-                </LinearLayout>
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            card_view:cardCornerRadius="4dp">
-            <TableLayout
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stretchColumns="1"
-                android:padding="8dp"
-                android:id="@+id/streets_table">
-                <TableRow>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/street"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
-                    <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="@string/points"
-                        android:gravity="center"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
-                </TableRow>
-            </TableLayout>
+                card_view:cardCornerRadius="4dp">
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="1"
+                    android:padding="8dp"
+                    android:id="@+id/streets_table">
+                    <TableRow>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/street"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:text="@string/points"
+                            android:gravity="center"
+                            android:textSize="18sp"
+                            android:textStyle="bold"/>
+                    </TableRow>
+                </TableLayout>
 
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
-</ScrollView>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
