@@ -1,6 +1,8 @@
 package org.peno.b4.bikerisk;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
@@ -56,6 +58,7 @@ public class PositionManager implements LocationListener {
     private static class StreetPoints {
         public String street;
         public int points;
+
         public StreetPoints(String street, int points) {
             this.street = street;
             this.points = points;
@@ -120,8 +123,8 @@ public class PositionManager implements LocationListener {
                     int length = upper - lower;
 
                     com.google.maps.model.LatLng[] points =
-                            routeInfo.routePoints.subList(lower,  upper)
-                            .toArray(new com.google.maps.model.LatLng[length]);
+                            routeInfo.routePoints.subList(lower, upper)
+                                    .toArray(new com.google.maps.model.LatLng[length]);
 
                     SnappedPoint[] result = RoadsApi.snapToRoads(geoApiContext, false, points).await();
 
@@ -234,7 +237,7 @@ public class PositionManager implements LocationListener {
     }
 
     private PositionManager(Context ctx, UIObjects o) {
-        this.locationManager = (LocationManager)ctx.getSystemService(Context.LOCATION_SERVICE);
+        this.locationManager = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
 
         connectionManager = ConnectionManager.getInstance();
 
@@ -293,6 +296,9 @@ public class PositionManager implements LocationListener {
             if (UIobjects != null)
                 UIobjects.progressBar.setVisibility(View.VISIBLE);
             new SnapToRoadTask().execute();
+        } else {
+            if (UIobjects != null)
+                UIobjects.progressBar.setVisibility(View.GONE);
         }
     }
 

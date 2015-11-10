@@ -126,8 +126,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         Log.d(TAG, "on pause");
-        // stop connection with server
-        connectionManager.stop();
         //TODO: stop positionManager from calling ui code
         super.onPause();
     }
@@ -300,6 +298,14 @@ public class MainActivity extends AppCompatActivity
         }
         switch (item.getItemId()) {
             case R.id.action_logout:
+                if (positionManager.started) {
+                    hideStartedNotification();
+                    hideInfoText();
+                    hideProgressBar();
+                    positionManager.stop();
+
+                    invalidateOptionsMenu();
+                }
                 this.connectionManager.logout();
                 return super.onOptionsItemSelected(item);
             case R.id.action_user_info:
