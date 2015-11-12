@@ -45,9 +45,9 @@ public class PositionManager implements LocationListener {
         public GoogleMap mMap;
         public TextView speedText;
         public TableLayout table;
-        public ProgressBar progressBar;
+        public View progressBar;
 
-        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, ProgressBar p) {
+        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, View p) {
             this.mMap = mMap;
             this.speedText = spt;
             this.table = table;

@@ -367,8 +367,8 @@ public class ConnectionManager {
                         continue;
 
                     String line = reader.readLine();
-                    Log.d("RES", line);
                     if (line != null) {
+                        Log.d("RES", line);
                         try {
                             JSONObject resObj = new JSONObject(line);
                             String req = resObj.getString("req");
