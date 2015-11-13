@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 public class ConnectionManager {
     private static final String TAG = "LoginManager";
 
+
     public interface ResponseListener {
         /**
          * called when server sends response -> update UI
@@ -181,6 +182,11 @@ public class ConnectionManager {
     public void checkLogin() { sendRequest("req", "check-login", "key", key, "user", user); }
 
     //TODO: convert all request to use sendRequest
+
+    public void getFriends() {
+        sendRequest("req", "get-friends", "user", user, "key", key);
+    }
+
     public void login(String user, String pass) {
         JSONObject LogInObject = new JSONObject();
         try {

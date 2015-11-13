@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/search_new_friends"
+        android:icon="@drawable/ic_person_add_white_24dp"
+        android:title="@string/search_new_friends"
+        app:showAsAction="ifRoom" />
+</menu>

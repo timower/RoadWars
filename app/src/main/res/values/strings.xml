@@ -26,4 +26,10 @@
     <string name="start">Start</string>
     <string name="connection_lost">Connection lost!</string>
     <string name="gps_service_not_available">GPS service not available</string>
+    <string name="My_friends">My friends</string>
+    <string name="Color">Color</string>
+    <string name="Remove_friend">Remove friend</string>
+    <string name="new_requests">New requests</string>
+    <string name="search_new_friends">Search new friends!</string>
+    <string name="remove">remove</string>
 </resources>

@@ -7,8 +7,13 @@
         app:showAsAction="always"/>
     <item android:id="@+id/action_user_info"
         android:title="@string/my_profile"
+        android:icon="@drawable/ic_person_white_24dp"
         app:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_my_friends"
+        android:title="@string/My_friends"
+        android:icon="@drawable/ic_group_white_24dp"
+        app:showAsAction="ifRoom" />
     <item android:id="@+id/action_logout"
-    android:title="@string/logout"
-    app:showAsAction="never" />
+        android:title="@string/logout"
+        app:showAsAction="never" />
 </menu>

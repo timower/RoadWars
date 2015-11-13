@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity
         if (positionManager == null || !positionManager.started) {
             item.setIcon(R.drawable.ic_play_dark);
         } else {
-            item.setIcon(R.drawable.ic_pause_dark);
+            item.setIcon(R.drawable.ic_stop_white_24dp);
 
         }
         return super.onCreateOptionsMenu(menu);
@@ -331,6 +331,10 @@ public class MainActivity extends AppCompatActivity
                 }
                 // redraw options menu:
                 invalidateOptionsMenu();
+            case R.id.action_my_friends:
+                Intent intent1 = new Intent(this, FriendsActivity.class);
+                startActivity(intent1);
+                return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
         }
