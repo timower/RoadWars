@@ -64,6 +64,12 @@ public class StreetRankActivity extends AppCompatActivity
         switch (item.getItemId()) {
             case R.id.add_points:
                 connectionManager.addPoints(street, 5);
+                return super.onOptionsItemSelected(item);
+            case R.id.action_start_minigame:
+                Intent intent = new Intent(this, MinigameActivity.class);
+                intent.putExtra(MinigameActivity.EXTRA_STREET, street);
+                startActivity(intent);
+                return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
         }

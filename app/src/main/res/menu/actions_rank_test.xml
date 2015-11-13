@@ -4,4 +4,7 @@
     <item android:id="@+id/add_points"
         android:title="@string/test_add_points"
         app:showAsAction="never"/>
+    <item android:id="@+id/action_start_minigame"
+        android:title="@string/minigame"
+        app:showAsAction="ifRoom" />
 </menu>

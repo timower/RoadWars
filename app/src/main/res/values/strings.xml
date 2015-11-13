@@ -25,4 +25,11 @@
     <string name="hue">Hue</string>
     <string name="start">Start</string>
     <string name="connection_lost">Connection lost!</string>
+    <string name="LiveRace">Live Race</string>
+    <string name="Choose_a_minigame_for">Choose a Minigame for</string>
+    <string name="Fotoronde">Fotoronde</string>
+    <string name="minigame">Minigame</string>
+    <string name="title_activity_minigame">Minigame</string>
+
+
 </resources>
