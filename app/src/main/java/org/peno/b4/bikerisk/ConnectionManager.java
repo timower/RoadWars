@@ -1,5 +1,12 @@
 package org.peno.b4.bikerisk;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLngBounds;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,14 +21,6 @@ import java.net.Socket;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Handler;
-import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLngBounds;
-
 /**
  * Singleton that manages the connection with the server.
  * It stores the username and password and also provides methods to send request to the server.
@@ -29,7 +28,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
  */
 public class ConnectionManager {
     private static final String TAG = "LoginManager";
-
 
     public interface ResponseListener {
         /**
@@ -179,7 +177,9 @@ public class ConnectionManager {
         }
     }
 
-    public void checkLogin() { sendRequest("req", "check-login", "key", key, "user", user); }
+    public void checkLogin() {
+        sendRequest("req", "check-login", "key", key, "user", user);
+    }
 
     //TODO: convert all request to use sendRequest
 
@@ -188,159 +188,41 @@ public class ConnectionManager {
     }
 
     public void login(String user, String pass) {
-        JSONObject LogInObject = new JSONObject();
-        try {
-            LogInObject.put("req", "login");
-            LogInObject.put("pass", pass);
-            LogInObject.put("user", user);
-            this.user = user;
-
-            String message = LogInObject.toString();
-            new Thread(new WriteClass(message)).start();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        sendRequest("req", "login", "pass", pass, "user", user);
     }
 
     public void logout() {
-        JSONObject LogOutObject = new JSONObject();
-        try {
-            LogOutObject.put("req", "logout");
-            LogOutObject.put("key", key);
-            LogOutObject.put("user", user);
-
-            String message = LogOutObject.toString();
-            new Thread(new WriteClass(message)).start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        sendRequest("req", "logout", "key", key, "user", user);
     }
 
     public void getUserInfo(String name) {
-        JSONObject JObject = new JSONObject();
-        try {
-            JObject.put("req", "user-info");
-            JObject.put("key", key);
-            JObject.put("user", user);
-            JObject.put("info-user", name);
-
-            String message = JObject.toString();
-            new Thread(new WriteClass(message)).start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        sendRequest("req", "user-info", "key", key, "user", user, "info-user", name);
     }
 
     public void createUser(String name, String pass, String email, int color) {
-        JSONObject JObject = new JSONObject();
-        try {
-            JObject.put("req", "create-user");
-            JObject.put("user", name);
-            JObject.put("pass", pass);
-            JObject.put("email", email);
-            JObject.put("color", color);
-
-            String message = JObject.toString();
-            new Thread(new WriteClass(message)).start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
-    }
+        sendRequest("req", "create-user", "user", name, "pass", pass, "email", email, "color", color);
+       }
 
     public void getAllPoints(String name) {
-        JSONObject JObject = new JSONObject();
-        try {
-            JObject.put("req", "get-all-points");
-            JObject.put("key", key);
-            JObject.put("user", user);
-            JObject.put("info-user", name);
-
-            String message = JObject.toString();
-            new Thread(new WriteClass(message)).start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        sendRequest("req", "get-all-points", "key", key, "user", user, "info-user", name);
     }
 
     public void getStreetRank(String street) {
-        JSONObject JObject = new JSONObject();
-        try {
-            JObject.put("req", "street-rank");
-            JObject.put("key", key);
-            JObject.put("user", user);
-            JObject.put("street", street);
-
-            String message = JObject.toString();
-            new Thread(new WriteClass(message)).start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        sendRequest("req", "street-rank", "key", key, "user", user, "street", street);
     }
 
     public void addPoints(String street, int points) {
-        JSONObject JObject = new JSONObject();
-        try {
-            JObject.put("req", "add-points");
-            JObject.put("key", key);
-            JObject.put("user", user);
-            JObject.put("street", street);
-            JObject.put("points", points);
-
-            String message = JObject.toString();
-            new Thread(new WriteClass(message)).start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        sendRequest("req", "add-points", "key", key, "user", user, "street", street, "points", points);
     }
 
     public void getStreet(String street) {
-        JSONObject JObject = new JSONObject();
-        try {
-            JObject.put("req", "get-street");
-            JObject.put("key", key);
-            JObject.put("user", user);
-            JObject.put("street", street);
-
-            String message = JObject.toString();
-            new Thread(new WriteClass(message)).start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        sendRequest("req", "get-street", "key", key, "user", user, "street", street);
     }
 
     public void getAllStreets(LatLngBounds bounds) {
-        JSONObject JObject = new JSONObject();
-        try {
-            JObject.put("req", "get-all-streets");
-            JObject.put("key", key);
-            JObject.put("user", user);
-            JObject.put("neLat", bounds.northeast.latitude);
-            JObject.put("neLong", bounds.northeast.longitude);
-            JObject.put("swLat", bounds.southwest.latitude);
-            JObject.put("swLong", bounds.southwest.longitude);
-
-            String message = JObject.toString();
-            new Thread(new WriteClass(message)).start();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        }
+        sendRequest("req", "get-all-streets", "key", key, "user", user, "neLat", bounds.northeast.latitude,
+                "neLong", bounds.northeast.longitude, "swLat", bounds.southwest.latitude,
+                        "swLong", bounds.southwest.longitude);
     }
 
 

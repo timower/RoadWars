@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -38,9 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, OnMapReadyCallback,
@@ -255,6 +252,15 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(this, "error saving points", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case "user-info":
+                if (result) {
+                    try {
+                        positionManager.setUserColor(response.getInt("color"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
 
         }
     }
@@ -324,6 +330,7 @@ public class MainActivity extends AppCompatActivity
                     showStartedNotification();
                     showInfoText();
                     positionManager.start();
+                    connectionManager.getUserInfo(connectionManager.user);
                 } else {
                     hideStartedNotification();
                     hideInfoText();
@@ -379,7 +386,7 @@ public class MainActivity extends AppCompatActivity
              */
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                if(progressBar.getVisibility() == View.VISIBLE){
+                if (progressBar.getVisibility() == View.VISIBLE) {
                     return;
                 }
                 Log.d(TAG, "camera changed");

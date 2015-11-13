@@ -60,6 +60,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity
+            android:name=".MinigameActivity"
+            android:label="@string/title_activity_minigame"
+            android:theme="@style/AppTheme.NoActionBar" >
+                android:value=".MainActivity" />
+        </activity>
         <activity android:name=".FriendsActivity" >
         </activity>
     </application>
