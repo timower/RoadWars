@@ -46,12 +46,14 @@ public class PositionManager implements LocationListener {
         public TextView speedText;
         public TableLayout table;
         public View progressBar;
+        public TextView connectionLostBanner;
 
-        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, View p) {
+        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, View p, TextView connectionLostBanner) {
             this.mMap = mMap;
             this.speedText = spt;
             this.table = table;
             this.progressBar = p;
+            this.connectionLostBanner = connectionLostBanner;
         }
     }
 
@@ -381,12 +383,16 @@ public class PositionManager implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
-        //TODO: hide error or something
+        UIobjects.connectionLostBanner.setVisibility(View.GONE);
+        UIobjects.connectionLostBanner.setText(R.string.connection_lost);
+        UIobjects.connectionLostBanner.setTextSize(25);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        //TODO: error or something (gps is off)
         UIobjects.progressBar.setVisibility(View.VISIBLE);
+        UIobjects.connectionLostBanner.setVisibility(View.VISIBLE);
+        UIobjects.connectionLostBanner.setText(R.string.gps_service_not_available);
+        UIobjects.connectionLostBanner.setTextSize(20);
     }
 }

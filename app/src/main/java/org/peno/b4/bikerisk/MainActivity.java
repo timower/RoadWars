@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity
         geocoder = new Geocoder(this);
 
         positionManager = PositionManager.getInstance(this,
-                new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar));
+                new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar, connectionLostBanner));
         if (positionManager.started) {
             // show notification
             showStartedNotification();
