@@ -1,8 +1,8 @@
 package org.peno.b4.bikerisk;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
@@ -29,14 +29,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import com.google.maps.GeoApiContext;
 import com.google.maps.RoadsApi;
 import com.google.maps.model.SnappedPoint;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 public class PositionManager implements LocationListener {
     private static PositionManager instance;
@@ -100,6 +100,8 @@ public class PositionManager implements LocationListener {
     private Geocoder geocoder;
 
     private Marker locMarker;
+    private Bitmap bicycleBitmap;
+    private HashMap<Float, Bitmap> bicycleCache = new HashMap<>();
     private Circle locRad;
     private Polyline userRoute;
 
@@ -249,7 +251,8 @@ public class PositionManager implements LocationListener {
         this.routeInfo = new RouteInfo();
         this.geoApiContext = new GeoApiContext().setApiKey(
                 context.getString(R.string.google_maps_key));
-
+        this.bicycleBitmap = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.usericon);
         instance = this;
     }
 
@@ -262,6 +265,12 @@ public class PositionManager implements LocationListener {
         }
         return instance;
 
+    }
+
+    public void setUserColor(int color){
+        float HSV[] = new float[3];
+        Color.colorToHSV(color, HSV);
+        bicycleBitmap=Utils.getStreetBitmap(bicycleCache, bicycleBitmap, HSV[0]);
     }
 
     public void start() {
@@ -364,7 +373,8 @@ public class PositionManager implements LocationListener {
             locMarker = UIobjects.mMap.addMarker(new MarkerOptions()
                     .title("bike")
                     .snippet(connectionManager.user + " is here")
-                    .position(pos));
+                    .position(pos)
+                    .icon(BitmapDescriptorFactory.fromBitmap(bicycleBitmap)));
             locRad = UIobjects.mMap.addCircle(new CircleOptions()
                     .strokeColor(Color.BLUE)
                     .strokeWidth(1)

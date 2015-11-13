@@ -1,5 +1,12 @@
 package org.peno.b4.bikerisk;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLngBounds;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,14 +20,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Handler;
-import android.util.Log;
-
-import com.google.android.gms.maps.model.LatLngBounds;
 
 /**
  * Singleton that manages the connection with the server.
@@ -182,7 +181,7 @@ public class ConnectionManager {
         sendRequest("req", "check-login", "key", key, "user", user);
     }
 
-    public void login(String pass) {
+    public void login(String user, String pass) {
         sendRequest("req", "login", "pass", pass, "user", user);
     }
 
