@@ -25,6 +25,9 @@ public class MinigameActivity extends AppCompatActivity
     private String street;
     public static final String TAG = "MinigameActivity";
 
+    // VERWIJDEREN
+    private String allow_nfc;
+
     private TextView connectionLostBanner;
 
     @Override
@@ -37,7 +40,7 @@ public class MinigameActivity extends AppCompatActivity
         TextView StreetName = (TextView) findViewById(R.id.street_name_value);
         StreetName.setText(street);
         //String city = intent.getStringExtra(EXTRA_CITY);
-        //getSupportActionBar().setTitle(street);
+        //getSupportActionBar().setTitle("Minigame");
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
     }
 
@@ -62,9 +65,15 @@ public class MinigameActivity extends AppCompatActivity
     }
 
     public void LiveRaceClicked(View view) {
+        Intent intent = new Intent(this, UserSearchActivity.class);
+        intent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, allow_nfc);
+        startActivity(intent);
+
+
+
     }
 
-    public void MinigameClicked(View view) {
+    public void FotorondeClicked(View view) {
     }
 }
 
