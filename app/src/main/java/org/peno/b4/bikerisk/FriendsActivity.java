@@ -97,7 +97,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
 
                         TextView remove = new TextView(this);
                         remove.setText(R.string.remove);
-                        remove.setBackgroundColor(Color.rgb(0, 122, 204));
+                        remove.setTextColor(Color.rgb(0, 50, 250));
                         remove.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
