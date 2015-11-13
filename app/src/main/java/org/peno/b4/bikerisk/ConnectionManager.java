@@ -163,24 +163,24 @@ public class ConnectionManager {
         editor.commit();
     }
 
-
-    public void checkLogin() {
-        JSONObject LogInObject = new JSONObject();
+    private void sendRequest(Object... kvs) {
+        if (kvs.length % 2 != 0)
+            throw new RuntimeException("key value pairs must be even");
+        JSONObject reqObject = new JSONObject();
         try {
-            LogInObject.put("req", "check-login");
-            LogInObject.put("key", key);
-            LogInObject.put("user", user);
-
-            String message = LogInObject.toString();
-            Log.d(TAG, "checking login...");
-            new Thread(new WriteClass(message)).start();
-
+            for (int i = 0; i < kvs.length; i += 2) {
+                reqObject.put((String)kvs[i], kvs[i+1]);
+            }
+            new Thread(new WriteClass(reqObject.toString())).start();
         } catch (JSONException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         }
     }
 
+    public void checkLogin() { sendRequest("req", "check-login", "key", key, "user", user); }
+
+    //TODO: convert all request to use sendRequest
     public void login(String user, String pass) {
         JSONObject LogInObject = new JSONObject();
         try {
