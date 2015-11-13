@@ -126,7 +126,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         Log.d(TAG, "on pause");
-        //TODO: stop positionManager from calling ui code
+        // stop connection with server
+        connectionManager.stop();
+        if (mMap != null) {
+            positionManager.pause(mMap.getCameraPosition());
+        } else {
+            positionManager.pause(null);
+        }
         super.onPause();
     }
 
@@ -374,9 +380,6 @@ public class MainActivity extends AppCompatActivity
                     return;
                 }
                 Log.d(TAG, "camera changed");
-                // TODO: fix dist calculation
-                // we can't rely on just distance (because of zoom)
-                // so I use pixels -> different between devices / unreliable
                 VisibleRegion reg = mMap.getProjection().getVisibleRegion();
                 LatLngBounds bounds = reg.latLngBounds;
                 float dist = 0;
