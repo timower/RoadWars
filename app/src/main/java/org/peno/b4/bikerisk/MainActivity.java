@@ -324,7 +324,6 @@ public class MainActivity extends AppCompatActivity
                     showStartedNotification();
                     showInfoText();
                     positionManager.start();
-                    showProgressBar();
                 } else {
                     hideStartedNotification();
                     hideInfoText();
