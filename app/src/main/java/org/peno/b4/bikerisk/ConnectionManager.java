@@ -178,7 +178,7 @@ public class ConnectionManager {
     }
 
     public void checkLogin() {
-        sendRequest("req", "check-login", "key", key, "user", user);
+        sendRequest("req", "check-login", "key", this.key, "user", this.user);
     }
 
     //TODO: convert all request to use sendRequest
@@ -188,6 +188,7 @@ public class ConnectionManager {
     }
 
     public void login(String user, String pass) {
+        this.user = user;
         sendRequest("req", "login", "pass", pass, "user", user);
     }
 
@@ -201,7 +202,7 @@ public class ConnectionManager {
 
     public void createUser(String name, String pass, String email, int color) {
         sendRequest("req", "create-user", "user", name, "pass", pass, "email", email, "color", color);
-       }
+    }
 
     public void getAllPoints(String name) {
         sendRequest("req", "get-all-points", "key", key, "user", user, "info-user", name);

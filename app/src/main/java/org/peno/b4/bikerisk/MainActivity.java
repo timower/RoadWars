@@ -338,10 +338,6 @@ public class MainActivity extends AppCompatActivity
                 }
                 // redraw options menu:
                 invalidateOptionsMenu();
-            case R.id.action_my_friends:
-                Intent intent1 = new Intent(this, FriendsActivity.class);
-                startActivity(intent1);
-                return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -522,6 +518,4 @@ public class MainActivity extends AppCompatActivity
 
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
     }
-
-
 }
