@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
+//TODO: dynamicly load minigames from minigamemanger.minigame.values()
+
 public class MinigameActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
 
