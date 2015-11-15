@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import org.json.JSONObject;
 
+//TODO: set result when users clicks another user.
+
 public class UserSearchActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
 
@@ -19,10 +21,12 @@ public class UserSearchActivity extends AppCompatActivity
     private TextView connectionLostBanner;
 
     public static final String EXTRA_ALLOW_NFC = "roadwars.allownfc";
+    //public ... String EXTRA_ALL_USERS = ...;
 
     public static final String TAG = "UserSearchActivity";
 
     private boolean allowNFC;
+    //private boolean allUsers; // if false -> only friends
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +35,17 @@ public class UserSearchActivity extends AppCompatActivity
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         Intent intent = getIntent();
         allowNFC = intent.getBooleanExtra(EXTRA_ALLOW_NFC, false);
+        //allUsers = ...
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
+        //if (...) {
+        //connectionManager.getAllUsers()
+        //or
+        //connectionManager.getFriends()
     }
 
     @Override
@@ -61,6 +70,9 @@ public class UserSearchActivity extends AppCompatActivity
                 Log.d(TAG, response.toString());
             }
         }
+        // else if (req.equals("get-friends") {
+        // ...
+        // }
     }
 
 

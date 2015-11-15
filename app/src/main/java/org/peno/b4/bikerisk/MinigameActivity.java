@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 //TODO: dynamicly load minigames from minigamemanger.minigame.values()
 
+//TODO: rename
 public class MinigameActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
 
@@ -64,10 +65,9 @@ public class MinigameActivity extends AppCompatActivity
     public void LiveRaceClicked(View view) {
         Intent intent = new Intent(this, UserSearchActivity.class);
         intent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, allow_nfc);
+        //TODO: change to startActivityForResult()
+        //read: https://developer.android.com/training/basics/intents/result.html
         startActivity(intent);
-
-
-
     }
 
     public void FotorondeClicked(View view) {

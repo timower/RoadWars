@@ -10,8 +10,15 @@ public class MiniGameManager {
     //TODO: add properties to each minigame (full name, points, ...)
     // read: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
     public enum MiniGame {
-        NONE,
         STREET_RACE, // ("race to street", 1000, ...)
+        NONE;
+
+        private String fullName;
+
+        //TODO: create initalizer
+        //private MiniGame(String fullName) { ... }
+
+        //private String getFullName() {...}
     }
 
     private MiniGame runningMiniGame;
@@ -22,7 +29,7 @@ public class MiniGameManager {
     }
 
     public MiniGameManager getInstance() {
-        if (instance ==null)
+        if (instance == null)
             instance = new MiniGameManager();
         return instance;
     }

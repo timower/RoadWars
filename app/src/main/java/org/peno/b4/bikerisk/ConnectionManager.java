@@ -181,8 +181,6 @@ public class ConnectionManager {
         sendRequest("req", "check-login", "key", this.key, "user", this.user);
     }
 
-    //TODO: convert all request to use sendRequest
-
     public void getFriends() {
         sendRequest("req", "get-friends", "user", user, "key", key);
     }
@@ -225,6 +223,8 @@ public class ConnectionManager {
                 "neLong", bounds.northeast.longitude, "swLat", bounds.southwest.latitude,
                         "swLong", bounds.southwest.longitude);
     }
+
+    //TODO: add get friends, remove friends, add friend, get all users.
 
 
     /**

@@ -27,6 +27,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
+        //TODO: move to onResume
         connectionManager = ConnectionManager.getInstance(this, this);
         connectionManager.getFriends();
     }
@@ -44,6 +45,8 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
             case R.id.search_new_friends:
                 Toast.makeText(FriendsActivity.this, "search for friends", Toast.LENGTH_SHORT).show();
                 // TODO: intent
+                //startAcitivtyForResult(...);
+                //read: https://developer.android.com/training/basics/intents/result.html
             default:
                 return super.onOptionsItemSelected(item);
         }
