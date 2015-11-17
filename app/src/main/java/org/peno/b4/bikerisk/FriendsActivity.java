@@ -214,6 +214,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
             }
         }
     }
+    // TODO: 17/11/2015 refresh UI list when friend removed/accepted/declined
 
     @Override
     public void onConnectionLost(String reason) {
