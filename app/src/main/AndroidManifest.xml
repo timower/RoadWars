@@ -61,9 +61,12 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".MinigameActivity"
-            android:label="@string/title_activity_minigame"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:name=".MinigameActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".StreetRankActivity" />
+        </activity>
+        <activity android:name=".UserSearchActivity" >
         </activity>
         <activity android:name=".FriendsActivity" >
         </activity>
