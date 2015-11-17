@@ -185,6 +185,10 @@ public class ConnectionManager {
         sendRequest("req", "get-friends", "user", user, "key", key);
     }
 
+    public void getFriendRequests() {
+        sendRequest("req", "get-friend-reqs", "user", user, "key", key);
+    }
+
     public void login(String user, String pass) {
         this.user = user;
         sendRequest("req", "login", "pass", pass, "user", user);
@@ -224,7 +228,23 @@ public class ConnectionManager {
                         "swLong", bounds.southwest.longitude);
     }
 
-    //TODO: add get friends, remove friends, add friend, get all users.
+    public void addFriend(String name) {
+        sendRequest("req", "add-friend", "key", key, "user", user, "name", name);
+    }
+
+    public void removeFriend(String name) {
+        sendRequest("req", "remove-friend", "key", key, "user", user, "name", name);
+    }
+
+    public void acceptFriend(String name) {
+        sendRequest("req", "accept-friend", "key", key, "user", user, "name", name);
+    }
+
+    public void declineFriend(String name) {
+        sendRequest("req", "remove-friend-req", "key", key, "user", user, "name", name);
+    }
+
+    //TODO: get all users.
 
 
     /**

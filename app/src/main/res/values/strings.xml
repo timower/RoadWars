@@ -39,4 +39,6 @@
     <string name="new_requests">New requests</string>
     <string name="search_new_friends">Search new friends!</string>
     <string name="remove">remove</string>
+    <string name="accept">accept</string>
+    <string name="decline">decline</string>
 </resources>
