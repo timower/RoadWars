@@ -104,6 +104,7 @@ public class PositionManager implements LocationListener {
     private HashMap<Float, Bitmap> bicycleCache = new HashMap<>();
     private Circle locRad;
     private Polyline userRoute;
+    private MiniGameManager minigameManager;
 
     private Context context;
     private GeoApiContext geoApiContext;
@@ -244,6 +245,7 @@ public class PositionManager implements LocationListener {
         this.locationManager = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
 
         connectionManager = ConnectionManager.getInstance();
+        minigameManager = MiniGameManager.getInstance();
 
         this.UIobjects = o;
         this.context = ctx.getApplicationContext();
@@ -340,6 +342,8 @@ public class PositionManager implements LocationListener {
         } else if (!gotFirstLocation){
             return;
         }
+
+        minigameManager.onLocationChanged(location);
 
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
         float speed = location.getSpeed();

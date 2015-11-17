@@ -60,14 +60,23 @@ public class MinigameActivity extends AppCompatActivity
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
+
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (...) {
+            MiniGameManager.getInstance().startRaceGame(street);
+        }
+    }
+
 
     public void LiveRaceClicked(View view) {
         Intent intent = new Intent(this, UserSearchActivity.class);
         intent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, allow_nfc);
         //TODO: change to startActivityForResult()
         //read: https://developer.android.com/training/basics/intents/result.html
-        startActivity(intent);
+        startActivityForResult(intent,requestCode);
     }
 
     public void FotorondeClicked(View view) {
