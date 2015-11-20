@@ -1,14 +1,21 @@
 package org.peno.b4.bikerisk;
 
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -18,6 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 //TODO: set result when users clicks another user.
@@ -28,6 +38,7 @@ public class UserSearchActivity extends AppCompatActivity
     private ConnectionManager connectionManager;
     private TextView connectionLostBanner;
 
+    public static final int GET_USER_REQ = 1;
     public static final String EXTRA_ALLOW_NFC = "roadwars.allownfc";
     //public ... String EXTRA_ALL_USERS = ...;
 
@@ -36,13 +47,54 @@ public class UserSearchActivity extends AppCompatActivity
     private boolean allowNFC;
     //private boolean allUsers; // if false -> only friends
 
+    private ArrayList<Pair<String, Integer>> users;
+    private ArrayList<Pair<String, Integer>> filteredUsers;
+    private EditText searchBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_search);
+        resetLayout();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         Intent intent = getIntent();
         allowNFC = intent.getBooleanExtra(EXTRA_ALLOW_NFC, false);
+
+        users = new ArrayList<>();
+        filteredUsers = new ArrayList<>();
+
+        searchBar = (EditText)findViewById(R.id.search_text_bar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // filter lijst met searchBar.getText()
+                String text = searchBar.getText().toString();
+                // voer displayArray uit
+                filteredUsers.clear();
+                int length = users.size();
+                for (int i = 0; i < length; i++) {
+                    final String name = users.get(i).first;
+                    if (name.startsWith(text)) {
+                        filteredUsers.add(users.get(i));
+                    }
+                }
+                displayArray(filteredUsers);
+                Log.d(TAG, "text changed");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         //allUsers = ...
     }
 
@@ -71,63 +123,22 @@ public class UserSearchActivity extends AppCompatActivity
     public void onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
-        // Change request!
         if (req.equals("get-all-users")) {
-            if (!result) {
+            if (result) {
+                users.clear();
                 // clear layout:
-                setContentView(R.layout.activity_street_rank);
 
                 Log.d(TAG, response.toString());
                 try {
-
-                    // Error: No value for user?
-                    JSONArray user = response.getJSONArray("user");
+                    JSONArray user = response.getJSONArray("users");
                     int length = user.length();
-
-                    TableLayout table = (TableLayout) findViewById(R.id.user_table);
-                    TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
-                            TableLayout.LayoutParams.WRAP_CONTENT,
-                            TableLayout.LayoutParams.WRAP_CONTENT);
-                    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
-                            TableRow.LayoutParams.WRAP_CONTENT,
-                            TableRow.LayoutParams.WRAP_CONTENT);
-
                     for (int i = 0; i < length; i++) {
                         JSONArray subA = user.getJSONArray(i);
-                        // if (subA.length() != 2)
-                        // continue;
-                        final String name = subA.getString(0);
-
-                        int color = subA.getInt(1);
-
-                        TableRow nRow = new TableRow(this);
-                        nRow.setLayoutParams(tableParams);
-
-                        TextView userView = new TextView(this);
-                        userView.setLayoutParams(rowParams);
-                        userView.setGravity(Gravity.CENTER);
-
-                        View colorView = new View(this);
-                        colorView.setLayoutParams(rowParams);
-
-                        // colorView.setGravity(Gravity.CENTER);
-                        userView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(UserSearchActivity.this, "user clicked", Toast.LENGTH_LONG).show();
-                            }
-                        });
-
-                        userView.setText(name);
-                        colorView.setBackgroundColor(color);
-
-                        nRow.addView(colorView);
-                        nRow.addView(userView);
-
-                        table.addView(nRow);
-
-                        Log.d(TAG, name);
+                        if (subA.length() != 2)
+                            continue;
+                        users.add(new Pair<>(subA.getString(0), subA.getInt(1)));
                     }
+                    displayArray(users);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -142,7 +153,87 @@ public class UserSearchActivity extends AppCompatActivity
 
     }
 
+    public void displayArray(List<Pair<String, Integer>> list) {
+        resetLayout();
 
+        TableLayout table = (TableLayout) findViewById(R.id.user_table);
+        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.WRAP_CONTENT,
+                TableLayout.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams colorRowParams = new TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.MATCH_PARENT);
+
+        for (Pair<String, Integer> pair : list) {
+            final String name = pair.first;
+
+            int color = pair.second;
+
+            TableRow nRow = new TableRow(this);
+            nRow.setLayoutParams(tableParams);
+
+            TextView userView = new TextView(this);
+            userView.setLayoutParams(rowParams);
+            userView.setGravity(Gravity.CENTER);
+
+            View colorView = new View(this);
+            colorView.setLayoutParams(colorRowParams);
+
+            // colorView.setGravity(Gravity.CENTER);
+            userView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(UserSearchActivity.this, "user clicked", Toast.LENGTH_LONG).show();
+                    Intent result = new Intent("org.peno.b4.bikerisk.RESULT_ACTION", Uri.parse("username://" + name));
+                    setResult(RESULT_OK, result);
+                    finish();
+                }
+            });
+
+            userView.setText(name);
+            colorView.setBackgroundColor(color);
+
+            nRow.addView(colorView);
+            nRow.addView(userView);
+
+            table.addView(nRow);
+        }
+    }
+
+    private void resetLayout() {
+        TableLayout table = (TableLayout) findViewById(R.id.user_table);
+        table.removeAllViews();
+        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.WRAP_CONTENT,
+                TableLayout.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
+                TableRow.LayoutParams.WRAP_CONTENT,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow nRow = new TableRow(this);
+        nRow.setLayoutParams(tableParams);
+
+        // color:
+        TextView colorView = new TextView(this);
+        colorView.setLayoutParams(rowParams);
+        colorView.setText(R.string.color);
+        colorView.setTextSize(18);
+        colorView.setTypeface(null, Typeface.BOLD);
+        //username
+        TextView userView = new TextView(this);
+        userView.setLayoutParams(rowParams);
+        userView.setText(R.string.Username);
+        userView.setTextSize(18);
+        userView.setTypeface(null, Typeface.BOLD);
+        userView.setGravity(Gravity.CENTER);
+
+        nRow.addView(colorView);
+        nRow.addView(userView);
+
+        table.addView(nRow);
+    }
 
     @Override
     public void onConnectionLost(String reason) {
