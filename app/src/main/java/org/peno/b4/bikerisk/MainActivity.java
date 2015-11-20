@@ -260,6 +260,8 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
+            case "get-first":
+                MiniGameManager.getInstance().setFirst(result);
                 break;
 
         }

@@ -55,6 +55,21 @@ public class Utils {
         return null;
     }
 
+    public static LatLng getLatLng(Geocoder geocoder, String street){
+        if(geocoder != null){
+            try{
+                List<Address> locations = geocoder.getFromLocationName(street + ", Leuven",1);
+                if (locations.size() != 1)
+                    return null;
+                return new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            Log.d("POS", "error, geocoder is null!");
+        }
+        return null;
+    }
     /**
      * Returns a bitmap of a picture colored in the user's color.
      * If it already exists in the marker cache, it will be reused.
