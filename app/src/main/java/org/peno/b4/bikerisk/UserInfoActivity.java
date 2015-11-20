@@ -217,7 +217,6 @@ public class UserInfoActivity extends AppCompatActivity
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         } else if (req.equals("add-friend")) {
             if (result) {

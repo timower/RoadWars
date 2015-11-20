@@ -65,10 +65,6 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        //if (requestCode == UserSearchActivity.SEARCH_FRIEND){
-            //connectionManager.addFriend(data.getDataString());
-        //}
-        // TODO: fix userSearch
         if (requestCode == UserSearchActivity.GET_USER_REQ) {
             if (resultCode == RESULT_OK) {
                 String name = data.getData().getHost();

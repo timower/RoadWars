@@ -186,7 +186,7 @@ public class UserSearchActivity extends AppCompatActivity
             userView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(UserSearchActivity.this, "user clicked", Toast.LENGTH_LONG).show();
+                    Toast.makeText(UserSearchActivity.this, "user "+ name + " selected", Toast.LENGTH_LONG).show();
                     Intent result = new Intent("org.peno.b4.bikerisk.RESULT_ACTION", Uri.parse("username://" + name));
                     setResult(RESULT_OK, result);
                     finish();

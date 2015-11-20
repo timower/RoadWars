@@ -244,13 +244,9 @@ public class ConnectionManager {
         sendRequest("req", "remove-friend-req", "key", key, "user", user, "name", name);
     }
 
-    //TODO: get all users.
     public void getAllUsers() {
         sendRequest("req", "get-all-users", "key", key, "user", user);
     }
-
-    //TODO: add get friends, remove friends, add friend, get all users.
-
 
     /**
      * main communication class,
