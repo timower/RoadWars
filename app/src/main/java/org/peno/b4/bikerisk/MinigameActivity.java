@@ -66,6 +66,7 @@ public class MinigameActivity extends AppCompatActivity
     public void LiveRaceClicked(View view) {
         Intent intent = new Intent(this, UserSearchActivity.class);
         intent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, allow_nfc);
+        intent.putExtra(UserSearchActivity.EXTRA_ALL_USERS, false);
         //TODO: change to startActivityForResult()
         //read: https://developer.android.com/training/basics/intents/result.html
         startActivityForResult(intent, UserSearchActivity.GET_USER_REQ);

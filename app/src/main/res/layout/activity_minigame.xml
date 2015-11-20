@@ -63,7 +63,8 @@ android:orientation="vertical">
         android:layout_alignLeft="@+id/chooseMinigame"
         android:layout_alignStart="@+id/chooseMinigame"
         android:layout_alignRight="@+id/chooseMinigame"
-        android:layout_alignEnd="@+id/chooseMinigame" />
+        android:layout_alignEnd="@+id/chooseMinigame"
+        android:background="@color/colorPrimary"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -77,7 +78,9 @@ android:orientation="vertical">
         android:layout_alignLeft="@+id/button"
         android:layout_alignStart="@+id/button"
         android:layout_alignRight="@+id/button"
-        android:layout_alignEnd="@+id/button" />
+        android:layout_alignEnd="@+id/button"
+        android:background="@color/colorPrimary" />
+
 
 </RelativeLayout>
 </LinearLayout>
