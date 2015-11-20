@@ -77,7 +77,7 @@ public class MiniGameManager {
                 Location.distanceBetween(location.getLatitude(),location.getLongitude(),this.target.latitude,this.target.longitude,distance);
                 if (distance[0]<10){
                     //TODO: game stopped (boolean)
-                    connectionManager.getFirst();
+                    //connectionManager.getFirst();
 
 
                 }

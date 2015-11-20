@@ -56,8 +56,8 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
             case R.id.search_new_friends:
                 Toast.makeText(FriendsActivity.this, "search for friends", Toast.LENGTH_SHORT).show();
                 Intent SearchFriendsIntent = new Intent(this, UserSearchActivity.class);
-                //startActivityForResult(SearchFriendsIntent, UserSearchActivity.SEARCH_FRIEND);
-                //TODO: fix intent
+                SearchFriendsIntent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, true);
+                startActivityForResult(SearchFriendsIntent, UserSearchActivity.GET_USER_REQ);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -69,6 +69,12 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
             //connectionManager.addFriend(data.getDataString());
         //}
         // TODO: fix userSearch
+        if (requestCode == UserSearchActivity.GET_USER_REQ) {
+            if (resultCode == RESULT_OK) {
+                String name = data.getData().getHost();
+                connectionManager.addFriend(name);
+            }
+        }
     }
 
     @Override
