@@ -85,9 +85,6 @@ public class MinigameActivity extends AppCompatActivity
 
     public void FotorondeClicked(View view) {
     }
-
-    public void MinigameClicked(View view) {
-    }
 }
 
 
