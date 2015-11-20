@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -60,23 +61,25 @@ public class MinigameActivity extends AppCompatActivity
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
-
     }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (...) {
-            MiniGameManager.getInstance().startRaceGame(street);
-        }
-    }
-
 
     public void LiveRaceClicked(View view) {
         Intent intent = new Intent(this, UserSearchActivity.class);
         intent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, allow_nfc);
         //TODO: change to startActivityForResult()
         //read: https://developer.android.com/training/basics/intents/result.html
-        startActivityForResult(intent,requestCode);
+        startActivityForResult(intent, UserSearchActivity.GET_USER_REQ);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == UserSearchActivity.GET_USER_REQ) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void FotorondeClicked(View view) {

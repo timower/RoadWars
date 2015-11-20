@@ -224,6 +224,10 @@ public class ConnectionManager {
                         "swLong", bounds.southwest.longitude);
     }
 
+    public void getAllUsers() {
+        sendRequest("req", "get-all-users", "key", key, "user", user);
+    }
+
     //TODO: add get friends, remove friends, add friend, get all users.
 
 

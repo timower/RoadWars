@@ -12,7 +12,7 @@
     <string name="my_profile">My Profile</string>
     <string name="user_name">Username:</string>
     <string name="email">e-mail:</string>
-    <string name="color">Color:</string>
+    <string name="color">Color</string>
     <string name="Username">Username</string>
     <string name="Email_address">Email address</string>
     <string name="Choose_a_color">Choose a color</string>
@@ -39,4 +39,6 @@
     <string name="new_requests">New requests</string>
     <string name="search_new_friends">Search new friends!</string>
     <string name="remove">remove</string>
+    <string name="user">remove</string>
+
 </resources>
