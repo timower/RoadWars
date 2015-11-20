@@ -41,4 +41,7 @@
     <string name="remove">remove</string>
     <string name="accept">accept</string>
     <string name="decline">decline</string>
+    <string name="add_friend">add friend</string>
+    <string name="accept_request">accept request</string>
+    <string name="decline_req">decline request</string>
 </resources>

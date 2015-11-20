@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -77,7 +78,7 @@ public class UserInfoActivity extends AppCompatActivity
         if (req.equals("user-info")) {
             if (result) {
                 try {
-                    String resName = response.getString("user");
+                    final String resName = response.getString("user");
                     TextView name = (TextView) findViewById(R.id.user_name_value);
                     name.setText(resName);
 
@@ -91,6 +92,72 @@ public class UserInfoActivity extends AppCompatActivity
 
                     View color = findViewById(R.id.user_color_value);
                     color.setBackgroundColor(response.getInt("color"));
+                    //friend:
+                    boolean friend = response.getBoolean("friend");
+                    boolean friend_req = response.getBoolean("friend-req");
+                    boolean sent_friend_req = response.getBoolean("sent-friend-req");
+                    if (friend) {
+                        // add info he's friend?
+                        findViewById(R.id.add_friend).setVisibility(View.GONE);
+                        findViewById(R.id.accept_req).setVisibility(View.GONE);
+                        findViewById(R.id.remove_req).setVisibility(View.GONE);
+                        findViewById(R.id.remove_friend).setVisibility(View.VISIBLE);
+                        View v = findViewById(R.id.remove_friend);
+                        v.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                connectionManager.removeFriend(resName);
+                                Button b = (Button)v;
+                                b.setClickable(false);
+                            }
+                        });
+                    }
+                    if (friend_req) {
+                        findViewById(R.id.add_friend).setVisibility(View.GONE);
+                        findViewById(R.id.accept_req).setVisibility(View.VISIBLE);
+                        findViewById(R.id.remove_req).setVisibility(View.VISIBLE);
+                        findViewById(R.id.remove_friend).setVisibility(View.GONE);
+                        View v = findViewById(R.id.accept_req);
+                        v.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                connectionManager.acceptFriend(resName);
+                                Button b = (Button)v;
+                                b.setClickable(false);
+                            }
+                        });
+                        View b = findViewById(R.id.remove_req);
+                        b.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                connectionManager.declineFriend(resName);
+                                Button d = (Button)v;
+                                d.setClickable(false);
+                            }
+                        });
+                    }
+                    if (sent_friend_req)  {
+                        findViewById(R.id.add_friend).setVisibility(View.GONE);
+                        findViewById(R.id.accept_req).setVisibility(View.GONE);
+                        findViewById(R.id.remove_req).setVisibility(View.GONE);
+                        findViewById(R.id.remove_friend).setVisibility(View.GONE);
+                    }
+                    if (!friend && !friend_req && !resName.equals(connectionManager.user) && !sent_friend_req) {
+                        View v = findViewById(R.id.add_friend);
+                        v.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                connectionManager.addFriend(resName);
+                                Button b = (Button)v;
+                                b.setClickable(false);
+                            }
+                        });
+                        findViewById(R.id.add_friend).setVisibility(View.VISIBLE);
+                        findViewById(R.id.accept_req).setVisibility(View.GONE);
+                        findViewById(R.id.remove_friend).setVisibility(View.GONE);
+                        findViewById(R.id.remove_req).setVisibility(View.GONE);
+
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -151,6 +218,38 @@ public class UserInfoActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
 
+            }
+        } else if (req.equals("add-friend")) {
+            if (result) {
+                //clear ui:
+                setContentView(R.layout.activity_user_info);
+                connectionManager.getUserInfo(infoName);
+            } else {
+                Toast.makeText(this, "error adding friend", Toast.LENGTH_SHORT).show();
+            }
+        } else if (req.equals("remove-friend")) {
+            if (result) {
+                //clear ui:
+                setContentView(R.layout.activity_user_info);
+                connectionManager.getUserInfo(infoName);
+            } else {
+                Toast.makeText(this, "error removing friend", Toast.LENGTH_SHORT).show();
+            }
+        } else if (req.equals("remove-friend-req")) {
+            if (result) {
+                //clear ui:
+                setContentView(R.layout.activity_user_info);
+                connectionManager.getUserInfo(infoName);
+            } else {
+                Toast.makeText(this, "error declining friend", Toast.LENGTH_SHORT).show();
+            }
+        } else if (req.equals("accept-friend")) {
+            if (result) {
+                //clear ui:
+                setContentView(R.layout.activity_user_info);
+                connectionManager.getUserInfo(infoName);
+            } else {
+                Toast.makeText(this, "error accepting friend", Toast.LENGTH_SHORT).show();
             }
         }
     }
