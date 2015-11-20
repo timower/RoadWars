@@ -40,12 +40,14 @@ public class UserSearchActivity extends AppCompatActivity
 
     public static final int GET_USER_REQ = 1;
     public static final String EXTRA_ALLOW_NFC = "roadwars.allownfc";
-    //public ... String EXTRA_ALL_USERS = ...;
+    public static final String EXTRA_ALL_USERS = "roadwars.all_users";
+    public static final String EXTRA_ALL_FRIENDS = "roadwars.all_friends";
+    public static final String EXTRA_UNKNOWN_USERS = "roadwars.unknown_users";
 
     public static final String TAG = "UserSearchActivity";
 
     private boolean allowNFC;
-    //private boolean allUsers; // if false -> only friends
+    private boolean allUsers; // if false -> only friends
 
     private ArrayList<Pair<String, Integer>> users;
     private ArrayList<Pair<String, Integer>> filteredUsers;
@@ -62,6 +64,7 @@ public class UserSearchActivity extends AppCompatActivity
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         Intent intent = getIntent();
         allowNFC = intent.getBooleanExtra(EXTRA_ALLOW_NFC, false);
+        allUsers = intent.getBooleanExtra(EXTRA_ALL_USERS, true);
 
         users = new ArrayList<>();
         filteredUsers = new ArrayList<>();
@@ -102,7 +105,11 @@ public class UserSearchActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
-        connectionManager.getAllUsers();
+        if (allUsers) {
+            connectionManager.getAllUsers();
+        } else {
+            connectionManager.getFriends();
+        }
         //if (...) {
         //connectionManager.getAllUsers()
         //or
@@ -136,7 +143,33 @@ public class UserSearchActivity extends AppCompatActivity
                         JSONArray subA = user.getJSONArray(i);
                         if (subA.length() != 2)
                             continue;
-                        users.add(new Pair<>(subA.getString(0), subA.getInt(1)));
+                        String username = subA.getString(0);
+                        if (!username.equals(connectionManager.user))
+                            users.add(new Pair<>(username, subA.getInt(1)));
+                    }
+                    displayArray(users);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
+            }
+        } else if (req.equals("get-friends")) {
+            if (result) {
+                users.clear();
+                // clear layout:
+
+                Log.d(TAG, response.toString());
+                try {
+                    JSONArray user = response.getJSONArray("friends");
+                    int length = user.length();
+                    for (int i = 0; i < length; i++) {
+                        JSONArray subA = user.getJSONArray(i);
+                        if (subA.length() != 2)
+                            continue;
+                        String username = subA.getString(0);
+                        if (!username.equals(connectionManager.user))
+                            users.add(new Pair<>(username, subA.getInt(1)));
                     }
                     displayArray(users);
                 } catch (JSONException e) {
