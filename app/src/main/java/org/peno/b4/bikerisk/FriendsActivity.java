@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +34,11 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
+        resetUI();
+    }
+
+    private void resetUI(){
+        setContentView(R.layout.activity_friends);
         connectionManager.getFriends();
         connectionManager.getFriendRequests();
     }
@@ -51,7 +57,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                 Toast.makeText(FriendsActivity.this, "search for friends", Toast.LENGTH_SHORT).show();
                 Intent SearchFriendsIntent = new Intent(this, UserSearchActivity.class);
                 //startActivityForResult(SearchFriendsIntent, UserSearchActivity.SEARCH_FRIEND);
-                //TODO: fix intent https://developer.android.com/training/basics/intents/result.html
+                //TODO: fix intent
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -80,20 +86,20 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                 TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
 
         if (req.equals("get-friends")){
-
             if (result) {
                 try {
                     JSONArray friends = response.getJSONArray("friends");
+                    Log.d("FRIENDS", friends.toString());
                     int length = friends.length();
 
-                    setContentView(R.layout.activity_friends);
-
-                    TableLayout table = (TableLayout) findViewById(R.id.friends_list);
+                    TableLayout table = (TableLayout)findViewById(R.id.friends_list);
 
                     for (int i = 0; i < length; i++) {
                         JSONArray sub = friends.getJSONArray(i);
                         final String name = sub.getString(0);
                         final int userHSV = sub.getInt(1);
+
+                        Log.d("tag", "for-loop started" + name);
 
                         TableRow nRow = new TableRow(this);
                         nRow.setLayoutParams(tableParams);
@@ -112,6 +118,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         });
 
                         TextView remove = new TextView(this);
+                        remove.setLayoutParams(rowParams);
                         remove.setText(R.string.remove);
                         remove.setTextColor(Color.rgb(0, 50, 250));
                         remove.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +126,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                             public void onClick(View v) {
                                 connectionManager.removeFriend(name);
                                 Toast.makeText(FriendsActivity.this, "Friend " + name + " removed!", Toast.LENGTH_SHORT).show();
+                                resetUI();
                             }
                         });
 
@@ -131,24 +139,24 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         nRow.addView(remove);
 
                         table.addView(nRow);
-
+                        Log.d("TABLE", "added row to table");
                     }
                 }catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
-        else if (req.equals("get-friend-reqs")) {
+
+        if (req.equals("get-friend-reqs")) {
             if (result) {
                 try{
                     JSONArray reqs = response.getJSONArray("friend-reqs");
                     int length = reqs.length();
 
                     if (length != 0) {
+                        Toast.makeText(this, "Got friend requests!", Toast.LENGTH_SHORT).show();
                         findViewById(R.id.request_list).setVisibility(View.VISIBLE);
                     }
-
-                    setContentView(R.layout.activity_friends);
 
                     TableLayout table = (TableLayout) findViewById(R.id.request_list_table);
 
@@ -185,6 +193,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                             public void onClick(View v) {
                                 Toast.makeText(FriendsActivity.this, "Request from " + name + " accepted!", Toast.LENGTH_SHORT).show();
                                 connectionManager.acceptFriend(name);
+                                resetUI();
                             }
                         });
 
@@ -196,6 +205,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                             public void onClick(View v) {
                                 Toast.makeText(FriendsActivity.this, "Request from " + name + " declined!", Toast.LENGTH_SHORT).show();
                                 connectionManager.declineFriend(name);
+                                resetUI();
                             }
                         });
 
@@ -213,8 +223,10 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                 }
             }
         }
+        if (req.equals("accept-friend") || req.equals("remove-friend") || req.equals("remove-friend-req")){
+            if (!result) {Toast.makeText(FriendsActivity.this, "Action Failed", Toast.LENGTH_SHORT).show();}
+        }
     }
-    // TODO: 17/11/2015 refresh UI list when friend removed/accepted/declined
 
     @Override
     public void onConnectionLost(String reason) {
