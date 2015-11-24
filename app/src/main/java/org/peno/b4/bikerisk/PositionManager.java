@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TableLayout;
@@ -109,7 +110,7 @@ public class PositionManager implements LocationListener {
     private Context context;
     private GeoApiContext geoApiContext;
 
-    private boolean gotFirstLocation;
+    private boolean gotFirstLocation = false;
 
     private class SnapToRoadTask extends AsyncTask<Void, Void, PolylineOptions> {
         @Override
@@ -264,6 +265,7 @@ public class PositionManager implements LocationListener {
         } else {
             instance.UIobjects = objects;
             instance.connectionManager = ConnectionManager.getInstance();
+            instance.drawRoute();
         }
         return instance;
 
@@ -335,11 +337,12 @@ public class PositionManager implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-
-        if (!gotFirstLocation && location.getAccuracy() < 10) {
+        Log.d("LOC", "accuracy: " + location.getAccuracy() + " gotFirstLocation: " + gotFirstLocation);
+        if (!gotFirstLocation && location.getAccuracy() < Utils.MIN_ACCURACY) {
             gotFirstLocation = true;
             UIobjects.progressBar.setVisibility(View.GONE);
-        } else if (!gotFirstLocation){
+        }
+        if (!gotFirstLocation){
             return;
         }
 
@@ -363,10 +366,7 @@ public class PositionManager implements LocationListener {
         UIobjects.speedText.setText(String.format("%.2f km/h", speed));
         UIobjects.speedText.setTextColor((speed > 10.0f && speed < 45.0f)? Color.GREEN : Color.RED);
 
-        if (userRoute != null)
-            userRoute.remove();
-
-        userRoute = UIobjects.mMap.addPolyline(pOptions);
+        drawRoute();
 
         if (locMarker != null) {
             locMarker.setPosition(pos);
@@ -388,6 +388,13 @@ public class PositionManager implements LocationListener {
         }
         //UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16.5f));
         UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+    }
+
+    private void drawRoute() {
+        if (userRoute != null)
+            userRoute.remove();
+        if (pOptions != null)
+            userRoute = UIobjects.mMap.addPolyline(pOptions);
     }
 
     @Override

@@ -19,6 +19,7 @@ public class Utils {
     public static final float MPS_TO_KMH = 3.6f;
     public static final String HOST = "128.199.52.178";
     public static final int PORT = 4444;
+    public static final float MIN_ACCURACY = 18.0f;
 
     public static String removeNumbers(String orig) {
         String street = "";
@@ -70,6 +71,7 @@ public class Utils {
         }
         return null;
     }
+
     /**
      * Returns a bitmap of a picture colored in the user's color.
      * If it already exists in the marker cache, it will be reused.

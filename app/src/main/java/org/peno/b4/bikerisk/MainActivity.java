@@ -125,10 +125,12 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "on pause");
         // stop connection with server
         connectionManager.stop();
-        if (mMap != null) {
-            positionManager.pause(mMap.getCameraPosition());
-        } else {
-            positionManager.pause(null);
+        if (positionManager != null) {
+            if (mMap != null) {
+                positionManager.pause(mMap.getCameraPosition());
+            } else {
+                positionManager.pause(null);
+            }
         }
         super.onPause();
     }
@@ -315,9 +317,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
-        if(progressBar.getVisibility() == View.VISIBLE){
-            return super.onOptionsItemSelected(item);
-        }
         switch (item.getItemId()) {
             case R.id.action_logout:
                 if (positionManager.started) {
@@ -331,15 +330,22 @@ public class MainActivity extends AppCompatActivity
                 this.connectionManager.logout();
                 return super.onOptionsItemSelected(item);
             case R.id.action_user_info:
+                if(progressBar.getVisibility() == View.VISIBLE){
+                    return super.onOptionsItemSelected(item);
+                }
                 Intent intent = new Intent(this, UserInfoActivity.class);
                 intent.putExtra("name", this.connectionManager.user);
                 startActivity(intent);
                 return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
                 if (!positionManager.started) {
+                    if(progressBar.getVisibility() == View.VISIBLE){
+                        return super.onOptionsItemSelected(item);
+                    }
                     showStartedNotification();
                     showInfoText();
                     positionManager.start();
+                    showProgressBar();
                     connectionManager.getUserInfo(connectionManager.user);
                 } else {
                     hideStartedNotification();
