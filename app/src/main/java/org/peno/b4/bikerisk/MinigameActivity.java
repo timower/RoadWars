@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +40,7 @@ public class MinigameActivity extends AppCompatActivity
         TextView StreetName = (TextView) findViewById(R.id.street_name_value);
         StreetName.setText(street);
         //String city = intent.getStringExtra(EXTRA_CITY);
-        //getSupportActionBar().setTitle("Minigame");
+        //getSupport²nBar().setTitle("Minigame");
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
     }
 
@@ -66,9 +67,7 @@ public class MinigameActivity extends AppCompatActivity
     public void LiveRaceClicked(View view) {
         Intent intent = new Intent(this, UserSearchActivity.class);
         intent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, allow_nfc);
-        intent.putExtra(UserSearchActivity.EXTRA_ALL_USERS, false);
-        //TODO: change to startActivityForResult()
-        //read: https://developer.android.com/training/basics/intents/result.html
+        intent.putExtra(UserSearchActivity.EXTRA_ALL_FRIENDS, true);
         startActivityForResult(intent, UserSearchActivity.GET_USER_REQ);
     }
 
@@ -84,6 +83,17 @@ public class MinigameActivity extends AppCompatActivity
     }
 
     public void FotorondeClicked(View view) {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
 

@@ -48,6 +48,8 @@ public class UserSearchActivity extends AppCompatActivity
 
     private boolean allowNFC;
     private boolean allUsers; // if false -> only friends
+    private boolean allFriends;
+    private boolean unknownUsers;
 
     private ArrayList<Pair<String, Integer>> users;
     private ArrayList<Pair<String, Integer>> filteredUsers;
@@ -64,7 +66,11 @@ public class UserSearchActivity extends AppCompatActivity
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         Intent intent = getIntent();
         allowNFC = intent.getBooleanExtra(EXTRA_ALLOW_NFC, false);
-        allUsers = intent.getBooleanExtra(EXTRA_ALL_USERS, true);
+        allUsers = intent.getBooleanExtra(EXTRA_ALL_USERS, false);
+        allFriends = intent.getBooleanExtra(EXTRA_ALL_FRIENDS, false);
+        unknownUsers = intent.getBooleanExtra(EXTRA_UNKNOWN_USERS, false);
+
+
 
         users = new ArrayList<>();
         filteredUsers = new ArrayList<>();
@@ -107,8 +113,12 @@ public class UserSearchActivity extends AppCompatActivity
         connectionManager = ConnectionManager.getInstance(this, this);
         if (allUsers) {
             connectionManager.getAllUsers();
-        } else {
+        } else if (allFriends) {
             connectionManager.getFriends();
+        } else if (unknownUsers) {
+            connectionManager.getUnknownUsers();
+        } else {
+            throw new RuntimeException("Fix uw intent!!!!!! voor userSearch (1 optie moet op true staan");
         }
         //if (...) {
         //connectionManager.getAllUsers()
@@ -219,7 +229,6 @@ public class UserSearchActivity extends AppCompatActivity
             userView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(UserSearchActivity.this, "user "+ name + " selected", Toast.LENGTH_LONG).show();
                     Intent result = new Intent("org.peno.b4.bikerisk.RESULT_ACTION", Uri.parse("username://" + name));
                     setResult(RESULT_OK, result);
                     finish();

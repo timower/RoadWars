@@ -248,6 +248,10 @@ public class ConnectionManager {
         sendRequest("req", "get-all-users", "key", key, "user", user);
     }
 
+    public void getUnknownUsers() {
+        sendRequest("req", "get-unknown-users", "key", key, "user", user);
+    }
+
     /**
      * main communication class,
      *  the class starts a connection with the server and listens for responses
