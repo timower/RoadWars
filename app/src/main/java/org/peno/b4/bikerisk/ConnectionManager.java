@@ -335,7 +335,8 @@ public class ConnectionManager {
         }
         @Override
         public void run(){
-            responseListener.onResponse(req, result, response);
+            if (responseListener != null)
+                responseListener.onResponse(req, result, response);
         }
     }
 

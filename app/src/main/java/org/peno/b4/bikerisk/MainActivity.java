@@ -177,6 +177,14 @@ public class MainActivity extends AppCompatActivity
                 startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
             }
         }
+        if (requestCode == UserSearchActivity.GET_USER_REQ) {
+            if (resultCode == RESULT_OK) {
+                String name = data.getData().getHost();
+                Intent UserInfoActivityIntent = new Intent(this, UserInfoActivity.class);
+                UserInfoActivityIntent.putExtra("name", name);
+                startActivity(UserInfoActivityIntent);
+            }
+        }
     }
 
     /** Allows the activity to handle different requests from outside
@@ -340,6 +348,10 @@ public class MainActivity extends AppCompatActivity
                 }
                 // redraw options menu:
                 invalidateOptionsMenu();
+            case R.id.action_userlist:
+                Intent userList = new Intent(this, UserSearchActivity.class);
+                userList.putExtra(UserSearchActivity.EXTRA_ALL_USERS, true);
+                startActivityForResult(userList, UserSearchActivity.GET_USER_REQ);
             default:
                 return super.onOptionsItemSelected(item);
         }

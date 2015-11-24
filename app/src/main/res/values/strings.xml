@@ -45,5 +45,6 @@
     <string name="accept_request">accept request</string>
     <string name="decline_req">decline request</string>
     <string name="user">remove</string>
+    <string name="userlist">Search users</string>
 
 </resources>
