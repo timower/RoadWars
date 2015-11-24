@@ -348,6 +348,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 // redraw options menu:
                 invalidateOptionsMenu();
+                return super.onOptionsItemSelected(item);
             case R.id.action_userlist:
                 Intent userList = new Intent(this, UserSearchActivity.class);
                 userList.putExtra(UserSearchActivity.EXTRA_ALL_USERS, true);
