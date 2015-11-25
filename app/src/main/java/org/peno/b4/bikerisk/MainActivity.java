@@ -2,14 +2,17 @@ package org.peno.b4.bikerisk;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Geocoder;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -338,23 +341,30 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
-                if (!positionManager.started) {
-                    if(progressBar.getVisibility() == View.VISIBLE){
-                        return super.onOptionsItemSelected(item);
+                    if (!positionManager.started) {
+                        //we have to control each time that the button is clicked if gps is activated
+                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                            showGPSDisabledAlertToUser();
+                        }else {
+                            Toast.makeText(this, "GPS is Enabled", Toast.LENGTH_SHORT).show();
+                            if (progressBar.getVisibility() == View.VISIBLE) {
+                                return super.onOptionsItemSelected(item);
+                            }
+                            showStartedNotification();
+                            showInfoText();
+                            positionManager.start();
+                            showProgressBar();
+                            connectionManager.getUserInfo(connectionManager.user);
+                        }
+                    } else {
+                        hideStartedNotification();
+                        hideInfoText();
+                        positionManager.stop();
                     }
-                    showStartedNotification();
-                    showInfoText();
-                    positionManager.start();
-                    showProgressBar();
-                    connectionManager.getUserInfo(connectionManager.user);
-                } else {
-                    hideStartedNotification();
-                    hideInfoText();
-                    positionManager.stop();
-                }
-                // redraw options menu:
-                invalidateOptionsMenu();
-                return super.onOptionsItemSelected(item);
+                    // redraw options menu:
+                    invalidateOptionsMenu();
+                    return super.onOptionsItemSelected(item);
             case R.id.action_userlist:
                 Intent userList = new Intent(this, UserSearchActivity.class);
                 userList.putExtra(UserSearchActivity.EXTRA_ALL_USERS, true);
@@ -363,6 +373,8 @@ public class MainActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 
     /** Configures the map and camera. Starts/resumes the position manager, sets camera view and
      * listeners.
@@ -538,5 +550,30 @@ public class MainActivity extends AppCompatActivity
                 .position(new LatLng(lat, lng), 40);
 
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
+    }
+
+    /**
+     * Guides the user to activation of the GPS
+     */
+
+    private void showGPSDisabledAlertToUser(){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
+                .setCancelable(false)
+                .setPositiveButton("Yes, continue to settings", new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog, int id){
+                                startActivity(new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            }
+                        });
+
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 }
