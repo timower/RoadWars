@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.NFC" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -60,19 +61,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity
-            android:name=".MinigameActivity" >
+        <activity android:name=".MinigameActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StreetRankActivity" />
         </activity>
-        <activity
-            android:name=".UserSearchActivity" >
+        <activity android:name=".UserSearchActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MinigameActivity" />
         </activity>
         <activity android:name=".FriendsActivity" >
+        </activity>
+        <activity android:name=".nfcReceiverActivity" >
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
     </application>
 
