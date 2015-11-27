@@ -265,7 +265,11 @@ public class PositionManager implements LocationListener {
         } else {
             instance.UIobjects = objects;
             instance.connectionManager = ConnectionManager.getInstance();
+            instance.locMarker = null;
+            instance.locRad = null;
+            instance.userRoute = null;
             instance.drawRoute();
+            //TODO: call minigameManager -> resume()
         }
         return instance;
 

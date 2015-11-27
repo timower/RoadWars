@@ -26,9 +26,9 @@ public class MiniGameManager {
 
          }
 
-        private String getFullName() {return this.fullName;}
+        public String getFullName() {return this.fullName;}
 
-        private int getpoints() {return this.points;}
+        public int getpoints() {return this.points;}
 
     }
 
@@ -53,12 +53,15 @@ public class MiniGameManager {
     }
 
     //TODO implement mini games
-    public void startRaceGame(String street) {
+    public void startRaceGame(String street, String user) {
         this.street = street;
         this.target = Utils.getLatLng(geocoder, street);
         //TODO to server: game started (boolean)
+        // tooon finish marker
         runningMiniGame = MiniGame.TARGET_RACE;
     }
+
+
 
     public void setFirst(Boolean result){
         if (result){
