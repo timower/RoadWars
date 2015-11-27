@@ -276,7 +276,11 @@ public class MainActivity extends AppCompatActivity
             case "get-first":
                 MiniGameManager.getInstance().setFirst(result);
                 break;
-
+            case "nfc-friend":
+                if (result) {
+                    Toast.makeText(this, "Ok, you are now friends", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 

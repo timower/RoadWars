@@ -68,6 +68,8 @@ public class MinigameSelectorActivity extends AppCompatActivity
         Intent intent = new Intent(this, UserSearchActivity.class);
         intent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, allow_nfc);
         intent.putExtra(UserSearchActivity.EXTRA_ALL_FRIENDS, true);
+        intent.putExtra(UserSearchActivity.EXTRA_NFC_INTENT, Utils.MINIGAME_NFC_INTENT + ":" + street);
+
         startActivityForResult(intent, UserSearchActivity.GET_USER_REQ);
     }
 

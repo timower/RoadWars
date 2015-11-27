@@ -45,12 +45,15 @@ public class UserSearchActivity extends AppCompatActivity
     public static final String EXTRA_ALL_FRIENDS = "roadwars.all_friends";
     public static final String EXTRA_UNKNOWN_USERS = "roadwars.unknown_users";
 
+    public static final String EXTRA_NFC_INTENT = "roadwars.nfc_intent";
+
     public static final String TAG = "UserSearchActivity";
 
     private boolean allowNFC;
     private boolean allUsers; // if false -> only friends
     private boolean allFriends;
     private boolean unknownUsers;
+    private String nfcIntent;
 
     private ArrayList<Pair<String, Integer>> users;
     private ArrayList<Pair<String, Integer>> filteredUsers;
@@ -72,8 +75,7 @@ public class UserSearchActivity extends AppCompatActivity
         allUsers = intent.getBooleanExtra(EXTRA_ALL_USERS, false);
         allFriends = intent.getBooleanExtra(EXTRA_ALL_FRIENDS, false);
         unknownUsers = intent.getBooleanExtra(EXTRA_UNKNOWN_USERS, false);
-
-
+        nfcIntent = intent.getStringExtra(EXTRA_NFC_INTENT);
 
         users = new ArrayList<>();
         filteredUsers = new ArrayList<>();
@@ -293,7 +295,7 @@ public class UserSearchActivity extends AppCompatActivity
 
     @Override
     public NdefMessage createNdefMessage(NfcEvent event) {
-        String message = connectionManager.user;
+        String message = nfcIntent + ":" + connectionManager.user;
         NdefRecord ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());
         NdefMessage ndefMessage = new NdefMessage(ndefRecord);
         return ndefMessage;

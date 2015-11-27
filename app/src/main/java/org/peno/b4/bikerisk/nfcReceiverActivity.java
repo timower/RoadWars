@@ -25,9 +25,23 @@ public class nfcReceiverActivity extends AppCompatActivity {
                     NfcAdapter.EXTRA_NDEF_MESSAGES);
 
             NdefMessage message = (NdefMessage) rawMessages[0]; // only one message transferred
-            Toast.makeText(this, new String(message.getRecords()[0].getPayload()), Toast.LENGTH_LONG).show();
+            String data = new String(message.getRecords()[0].getPayload());
+            String delen[] = data.split(":");
+            switch (delen[0]) {
+                case Utils.FRIEND_NFC_INTENT:
+                    String naam = delen[1];
+                    ConnectionManager.getInstance().nfcFriend(naam);
+                    break;
+                case Utils.MINIGAME_NFC_INTENT:
+
+                    break;
+
+            }
+
+            Toast.makeText(this,data, Toast.LENGTH_LONG).show();
         }
-        Intent intent2 = new Intent(this, MainActivity.class);
-        startActivity(intent2);
+        //Intent intent2 = new Intent(this, MainActivity.class);
+        //startActivity(intent2);
+        finish();
     }
 }

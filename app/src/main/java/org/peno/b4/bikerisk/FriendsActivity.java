@@ -58,6 +58,8 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                 Intent SearchFriendsIntent = new Intent(this, UserSearchActivity.class);
                 SearchFriendsIntent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, true);
                 SearchFriendsIntent.putExtra(UserSearchActivity.EXTRA_UNKNOWN_USERS, true);
+                SearchFriendsIntent.putExtra(UserSearchActivity.EXTRA_NFC_INTENT, Utils.FRIEND_NFC_INTENT );
+
                 startActivityForResult(SearchFriendsIntent, UserSearchActivity.GET_USER_REQ);
             default:
                 return super.onOptionsItemSelected(item);
