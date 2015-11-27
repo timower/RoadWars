@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by timo on 11/14/15.
+ * mmeeerr uuitleg
  */
 public class MiniGameManager {
 
@@ -61,11 +62,7 @@ public class MiniGameManager {
     }
 
     public void setFirst(Boolean result){
-        if (result){
-            first = true;
-        } else{
-            first = false;
-        }
+        first = result;
 
 
     }

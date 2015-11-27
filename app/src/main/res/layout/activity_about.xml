@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="org.peno.b4.bikerisk.AboutActivity">
+
+
+    <ImageView
+        android:id="@+id/aboutImage"
+        android:src="@mipmap/ic_launchergroot"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="30dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Creators:"
+        android:id="@+id/aboutTextCreators"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/aboutImage"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=" Jan Vermaelen \n Jef Versyck \n Laura Vranken \n Thomas Vranken \n Thimoty Werquin \n Holger Willems"
+        android:id="@+id/aboutTextNames"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/aboutImage"
+        android:paddingLeft="85dp"
+        android:paddingBottom="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Year of build: 2015"
+        android:id="@+id/AboutTextYear"
+        android:layout_below="@+id/aboutTextNames"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Version: 1.0"
+        android:id="@+id/AboutTextVersion"
+        android:layout_below="@+id/AboutTextYear"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+
+
+</RelativeLayout>

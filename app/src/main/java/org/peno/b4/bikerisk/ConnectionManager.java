@@ -146,9 +146,7 @@ public class ConnectionManager {
         SharedPreferences prefs = context.getSharedPreferences("login", Context.MODE_PRIVATE);
         this.user = prefs.getString("user", "");
         this.key = prefs.getString("key", "");
-        if (!this.user.equals("") && !this.key.equals(""))
-            return true;
-        return false;
+        return !this.user.equals("") && !this.key.equals("");
     }
 
     /**

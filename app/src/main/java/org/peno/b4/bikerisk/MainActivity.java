@@ -340,6 +340,10 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra("name", this.connectionManager.user);
                 startActivity(intent);
                 return super.onOptionsItemSelected(item);
+            case R.id.action_about:
+                Intent about = new Intent(this, AboutActivity.class);
+                startActivity(about);
+                return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
                     if (!positionManager.started) {
                         //we have to control each time that the button is clicked if gps is activated
