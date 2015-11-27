@@ -14,7 +14,7 @@ import org.json.JSONObject;
 //TODO: dynamicly load minigames from minigamemanger.minigame.values()
 
 //TODO: rename
-public class MinigameActivity extends AppCompatActivity
+public class MinigameSelectorActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
 
 
@@ -23,7 +23,7 @@ public class MinigameActivity extends AppCompatActivity
 
     private ConnectionManager connectionManager;
     private String street;
-    public static final String TAG = "MinigameActivity";
+    public static final String TAG = "MinigameSelectorActivity";
 
     // VERWIJDEREN
     private String allow_nfc;
@@ -75,7 +75,8 @@ public class MinigameActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UserSearchActivity.GET_USER_REQ) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_LONG).show();
+                String user = data.getData().getHost();
+                MiniGameManager.getInstance().startRaceGame(street, user);
             } else {
                 Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
             }
