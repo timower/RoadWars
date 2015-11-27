@@ -11,9 +11,8 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-//TODO: dynamicly load minigames from minigamemanger.minigame.values()
+//TODO: dynamically load minigames from minigamemanger.minigame.values()
 
-//TODO: rename
 public class MinigameSelectorActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
 
@@ -23,7 +22,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
 
     private ConnectionManager connectionManager;
     private String street;
-    public static final String TAG = "MinigameSelectorActivity";
+    public static final String TAG = "MinigameSelActivity";
 
     // VERWIJDEREN
     private String allow_nfc;

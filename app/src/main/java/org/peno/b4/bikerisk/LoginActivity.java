@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
                 Toast.makeText(this, "Failed to login.", Toast.LENGTH_SHORT).show();
             }
         }
+        // absorb all responses and requests from server
         return true;
     }
 

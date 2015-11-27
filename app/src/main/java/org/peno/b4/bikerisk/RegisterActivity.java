@@ -66,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity
                 Toast.makeText(this, "Error creating user", Toast.LENGTH_SHORT).show();
             }
         }
+        // absorb all server requests
         return true;
     }
 

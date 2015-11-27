@@ -31,8 +31,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: set result when users clicks another user.
-
 public class UserSearchActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, NfcAdapter.CreateNdefMessageCallback {
 

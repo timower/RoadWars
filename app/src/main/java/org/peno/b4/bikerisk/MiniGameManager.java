@@ -53,34 +53,26 @@ public class MiniGameManager {
         return instance;
     }
 
-    //TODO implement mini games
     public void startRaceGame(String street, String user) {
         this.street = street;
         this.target = Utils.getLatLng(geocoder, street);
-        //TODO to server: game started (boolean)
         // tooon finish marker
         runningMiniGame = MiniGame.TARGET_RACE;
 
     }
 
-
-
     public void setFirst(Boolean result){
         first = result;
-
-
     }
+
     public void onLocationChanged(Location location) {
         switch (runningMiniGame) {
             case TARGET_RACE:
-                //TODO: check if user is finished
                 float[] distance = new float[3];
                 Location.distanceBetween(location.getLatitude(),location.getLongitude(),this.target.latitude,this.target.longitude,distance);
                 if (distance[0]<10){
-                    //TODO: game stopped (boolean)
+                    //TODO: game stopped
                     //connectionManager.getFirst();
-
-
                 }
 
                 break;
