@@ -52,9 +52,20 @@ public class MinigameActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
+        if (req.equals("start-minigame")) {
+            if (result) {
+                //TODO: minigameManager.startRaceGame();
+                Toast.makeText(this, "Minigame started!", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "Other player is not online", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -75,7 +86,8 @@ public class MinigameActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UserSearchActivity.GET_USER_REQ) {
             if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_SHORT).show();
+                connectionManager.startMinigame(data.getData().getHost(), street);
             } else {
                 Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
             }
@@ -83,6 +95,8 @@ public class MinigameActivity extends AppCompatActivity
     }
 
     public void FotorondeClicked(View view) {
+        Toast.makeText(this, "This minigame is not available yet!", Toast.LENGTH_LONG).show();
+
     }
 
     @Override

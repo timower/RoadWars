@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
     }
 
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("login")) {
             if (result) {
@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
                 Toast.makeText(this, "Failed to login.", Toast.LENGTH_SHORT).show();
             }
         }
+        return true;
     }
 
     @Override

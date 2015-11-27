@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("create-user")) {
             if (result) {
@@ -66,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity
                 Toast.makeText(this, "Error creating user", Toast.LENGTH_SHORT).show();
             }
         }
+        return true;
     }
 
     @Override

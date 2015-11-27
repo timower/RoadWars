@@ -58,6 +58,7 @@ public class MiniGameManager {
         this.target = Utils.getLatLng(geocoder, street);
         //TODO to server: game started (boolean)
         runningMiniGame = MiniGame.TARGET_RACE;
+
     }
 
     public void setFirst(Boolean result){

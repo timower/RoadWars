@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity
      * @param response the complete response object
      */
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner.setVisibility(View.GONE);
         switch (req) {
             case "check-login":
@@ -212,12 +212,12 @@ public class MainActivity extends AppCompatActivity
                     Intent loginIntent = new Intent(this, LoginActivity.class);
                     startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
                 }
-                break;
+                return true;
             case "logout":
                 // we just logged out -> show login activity
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
-                break;
+                return true;
             case "get-all-streets":
                 if (result) {
                     // show received streets & markers
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-                break;
+                return true;
             case "get-street":
                 if (result) {
                     // show toast with name of owner
@@ -257,14 +257,14 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-                break;
+                return true;
             case "add-points":
                 if (result) {
                     Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "error saving points", Toast.LENGTH_SHORT).show();
                 }
-                break;
+                return true;
             case "user-info":
                 if (result) {
                     try {
@@ -275,9 +275,10 @@ public class MainActivity extends AppCompatActivity
                 }
             case "get-first":
                 MiniGameManager.getInstance().setFirst(result);
-                break;
+                return true;
 
         }
+        return false;
     }
 
     /** (UNFINISHED)
@@ -444,11 +445,13 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onMapLongClick(LatLng latLng) {
+        Log.d(TAG, "long-click on map");
         // lookup street and start streetRankActivity:
         if(progressBar.getVisibility() == View.VISIBLE){
             return;
         }
         String street = Utils.lookupStreet(geocoder, latLng);
+        Log.d(TAG, "get street rank for " + street);
         if (street != null) {
             Intent intent = new Intent(this, StreetRankActivity.class);
             intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
