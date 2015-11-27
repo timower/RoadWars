@@ -89,6 +89,8 @@ public class UserInfoActivity extends AppCompatActivity
                         TextView email_label = (TextView)findViewById(R.id.email_id);
                         email_label.setVisibility(View.GONE);
                     }
+                    TextView totalnumberownedstreets = (TextView) findViewById(R.id.totalnumberownedstreets);
+                    totalnumberownedstreets.setText("" + response.getInt("n-streets"));
 
                     View color = findViewById(R.id.user_color_value);
                     color.setBackgroundColor(response.getInt("color"));

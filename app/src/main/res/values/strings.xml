@@ -46,5 +46,6 @@
     <string name="decline_req">decline request</string>
     <string name="user">remove</string>
     <string name="userlist">Search users</string>
+    <string name="totalnumberownedstreets">Number owned streets: </string>
 
 </resources>
