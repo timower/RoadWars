@@ -140,60 +140,40 @@ public class UserSearchActivity extends AppCompatActivity
     public void onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
-        if (req.equals("get-all-users")) {
-            if (result) {
-                users.clear();
-                // clear layout:
-
-                Log.d(TAG, response.toString());
-                try {
-                    JSONArray user = response.getJSONArray("users");
-                    int length = user.length();
-                    for (int i = 0; i < length; i++) {
-                        JSONArray subA = user.getJSONArray(i);
-                        if (subA.length() != 2)
-                            continue;
-                        String username = subA.getString(0);
-                        if (!username.equals(connectionManager.user))
-                            users.add(new Pair<>(username, subA.getInt(1)));
-                    }
-                    displayArray(users);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if (result) {
+            users.clear();
+            Log.d(TAG, response.toString());
+            try {
+                if (req.equals("get-all-users") || req.equals("get-unknown-users")) {
+                        JSONArray user = response.getJSONArray("users");
+                        makeArray(user);
+                } else if (req.equals("get-friends")) {
+                        JSONArray user = response.getJSONArray("friends");
+                        makeArray(user);
                 }
-            } else {
-                Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } else if (req.equals("get-friends")) {
-            if (result) {
-                users.clear();
-                // clear layout:
-
-                Log.d(TAG, response.toString());
-                try {
-                    JSONArray user = response.getJSONArray("friends");
-                    int length = user.length();
-                    for (int i = 0; i < length; i++) {
-                        JSONArray subA = user.getJSONArray(i);
-                        if (subA.length() != 2)
-                            continue;
-                        String username = subA.getString(0);
-                        if (!username.equals(connectionManager.user))
-                            users.add(new Pair<>(username, subA.getInt(1)));
-                    }
-                    displayArray(users);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
-            }
+        } else {
+            Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
         }
+    }
 
-        // else if (req.equals("get-friends") {
-        // ...
-        // }
-
+    public void makeArray(JSONArray user) {
+        try {
+            int length = user.length();
+            for (int i = 0; i < length; i++) {
+                JSONArray subA = user.getJSONArray(i);
+                if (subA.length() != 2)
+                    continue;
+                String username = subA.getString(0);
+                if (!username.equals(connectionManager.user))
+                    users.add(new Pair<>(username, subA.getInt(1)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        displayArray(users);
     }
 
     public void displayArray(List<Pair<String, Integer>> list) {
