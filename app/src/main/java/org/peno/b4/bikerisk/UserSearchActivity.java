@@ -90,12 +90,12 @@ public class UserSearchActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // filter lijst met searchBar.getText()
-                String text = searchBar.getText().toString();
+                String text = searchBar.getText().toString().toLowerCase();
                 // voer displayArray uit
                 filteredUsers.clear();
                 int length = users.size();
                 for (int i = 0; i < length; i++) {
-                    final String name = users.get(i).first;
+                    final String name = users.get(i).first.toLowerCase();
                     if (name.startsWith(text)) {
                         filteredUsers.add(users.get(i));
                     }
