@@ -25,6 +25,9 @@ public class Utils {
     public static final int PORT = 4444;
     public static final float MIN_ACCURACY = 18.0f;
 
+    public static final String FRIEND_NFC_INTENT = "add_friend";
+    public static final String MINIGAME_NFC_INTENT = "join_minigame";
+
     public static String removeNumbers(String orig) {
         String street = "";
         for (String sub : orig.split(" ")) {
@@ -117,7 +120,7 @@ public class Utils {
                     // response.getString("minigame").equals("race") &&
                     Log.d("IMP", "started-minigame");
                     if ( minigameInstance != null) {
-                        minigameInstance.startRaceGame(response.getString("street"));
+                        minigameInstance.startRaceGame(response.getString("street"), response.getString("name"));
                     }
                 }
             }  catch (JSONException e) {

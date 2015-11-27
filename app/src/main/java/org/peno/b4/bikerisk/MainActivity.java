@@ -276,7 +276,11 @@ public class MainActivity extends AppCompatActivity
             case "get-first":
                 MiniGameManager.getInstance().setFirst(result);
                 return true;
-
+            case "nfc-friend":
+                if (result) {
+                    Toast.makeText(this, "Ok, you are now friends", Toast.LENGTH_SHORT).show();
+                }
+                return true;
         }
         return false;
     }
@@ -340,6 +344,10 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(this, UserInfoActivity.class);
                 intent.putExtra("name", this.connectionManager.user);
                 startActivity(intent);
+                return super.onOptionsItemSelected(item);
+            case R.id.action_about:
+                Intent about = new Intent(this, AboutActivity.class);
+                startActivity(about);
                 return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
                     if (!positionManager.started) {

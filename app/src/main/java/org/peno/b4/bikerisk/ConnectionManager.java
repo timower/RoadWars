@@ -29,6 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ConnectionManager {
     private static final String TAG = "LoginManager";
 
+
     public interface ResponseListener {
         /**
          * called when server sends response -> update UI
@@ -146,9 +147,7 @@ public class ConnectionManager {
         SharedPreferences prefs = context.getSharedPreferences("login", Context.MODE_PRIVATE);
         this.user = prefs.getString("user", "");
         this.key = prefs.getString("key", "");
-        if (!this.user.equals("") && !this.key.equals(""))
-            return true;
-        return false;
+        return !this.user.equals("") && !this.key.equals("");
     }
 
     /**
@@ -242,6 +241,10 @@ public class ConnectionManager {
 
     public void declineFriend(String name) {
         sendRequest("req", "remove-friend-req", "key", key, "user", user, "name", name);
+    }
+
+    public void nfcFriend(String name) {
+        sendRequest("req", "nfc-friend", "key", key, "user", user, "name", name);
     }
 
     public void getAllUsers() {
