@@ -28,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoginActivity" android:launchMode="singleTop"></activity>
         <activity android:name=".ErrorActivity"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
