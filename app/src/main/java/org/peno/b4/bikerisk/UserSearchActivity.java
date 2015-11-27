@@ -3,6 +3,10 @@ package org.peno.b4.bikerisk;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -14,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -25,15 +28,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 //TODO: set result when users clicks another user.
 
 public class UserSearchActivity extends AppCompatActivity
-        implements ConnectionManager.ResponseListener {
+        implements ConnectionManager.ResponseListener, NfcAdapter.CreateNdefMessageCallback {
 
     private ConnectionManager connectionManager;
     private TextView connectionLostBanner;
@@ -54,6 +55,8 @@ public class UserSearchActivity extends AppCompatActivity
     private ArrayList<Pair<String, Integer>> users;
     private ArrayList<Pair<String, Integer>> filteredUsers;
     private EditText searchBar;
+
+    private NfcAdapter nfcAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +108,8 @@ public class UserSearchActivity extends AppCompatActivity
             }
         });
         //allUsers = ...
+
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
     }
 
     @Override
@@ -124,6 +129,28 @@ public class UserSearchActivity extends AppCompatActivity
         //connectionManager.getAllUsers()
         //or
         //connectionManager.getFriends()
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_allow_nfc:
+                if (nfcAdapter == null) {
+                    Toast.makeText(this, "Sorry this device does not have NFC.", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+
+                if (!nfcAdapter.isEnabled()) {
+                    Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                Toast.makeText(this, "zet uw apparaten tegen elkaar!!!", Toast.LENGTH_LONG).show();
+                nfcAdapter.setNdefPushMessageCallback(this, this);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -262,5 +289,13 @@ public class UserSearchActivity extends AppCompatActivity
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         Log.d("CON", "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent event) {
+        String message = connectionManager.user;
+        NdefRecord ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());
+        NdefMessage ndefMessage = new NdefMessage(ndefRecord);
+        return ndefMessage;
     }
 }
