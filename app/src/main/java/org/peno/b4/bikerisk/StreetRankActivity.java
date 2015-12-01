@@ -23,7 +23,6 @@ import java.util.Locale;
 public class StreetRankActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
     public static final String EXTRA_STREET = "org.peno.b4.bikerisk.STREET";
-    public static final String EXTRA_CITY  = "org.peno.b4.bikerisk.CITY";
 
     public static final String TAG = "StreetRankActivity";
 
@@ -39,7 +38,6 @@ public class StreetRankActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         street = intent.getStringExtra(EXTRA_STREET);
-        String city = intent.getStringExtra(EXTRA_CITY);
         getSupportActionBar().setTitle(street);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }

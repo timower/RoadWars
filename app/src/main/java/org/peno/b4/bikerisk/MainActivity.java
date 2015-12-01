@@ -471,7 +471,6 @@ public class MainActivity extends AppCompatActivity
         if (street != null) {
             Intent intent = new Intent(this, StreetRankActivity.class);
             intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
-            //intent.putExtra(StreetRankActivity.EXTRA_CITY, city);
             startActivity(intent);
         }
     }

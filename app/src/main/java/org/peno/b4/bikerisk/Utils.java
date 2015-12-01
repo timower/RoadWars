@@ -49,8 +49,8 @@ public class Utils {
                     Address loc = locations.get(0);
                     if (loc.getMaxAddressLineIndex() >= 2) {
                         String street = Utils.removeNumbers(loc.getAddressLine(0));
-                        //String city = removeNumbers(loc.getAddressLine(1));
-                        return street;
+                        String city = removeNumbers(loc.getAddressLine(1));
+                        return street + ", " + city;
                     }
 
                 }
@@ -66,7 +66,7 @@ public class Utils {
     public static LatLng getLatLng(Geocoder geocoder, String street){
         if(geocoder != null){
             try{
-                List<Address> locations = geocoder.getFromLocationName(street + ", Leuven", 1);
+                List<Address> locations = geocoder.getFromLocationName(street, 1);
                 if (locations.size() != 1)
                     return null;
                 return new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude());

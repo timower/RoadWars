@@ -87,6 +87,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UserSearchActivity.GET_USER_REQ) {
             if (resultCode == RESULT_OK) {
+                Log.d(TAG, "clicked user, starting minigame:");
                 Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_SHORT).show();
                 connectionManager.startMinigame(data.getData().getHost(), street);
             } else {
