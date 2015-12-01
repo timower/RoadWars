@@ -432,6 +432,12 @@ public class PositionManager implements LocationListener {
         userRoute = UIobjects.mMap.addPolyline(pOptions);
     }
 
+    private void drawPhotoCircle() {
+        
+
+    }
+
+
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 

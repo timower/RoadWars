@@ -25,9 +25,9 @@
     <string name="hue">Hue</string>
     <string name="start">Start</string>
     <string name="connection_lost">Connection lost!</string>
-    <string name="LiveRace">Live Race</string>
+    <string name="LiveRace">Target Race</string>
     <string name="Choose_a_minigame_for">Choose a Minigame for</string>
-    <string name="Fotoronde">Fotoronde</string>
+    <string name="Fotoronde">In the picture</string>
     <string name="minigame">Minigame</string>
     <string name="title_activity_minigame">Minigame</string>
     <string name="Search_for_user">Search for user</string>
@@ -47,5 +47,7 @@
     <string name="user">remove</string>
     <string name="userlist">Search users</string>
     <string name="totalnumberownedstreets">Number owned streets: </string>
+    <string name="Capture">Capture</string>
+    <string name="Take_picture">Take a picture!</string>
 
 </resources>

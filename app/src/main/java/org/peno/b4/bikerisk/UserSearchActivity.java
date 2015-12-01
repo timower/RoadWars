@@ -8,6 +8,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -142,10 +143,15 @@ public class UserSearchActivity extends AppCompatActivity
                 }
 
                 if (!nfcAdapter.isEnabled()) {
-                    Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
+                    return true;
+                }else if(!nfcAdapter.isNdefPushEnabled()){
+                    Toast.makeText(this, "Please enable Android Beam.", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Settings.ACTION_NFCSHARING_SETTINGS));
                     return true;
                 }
-                Toast.makeText(this, "zet uw apparaten tegen elkaar!!!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Please hold your phones together.", Toast.LENGTH_LONG).show();
                 nfcAdapter.setNdefPushMessageCallback(this, this);
                 return true;
         }
