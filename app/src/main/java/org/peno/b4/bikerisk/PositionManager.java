@@ -47,14 +47,14 @@ public class PositionManager implements LocationListener {
         public GoogleMap mMap;
         public TextView speedText;
         public TableLayout table;
-        public View progressBar;
+        public ProgressTracker progressTracker;
         public TextView connectionLostBanner;
 
-        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, View p, TextView connectionLostBanner) {
+        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, ProgressTracker p, TextView connectionLostBanner) {
             this.mMap = mMap;
             this.speedText = spt;
             this.table = table;
-            this.progressBar = p;
+            this.progressTracker = p;
             this.connectionLostBanner = connectionLostBanner;
         }
     }
@@ -241,7 +241,7 @@ public class PositionManager implements LocationListener {
         protected void onPostExecute(Void t) {
             Toast.makeText(context, "finished adding points", Toast.LENGTH_SHORT).show();
             if (UIobjects != null)
-                UIobjects.progressBar.setVisibility(View.GONE);
+                UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_CALCULATING);
             routeInfo.routePoints.clear();
             routeInfo.routeSpeeds.clear();
             canStart = true;
@@ -309,6 +309,9 @@ public class PositionManager implements LocationListener {
         started = false;
         locationManager.removeUpdates(this);
 
+        if (UIobjects != null)
+            UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS_DISABLED);
+
         if (locMarker != null)
             locMarker.remove();
         locMarker = null;
@@ -330,15 +333,17 @@ public class PositionManager implements LocationListener {
 
         if (routeInfo.routePoints.size() > 1) {
             lastLocation = null;
-            if (UIobjects != null)
-                UIobjects.progressBar.setVisibility(View.VISIBLE);
+            if (UIobjects != null) {
+                UIobjects.progressTracker.showProgressBar(ProgressTracker.REASON_CALCULATING);
+                UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
+            }
             canStart = false;
             new SnapToRoadTask().execute();
         } else {
             routeInfo.routePoints.clear();
             routeInfo.routeSpeeds.clear();
             if (UIobjects != null)
-                UIobjects.progressBar.setVisibility(View.GONE);
+                UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
         }
     }
 
@@ -370,7 +375,7 @@ public class PositionManager implements LocationListener {
         if (!gotFirstLocation && location.getAccuracy() < Utils.MIN_ACCURACY) {
             gotFirstLocation = true;
             if (UIobjects != null)
-                UIobjects.progressBar.setVisibility(View.GONE);
+                UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
         }
         if (!gotFirstLocation){
             return;
@@ -432,11 +437,6 @@ public class PositionManager implements LocationListener {
         userRoute = UIobjects.mMap.addPolyline(pOptions);
     }
 
-    private void drawPhotoCircle() {
-        
-
-    }
-
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -445,6 +445,7 @@ public class PositionManager implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
+        UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS_DISABLED);
         UIobjects.connectionLostBanner.setVisibility(View.GONE);
         UIobjects.connectionLostBanner.setText(R.string.connection_lost);
         UIobjects.connectionLostBanner.setTextSize(25);
@@ -452,7 +453,7 @@ public class PositionManager implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
-        UIobjects.progressBar.setVisibility(View.VISIBLE);
+        UIobjects.progressTracker.showProgressBar(ProgressTracker.REASON_GPS_DISABLED);
         UIobjects.connectionLostBanner.setVisibility(View.VISIBLE);
         UIobjects.connectionLostBanner.setText(R.string.gps_service_not_available);
         UIobjects.connectionLostBanner.setTextSize(20);

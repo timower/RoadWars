@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner.setVisibility(View.GONE);
         switch (req) {
-            case "visible-login":
+            case "check-login":
                 if (result) {
                     // we are logged in
                     progressTracker.hideProgressBar(ProgressTracker.REASON_LOGIN);
@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity
                 this.connectionManager.logout();
                 return super.onOptionsItemSelected(item);
             case R.id.action_user_info:
-                if(!progressTracker.visible()){
+                if(progressTracker.visible()){
                     return super.onOptionsItemSelected(item);
                 }
                 Intent intent = new Intent(this, UserInfoActivity.class);
