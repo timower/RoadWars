@@ -119,6 +119,13 @@ public class MainActivity extends AppCompatActivity
             Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
         }
+
+        if (mMap != null) {
+            PositionManager.getInstance(this, new PositionManager.UIObjects(mMap, speedText,
+                    pointsTable, progressBar, connectionLostBanner));
+        } else {
+            Log.d(TAG, "wtf??? mMap not ready in resume");
+        }
     }
 
     /** Pauses the activity.
@@ -359,11 +366,12 @@ public class MainActivity extends AppCompatActivity
                             if (progressBar.getVisibility() == View.VISIBLE) {
                                 return super.onOptionsItemSelected(item);
                             }
-                            showStartedNotification();
-                            showInfoText();
-                            positionManager.start();
-                            showProgressBar();
-                            connectionManager.getUserInfo(connectionManager.user);
+                            if (positionManager.start()) {
+                                showStartedNotification();
+                                showInfoText();
+                                showProgressBar();
+                                connectionManager.getUserInfo(connectionManager.user);
+                            }
                         }
                     } else {
                         hideStartedNotification();

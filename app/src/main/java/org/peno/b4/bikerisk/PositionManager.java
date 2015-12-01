@@ -18,6 +18,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -111,6 +112,7 @@ public class PositionManager implements LocationListener {
     private GeoApiContext geoApiContext;
 
     private boolean gotFirstLocation = false;
+    private boolean canStart = true;
 
     private class SnapToRoadTask extends AsyncTask<Void, Void, PolylineOptions> {
         @Override
@@ -238,7 +240,11 @@ public class PositionManager implements LocationListener {
         @Override
         protected void onPostExecute(Void t) {
             Toast.makeText(context, "finished adding points", Toast.LENGTH_SHORT).show();
-            UIobjects.progressBar.setVisibility(View.GONE);
+            if (UIobjects != null)
+                UIobjects.progressBar.setVisibility(View.GONE);
+            routeInfo.routePoints.clear();
+            routeInfo.routeSpeeds.clear();
+            canStart = true;
         }
     }
 
@@ -256,6 +262,9 @@ public class PositionManager implements LocationListener {
                 context.getString(R.string.google_maps_key));
         this.bicycleBitmap = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.usericon);
+
+        this.pOptions = new PolylineOptions().color(Color.BLUE).width(5);
+
         instance = this;
     }
 
@@ -265,10 +274,14 @@ public class PositionManager implements LocationListener {
         } else {
             instance.UIobjects = objects;
             instance.connectionManager = ConnectionManager.getInstance();
+            instance.minigameManager = MiniGameManager.getInstance();
             instance.locMarker = null;
             instance.locRad = null;
             instance.userRoute = null;
             instance.drawRoute();
+            if (instance.lastCameraPosition != null) {
+                objects.mMap.moveCamera(CameraUpdateFactory.newCameraPosition(instance.lastCameraPosition));
+            }
             //TODO: call minigameManager -> resume()
         }
         return instance;
@@ -281,23 +294,28 @@ public class PositionManager implements LocationListener {
         bicycleBitmap=Utils.getStreetBitmap(bicycleCache, bicycleBitmap, HSV[0]);
     }
 
-    public void start() {
+    public boolean start() {
+        if (!canStart)
+            return false;
         if (userRoute != null)
             userRoute.remove();
         started = true;
         pOptions = new PolylineOptions().color(Color.BLUE).width(5);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
+        return true;
     }
 
     public void stop() {
         started = false;
         locationManager.removeUpdates(this);
+
         if (locMarker != null)
             locMarker.remove();
         locMarker = null;
         if (locRad != null)
             locRad.remove();
         locRad = null;
+
 
         if (UIobjects != null && pOptions != null) {
             List<LatLng> points = pOptions.getPoints();
@@ -314,8 +332,11 @@ public class PositionManager implements LocationListener {
             lastLocation = null;
             if (UIobjects != null)
                 UIobjects.progressBar.setVisibility(View.VISIBLE);
+            canStart = false;
             new SnapToRoadTask().execute();
         } else {
+            routeInfo.routePoints.clear();
+            routeInfo.routeSpeeds.clear();
             if (UIobjects != null)
                 UIobjects.progressBar.setVisibility(View.GONE);
         }
@@ -332,6 +353,10 @@ public class PositionManager implements LocationListener {
         this.lastCameraPosition = pos;
         this.UIobjects = null;
 
+        if (locMarker != null)
+            locMarker.remove();
+        if (locRad != null)
+            locRad.remove();
         this.locMarker = null;
         this.locRad = null;
 
@@ -344,13 +369,15 @@ public class PositionManager implements LocationListener {
         Log.d("LOC", "accuracy: " + location.getAccuracy() + " gotFirstLocation: " + gotFirstLocation);
         if (!gotFirstLocation && location.getAccuracy() < Utils.MIN_ACCURACY) {
             gotFirstLocation = true;
-            UIobjects.progressBar.setVisibility(View.GONE);
+            if (UIobjects != null)
+                UIobjects.progressBar.setVisibility(View.GONE);
         }
         if (!gotFirstLocation){
             return;
         }
 
-        minigameManager.onLocationChanged(location);
+        if (minigameManager != null)
+            minigameManager.onLocationChanged(location);
 
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
         float speed = location.getSpeed();
@@ -361,9 +388,11 @@ public class PositionManager implements LocationListener {
         lastLocation = location;
 
         // UI code:
-        if (UIobjects == null)
+        if (UIobjects == null) {
+            Log.d("LOC", "no UIobjects in locationUpdate");
             return;
-
+        }
+        Log.d("LOC", "showing UI");
         // convert to km/h
         speed *= Utils.MPS_TO_KMH;
 
@@ -397,8 +426,10 @@ public class PositionManager implements LocationListener {
     private void drawRoute() {
         if (userRoute != null)
             userRoute.remove();
-        if (pOptions != null)
-            userRoute = UIobjects.mMap.addPolyline(pOptions);
+        if (pOptions == null)
+            throw new RuntimeException("wtf? pOptions is null!!!!!!!!!");
+
+        userRoute = UIobjects.mMap.addPolyline(pOptions);
     }
 
     @Override
