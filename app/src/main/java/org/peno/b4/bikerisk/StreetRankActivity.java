@@ -23,7 +23,7 @@ import java.util.Locale;
 public class StreetRankActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
     public static final String EXTRA_STREET = "org.peno.b4.bikerisk.STREET";
-    public static final String EXTRA_CITY  ="org.peno.b4.bikerisk.CITY";
+    public static final String EXTRA_CITY  = "org.peno.b4.bikerisk.CITY";
 
     public static final String TAG = "StreetRankActivity";
 
@@ -78,7 +78,7 @@ public class StreetRankActivity extends AppCompatActivity
 
 
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("street-rank")) {
@@ -154,6 +154,7 @@ public class StreetRankActivity extends AppCompatActivity
             } else {
                 Toast.makeText(this, "Error getting street rank", Toast.LENGTH_SHORT).show();
             }
+            return true;
         } else if (req.equals("add-points")) {
             if (result) {
                 setContentView(R.layout.activity_street_rank);
@@ -162,7 +163,9 @@ public class StreetRankActivity extends AppCompatActivity
                 Toast.makeText(this, "Error adding points", Toast.LENGTH_SHORT).show();
 
             }
+            return true;
         }
+        return false;
     }
 
     @Override

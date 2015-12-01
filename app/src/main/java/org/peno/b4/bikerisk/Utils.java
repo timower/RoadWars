@@ -5,8 +5,12 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -62,7 +66,7 @@ public class Utils {
     public static LatLng getLatLng(Geocoder geocoder, String street){
         if(geocoder != null){
             try{
-                List<Address> locations = geocoder.getFromLocationName(street + ", Leuven",1);
+                List<Address> locations = geocoder.getFromLocationName(street + ", Leuven", 1);
                 if (locations.size() != 1)
                     return null;
                 return new LatLng(locations.get(0).getLatitude(), locations.get(0).getLongitude());
@@ -105,5 +109,23 @@ public class Utils {
         if (markerCache != null)
             markerCache.put(hue, ret);
         return ret;
+    }
+
+    public static void onResponse(String req, boolean result, JSONObject response) {
+        //TODO
+        MiniGameManager minigameInstance = MiniGameManager.getInstance();
+        if (result) {
+            try {
+                if (req.equals("started-minigame")) {
+                    // response.getString("minigame").equals("race") &&
+                    Log.d("IMP", "started-minigame");
+                    if ( minigameInstance != null) {
+                        minigameInstance.startRaceGame(response.getString("street"), response.getString("name"));
+                    }
+                }
+            }  catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

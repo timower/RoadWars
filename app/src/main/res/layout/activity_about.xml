@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=" Jan Vermaelen \n Jef Versyck \n Laura Vranken \n Thomas Vranken \n Thimoty Werquin \n Holger Willems"
+        android:text=" Jan Vermaelen \n Jef Versyck \n Laura Vranken \n Thomas Vranken \n Timothy Werquin \n Holger Willems"
         android:id="@+id/aboutTextNames"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/aboutImage"

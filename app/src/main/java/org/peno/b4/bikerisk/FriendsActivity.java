@@ -79,7 +79,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
     }
 
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
 
@@ -153,6 +153,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                     e.printStackTrace();
                 }
             }
+            return true;
         }
 
         if (req.equals("get-friend-reqs")) {
@@ -231,11 +232,15 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                     e.printStackTrace();
                 }
             }
+            return true;
         }
         if (req.equals("accept-friend") || req.equals("remove-friend") || req.equals("remove-friend-req")){
             resetUI();
-            if (!result) {Toast.makeText(FriendsActivity.this, "Action Failed", Toast.LENGTH_SHORT).show();}
+            if (!result) {Toast.makeText(FriendsActivity.this, "Action Failed", Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
+        return false;
     }
 
     @Override

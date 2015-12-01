@@ -72,7 +72,7 @@ public class UserInfoActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("user-info")) {
@@ -168,6 +168,7 @@ public class UserInfoActivity extends AppCompatActivity
                 Toast.makeText(this, "Error getting user info", Toast.LENGTH_SHORT).show();
                 finish();
             }
+            return true;
         } else if (req.equals("get-all-points")) {
             if (result) {
                 try {
@@ -220,6 +221,7 @@ public class UserInfoActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
+            return true;
         } else if (req.equals("add-friend")) {
             if (result) {
                 //clear ui:
@@ -228,6 +230,7 @@ public class UserInfoActivity extends AppCompatActivity
             } else {
                 Toast.makeText(this, "error adding friend", Toast.LENGTH_SHORT).show();
             }
+            return true;
         } else if (req.equals("remove-friend")) {
             if (result) {
                 //clear ui:
@@ -236,6 +239,7 @@ public class UserInfoActivity extends AppCompatActivity
             } else {
                 Toast.makeText(this, "error removing friend", Toast.LENGTH_SHORT).show();
             }
+            return true;
         } else if (req.equals("remove-friend-req")) {
             if (result) {
                 //clear ui:
@@ -244,6 +248,7 @@ public class UserInfoActivity extends AppCompatActivity
             } else {
                 Toast.makeText(this, "error declining friend", Toast.LENGTH_SHORT).show();
             }
+            return true;
         } else if (req.equals("accept-friend")) {
             if (result) {
                 //clear ui:
@@ -252,7 +257,9 @@ public class UserInfoActivity extends AppCompatActivity
             } else {
                 Toast.makeText(this, "error accepting friend", Toast.LENGTH_SHORT).show();
             }
+            return true;
         }
+        return false;
     }
 
     @Override

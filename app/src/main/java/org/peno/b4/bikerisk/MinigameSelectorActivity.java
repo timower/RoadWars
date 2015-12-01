@@ -11,9 +11,8 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-//TODO: dynamicly load minigames from minigamemanger.minigame.values()
+//TODO: dynamically load minigames from minigamemanger.minigame.values()
 
-//TODO: rename
 public class MinigameSelectorActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
 
@@ -23,7 +22,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
 
     private ConnectionManager connectionManager;
     private String street;
-    public static final String TAG = "MinigameSelectorActivity";
+    public static final String TAG = "MinigameSelActivity";
 
     // VERWIJDEREN
     private String allow_nfc;
@@ -52,9 +51,20 @@ public class MinigameSelectorActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
+        if (req.equals("start-minigame")) {
+            if (result) {
+                //TODO: minigameManager.startRaceGame();
+                Toast.makeText(this, "Minigame started!", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(this, "Other player is not online", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -77,8 +87,8 @@ public class MinigameSelectorActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UserSearchActivity.GET_USER_REQ) {
             if (resultCode == RESULT_OK) {
-                String user = data.getData().getHost();
-                MiniGameManager.getInstance().startRaceGame(street, user);
+                Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_SHORT).show();
+                connectionManager.startMinigame(data.getData().getHost(), street);
             } else {
                 Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
             }
@@ -86,6 +96,8 @@ public class MinigameSelectorActivity extends AppCompatActivity
     }
 
     public void FotorondeClicked(View view) {
+        Toast.makeText(this, "This minigame is not available yet!", Toast.LENGTH_LONG).show();
+
     }
 
     @Override

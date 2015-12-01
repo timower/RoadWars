@@ -37,7 +37,7 @@ public class ConnectionManager {
          * @param result if the result succeeded
          * @param response the complete response object
          */
-        void onResponse(String req, Boolean result, JSONObject response);
+        boolean onResponse(String req, Boolean result, JSONObject response);
 
         /**
          * called when connection is lost -> show banner
@@ -255,6 +255,10 @@ public class ConnectionManager {
         sendRequest("req", "get-unknown-users", "key", key, "user", user);
     }
 
+    public void startMinigame(String name, String street) {
+        sendRequest("req", "start-minigame", "key", key, "user", user, "name", name, "street", street);
+    }
+
     /**
      * main communication class,
      *  the class starts a connection with the server and listens for responses
@@ -338,8 +342,12 @@ public class ConnectionManager {
         }
         @Override
         public void run(){
-            if (responseListener != null)
-                responseListener.onResponse(req, result, response);
+            if (responseListener != null) {
+                boolean responseFinished = responseListener.onResponse(req, result, response);
+                if (!responseFinished) {
+                    Utils.onResponse(req, result, response);
+                }
+            }
         }
     }
 

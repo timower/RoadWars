@@ -31,8 +31,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: set result when users clicks another user.
-
 public class UserSearchActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, NfcAdapter.CreateNdefMessageCallback {
 
@@ -166,26 +164,30 @@ public class UserSearchActivity extends AppCompatActivity
     }
 
     @Override
-    public void onResponse(String req, Boolean result, JSONObject response) {
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
-        if (result) {
-            users.clear();
-            Log.d(TAG, response.toString());
-            try {
-                if (req.equals("get-all-users") || req.equals("get-unknown-users")) {
+        if (req.equals("get-all-users") || req.equals("get-unknown-users") || req.equals("get-friends")) {
+            if (result) {
+                users.clear();
+                Log.d(TAG, response.toString());
+                try {
+                    if (req.equals("get-all-users") || req.equals("get-unknown-users")) {
                         JSONArray user = response.getJSONArray("users");
                         makeArray(user);
-                } else if (req.equals("get-friends")) {
+                    } else if (req.equals("get-friends")) {
                         JSONArray user = response.getJSONArray("friends");
                         makeArray(user);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } else {
+                Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
+            return true;
         }
+        return false;
     }
 
     public void makeArray(JSONArray user) {
