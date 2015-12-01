@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity
 
     private TableLayout pointsTable;
     private TextView speedText;
-    private ProgressBar progressBar;
+    private ProgressTracker progressTracker;
 
     private TextView connectionLostBanner;
     private TextView inMinigame;
@@ -97,9 +97,9 @@ public class MainActivity extends AppCompatActivity
         // find textviews for street and speed
         pointsTable = (TableLayout)findViewById(R.id.streets_table);
         speedText = (TextView)findViewById(R.id.speed_text);
-        progressBar = (ProgressBar)findViewById(R.id.main_progressbar);
+        progressTracker = new ProgressTracker();
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
-        inMinigame = (TextView)findViewById(R.id.in_minigame);
+        //inMinigame = (TextView)findViewById(R.id.in_minigame);
 
     }
 
@@ -112,22 +112,25 @@ public class MainActivity extends AppCompatActivity
 
         // start connection with server
         connectionManager = ConnectionManager.getInstance(this, this);
-        MiniGameManager.getInstance().setContext(getApplicationContext());
+        //MiniGameManager.getInstance().setContext(getApplicationContext());
+
+        progressTracker.setProgressBar((ProgressBar)findViewById(R.id.main_progressbar));
 
         // login:
         if (connectionManager.loadFromSharedPrefs()) {
-            // check login with saved key & user
+            // visible login with saved key & user
             connectionManager.checkLogin();
         } else {
             // start login activity (calls on activity result)
             Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
             startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
         }
+        progressTracker.showProgressBar(ProgressTracker.REASON_LOGIN);
 
         if (mMap != null) {
             PositionManager.getInstance(this, new PositionManager.UIObjects(mMap, speedText,
-                    pointsTable, progressBar, connectionLostBanner));
-            MiniGameManager.getInstance().setUIObjects(new MiniGameManager.UIObjects(mMap, inMinigame));
+                    pointsTable, progressTracker, connectionLostBanner));
+            //MiniGameManager.getInstance().setUIObjects(new MiniGameManager.UIObjects(mMap, inMinigame));
         } else {
             Log.d(TAG, "wtf??? mMap not ready in resume");
         }
@@ -160,7 +163,7 @@ public class MainActivity extends AppCompatActivity
         // hide notification (gets shown again later if running)
         hideStartedNotification();
 
-        //check if we are just rotation screens:
+        //visible if we are just rotation screens:
         if (isChangingConfigurations()) {
             // we will be restarted later again -> save camera position in positionmanager
             if (positionManager != null) {
@@ -189,14 +192,13 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == LoginActivity.REQUEST_LOGIN) {
             if (resultCode == RESULT_OK) {
                 // we are logged in (via login)
-                hideProgressBar();
+                progressTracker.hideProgressBar(ProgressTracker.REASON_LOGIN);
             } else {
                 // somehow user got back here without logging in -> restart login activity
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
             }
-        }
-        if (requestCode == UserSearchActivity.GET_USER_REQ) {
+        } else if (requestCode == UserSearchActivity.GET_USER_REQ) {
             if (resultCode == RESULT_OK) {
                 String name = data.getData().getHost();
                 Intent UserInfoActivityIntent = new Intent(this, UserInfoActivity.class);
@@ -217,10 +219,10 @@ public class MainActivity extends AppCompatActivity
     public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner.setVisibility(View.GONE);
         switch (req) {
-            case "check-login":
+            case "visible-login":
                 if (result) {
                     // we are logged in
-                    hideProgressBar();
+                    progressTracker.hideProgressBar(ProgressTracker.REASON_LOGIN);
                 } else {
                     //login (key not valid anymore):
                     Intent loginIntent = new Intent(this, LoginActivity.class);
@@ -341,7 +343,7 @@ public class MainActivity extends AppCompatActivity
                 if (positionManager.started) {
                     hideStartedNotification();
                     hideInfoText();
-                    hideProgressBar();
+                    progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
                     positionManager.stop();
 
                     invalidateOptionsMenu();
@@ -349,7 +351,7 @@ public class MainActivity extends AppCompatActivity
                 this.connectionManager.logout();
                 return super.onOptionsItemSelected(item);
             case R.id.action_user_info:
-                if(progressBar.getVisibility() == View.VISIBLE){
+                if(!progressTracker.visible()){
                     return super.onOptionsItemSelected(item);
                 }
                 Intent intent = new Intent(this, UserInfoActivity.class);
@@ -368,13 +370,13 @@ public class MainActivity extends AppCompatActivity
                             showGPSDisabledAlertToUser();
                         }else {
                             Toast.makeText(this, "GPS is Enabled", Toast.LENGTH_SHORT).show();
-                            if (progressBar.getVisibility() == View.VISIBLE) {
+                            if (progressTracker.visible()) {
                                 return super.onOptionsItemSelected(item);
                             }
                             if (positionManager.start()) {
                                 showStartedNotification();
                                 showInfoText();
-                                showProgressBar();
+                                progressTracker.showProgressBar(ProgressTracker.REASON_GPS);
                                 connectionManager.getUserInfo(connectionManager.user);
                             }
                         }
@@ -413,9 +415,9 @@ public class MainActivity extends AppCompatActivity
         geocoder = new Geocoder(this);
 
         positionManager = PositionManager.getInstance(this,
-                new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar, connectionLostBanner));
+                new PositionManager.UIObjects(mMap, speedText, pointsTable, progressTracker, connectionLostBanner));
 
-        MiniGameManager.getInstance().setUIObjects(new MiniGameManager.UIObjects(mMap, inMinigame));
+        //MiniGameManager.getInstance().setUIObjects(new MiniGameManager.UIObjects(mMap, inMinigame));
 
         if (positionManager.started) {
             // show notification
@@ -444,7 +446,7 @@ public class MainActivity extends AppCompatActivity
              */
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
-                if (progressBar.getVisibility() == View.VISIBLE) {
+                if (progressTracker.visible()) {
                     return;
                 }
                 Log.d(TAG, "camera changed");
@@ -475,7 +477,7 @@ public class MainActivity extends AppCompatActivity
     public void onMapLongClick(LatLng latLng) {
         Log.d(TAG, "long-click on map");
         // lookup street and start streetRankActivity:
-        if(progressBar.getVisibility() == View.VISIBLE){
+        if(progressTracker.visible()){
             return;
         }
         String street = Utils.lookupStreet(geocoder, latLng);
@@ -493,7 +495,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onMapClick(LatLng latLng) {
-        if(progressBar.getVisibility() == View.VISIBLE){
+        if(progressTracker.visible()){
             return;
         }
         pointsTable.setVisibility(View.GONE);
@@ -545,18 +547,6 @@ public class MainActivity extends AppCompatActivity
      */
     private void hideInfoText() {
         speedText.setVisibility(View.GONE);
-    }
-
-    /** Hides the progressbar. (UNFINISHED)
-     */
-    private void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    /** Shows the progressbar. (UNFINISHED)
-     */
-    private void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     /** Adds a marker on a street in the color of the owner. (UNFINISHED)

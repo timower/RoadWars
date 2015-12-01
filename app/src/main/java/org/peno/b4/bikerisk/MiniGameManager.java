@@ -79,6 +79,7 @@ public class MiniGameManager {
     private ConnectionManager connectionManager;
 
     private static MiniGameManager instance = null;
+    
     private MiniGameManager() {
         runningMiniGame = MiniGame.NONE;
         connectionManager = ConnectionManager.getInstance();
@@ -120,7 +121,7 @@ public class MiniGameManager {
     public void onLocationChanged(Location location) {
         switch (runningMiniGame) {
             case TARGET_RACE:
-                //TODO: check if user is finished
+                //TODO: visible if user is finished
                 float[] distance = new float[3];
                 Location.distanceBetween(location.getLatitude(),location.getLongitude(),this.target.latitude,this.target.longitude,distance);
                 if (distance[0]<10){
