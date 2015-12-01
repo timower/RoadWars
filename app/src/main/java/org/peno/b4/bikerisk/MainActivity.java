@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progressBar;
 
     private TextView connectionLostBanner;
+    private TextView inMinigame;
 
     /** Creates the activity, initializes the map and searches for certain text views. (UNFINISHED)
      *
@@ -98,6 +99,8 @@ public class MainActivity extends AppCompatActivity
         speedText = (TextView)findViewById(R.id.speed_text);
         progressBar = (ProgressBar)findViewById(R.id.main_progressbar);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
+        inMinigame = (TextView)findViewById(R.id.in_minigame);
+
     }
 
     /** Resumes the activity. Restarts server connection and checks login.
@@ -109,6 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         // start connection with server
         connectionManager = ConnectionManager.getInstance(this, this);
+        MiniGameManager.getInstance().setContext(getApplicationContext());
 
         // login:
         if (connectionManager.loadFromSharedPrefs()) {
@@ -123,6 +127,7 @@ public class MainActivity extends AppCompatActivity
         if (mMap != null) {
             PositionManager.getInstance(this, new PositionManager.UIObjects(mMap, speedText,
                     pointsTable, progressBar, connectionLostBanner));
+            MiniGameManager.getInstance().setUIObjects(new MiniGameManager.UIObjects(mMap, inMinigame));
         } else {
             Log.d(TAG, "wtf??? mMap not ready in resume");
         }
@@ -158,10 +163,12 @@ public class MainActivity extends AppCompatActivity
         //check if we are just rotation screens:
         if (isChangingConfigurations()) {
             // we will be restarted later again -> save camera position in positionmanager
-            if (mMap != null) {
-                positionManager.pause(mMap.getCameraPosition());
-            } else {
-                positionManager.pause(null);
+            if (positionManager != null) {
+                if (mMap != null) {
+                    positionManager.pause(mMap.getCameraPosition());
+                } else {
+                    positionManager.pause(null);
+                }
             }
         } else {
             // we will be destroyed -> kill positionmanager
@@ -280,9 +287,6 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
-            case "get-first":
-                MiniGameManager.getInstance().setFirst(result);
-                return true;
             case "nfc-friend":
                 if (result) {
                     Toast.makeText(this, "Ok, you are now friends", Toast.LENGTH_SHORT).show();
@@ -405,6 +409,9 @@ public class MainActivity extends AppCompatActivity
 
         positionManager = PositionManager.getInstance(this,
                 new PositionManager.UIObjects(mMap, speedText, pointsTable, progressBar, connectionLostBanner));
+
+        MiniGameManager.getInstance().setUIObjects(new MiniGameManager.UIObjects(mMap, inMinigame));
+
         if (positionManager.started) {
             // show notification
             showStartedNotification();
