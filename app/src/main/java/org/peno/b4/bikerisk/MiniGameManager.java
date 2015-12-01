@@ -19,8 +19,8 @@ public class MiniGameManager {
     // read: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
     public enum MiniGame {
         TARGET_RACE("race to target",1000),
-        NONE("",0),
-        PHOTO_ROUND("take picture of place", 1000);
+        PHOTO_ROUND("take picture of place", 1000),
+        NONE("",0);
 
         private String fullName;
         private int points;

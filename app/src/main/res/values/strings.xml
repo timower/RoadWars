@@ -47,5 +47,7 @@
     <string name="user">remove</string>
     <string name="userlist">Search users</string>
     <string name="totalnumberownedstreets">Number owned streets: </string>
+    <string name="Capture">Capture</string>
+    <string name="Take_picture">Take a picture!</string>
 
 </resources>
