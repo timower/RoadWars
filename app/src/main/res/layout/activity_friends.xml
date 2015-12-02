@@ -44,30 +44,84 @@
                     card_view:cardCornerRadius="4dp"
                     android:layout_marginBottom="8dp">
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:padding="8dp">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/new_requests"
                             android:textSize="25sp"
-                            android:paddingRight="8dp"/>
+                            android:paddingRight="8dp"
+                            android:paddingLeft="8dp"/>
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:stretchColumns="1"
+                            android:padding="8dp"
+                            android:id="@+id/request_list_table">
+                            <TableRow tools:ignore="UselessParent">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/Color"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/Username"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:gravity="center"/>
+                                <TextView
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
+                                    android:text="@string/accept"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:paddingRight="8dp"
+                                    android:paddingLeft="8dp"/>
+                                <TextView
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="wrap_content"
+                                    android:text="@string/decline"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold"
+                                    android:paddingRight="8dp"
+                                    android:paddingLeft="8dp"/>
+                            </TableRow>
+                        </TableLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                card_view:cardCornerRadius="4dp"
+                android:layout_marginBottom="8dp">
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    card_view:cardCornerRadius="4dp">
+                    android:orientation="vertical"
+                    android:padding="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/My_friends"
+                        android:textSize="25sp"
+                        android:paddingRight="8dp"
+                        android:paddingLeft="8dp"/>
                     <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:stretchColumns="1"
                         android:padding="8dp"
-                        android:id="@+id/request_list_table">
-                        <TableRow>
+                        android:id="@+id/friends_list">
+                        <TableRow tools:ignore="UselessParent">
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -84,74 +138,13 @@
                             <TextView
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
-                                android:text="@string/accept"
+                                android:text="@string/remove_friend"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
-                                android:paddingRight="8dp"/>
-                            <TextView
-                                android:layout_height="wrap_content"
-                                android:layout_width="wrap_content"
-                                android:text="@string/decline"
-                                android:textSize="18sp"
-                                android:textStyle="bold"
-                                android:paddingRight="8dp"/>
+                                />
                         </TableRow>
                     </TableLayout>
-                </android.support.v7.widget.CardView>
-            </LinearLayout>
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                card_view:cardCornerRadius="4dp"
-                android:layout_marginBottom="8dp">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/My_friends"
-                        android:textSize="25sp"
-                        android:paddingRight="8dp" />
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                card_view:cardCornerRadius="4dp">
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:stretchColumns="1"
-                    android:padding="8dp"
-                    android:id="@+id/friends_list">
-                    <TableRow>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/Color"
-                            android:textSize="18sp"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/Username"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
-                            android:gravity="center"/>
-                        <TextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:text="@string/Remove_friend"
-                            android:textSize="18sp"
-                            android:textStyle="bold"/>
-                    </TableRow>
-                </TableLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </ScrollView>

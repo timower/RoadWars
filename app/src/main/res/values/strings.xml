@@ -1,41 +1,75 @@
 <resources>
+    <!-- TODO: remove capitals from name, remove duplicates -->
     <string name="app_name">RoadWars</string>
+
+    <!-- LoginActivity -->
     <string name="Login">Login</string>
     <string name="Password">Password</string>
     <string name="Go">Go!</string>
-    <string name="Register">Register</string>
     <string name="Or_register">Or register!</string>
-    <string name="Error">Error</string>
-    <string name="logout">Logout</string>
-    <string name="title_activity_test_map">Map</string>
-    <string name="user_info">User Info</string>
-    <string name="my_profile">My Profile</string>
+    <string name="welcom_message">Welcome %s!</string>
+    <string name="failed_login">Failed to login</string>
+
+    <!-- RegisterActivity -->
+    <string name="Register">Register</string>
     <string name="user_name">Username:</string>
     <string name="email">e-mail:</string>
     <string name="color">Color</string>
     <string name="Username">Username</string>
     <string name="Email_address">Email address</string>
     <string name="Choose_a_color">Choose a color</string>
+    <string name="hue">Hue</string>
+    <string name="register_ok">Successfully created user</string>
+    <string name="register_fail">Error creating user</string>
+
+    <!-- MainActivity -->
+    <string name="logout">Logout</string>
+    <string name="user_info">User Info</string>
+    <string name="my_profile">My Profile</string>
+    <string name="start">Start</string>
+    <string name="userlist">Search users</string>
+    <string name="owner_toast">Owner of %1$s: %2$s</string>
+    <string name="error_points">Error saving points</string>
+    <string name="nfc_friend">Ok, you\'re friends!</string>
+    <string name="finished_points">Finished saving points!</string>
+    <string name="enable_location_access">Please allow RoadWars access to location</string>
+    <string name="speed_info">%.2f km/h</string>
+
+
+    <!-- App -->
     <string name="Preview">Preview</string>
+
+    <string name="title_activity_maps">Map</string>
+    <string name="integer">%d</string>
+
+    <string name="connection_lost">Connection lost!</string>
+    <string name="gps_service_not_available">GPS service not available</string>
+
+    <!-- StreetRankActivity -->
     <string name="street">Street</string>
     <string name="points">Points</string>
-    <string name="title_activity_maps">Map</string>
     <string name="test_add_points">Add 5 Points</string>
     <string name="rank_number">Rank</string>
-    <string name="hue">Hue</string>
-    <string name="start">Start</string>
-    <string name="connection_lost">Connection lost!</string>
+    <string name="totalnumberownedstreets">Number owned streets: </string>
+    <string name="error_info">Error getting info</string>
+
+    <!-- MinigameSelectorActivity -->
     <string name="LiveRace">Target Race</string>
     <string name="Choose_a_minigame_for">Choose a Minigame for</string>
     <string name="Fotoronde">In the picture</string>
     <string name="minigame">Minigame</string>
     <string name="title_activity_minigame">Minigame</string>
+    <string name="minigame_started">Minigame started!</string>
+    <string name="other_offline">Other player is offline :(</string>
+
+    <!-- UserSearchActivity -->
     <string name="Search_for_user">Search for user</string>
     <string name="nfc_allowed">NFC</string>
-    <string name="gps_service_not_available">GPS service not available</string>
+
+    <!-- FriendsActivity -->
     <string name="My_friends">My friends</string>
     <string name="Color">Color</string>
-    <string name="Remove_friend">Remove friend</string>
+    <string name="remove_friend">Remove friend</string>
     <string name="new_requests">New requests</string>
     <string name="search_new_friends">Search new friends!</string>
     <string name="remove">remove</string>
@@ -44,10 +78,23 @@
     <string name="add_friend">add friend</string>
     <string name="accept_request">accept request</string>
     <string name="decline_req">decline request</string>
-    <string name="user">remove</string>
-    <string name="userlist">Search users</string>
-    <string name="totalnumberownedstreets">Number owned streets: </string>
+    <string name="user">remove</string> <!-- ???WHAT?? -->
+    <string name="friend_failed">Action Failed</string>
+    <string name="friend_removed">Friend %s removed!</string>
+    <string name="friend_request_accepted">Request from %s accepted!</string>
+    <string name="friend_request_declined">Request from %s declined!</string>
+
+    <!-- CameraActivity -->
     <string name="Capture">Capture</string>
     <string name="Take_picture">Take a picture!</string>
+    <string name="camera">Camera</string>
+    <string name="take_picture">Take a Picture</string>
+
+    <!-- AboutActivity -->
+    <string name="creators">Creators:</string>
+    <string name="creator_names">Jan Vermaelen \n Jef Versyck \n Laura Vranken \n Thomas Vranken \n Timothy Werquin \n Holger Willems</string>
+    <string name="icon">Icon</string>
+    <string name="version_str">Version: %s</string>
+    <string name="about">About</string>
 
 </resources>

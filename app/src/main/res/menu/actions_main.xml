@@ -14,7 +14,7 @@
         android:icon="@drawable/ic_group_white_24dp"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/action_about"
-        android:title="About"
+        android:title="@string/about"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/action_logout"
         android:title="@string/logout"

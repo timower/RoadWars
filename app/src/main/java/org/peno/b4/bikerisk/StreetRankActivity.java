@@ -38,7 +38,10 @@ public class StreetRankActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         street = intent.getStringExtra(EXTRA_STREET);
-        getSupportActionBar().setTitle(street);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(street);
+        else if (getActionBar() != null)
+            getActionBar().setTitle(street);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
 
@@ -123,7 +126,7 @@ public class StreetRankActivity extends AppCompatActivity
                             @Override
                             public void onClick(View v) {
                                 Intent UserInfoActivityIntent = new Intent(getApplicationContext(), UserInfoActivity.class);
-                                UserInfoActivityIntent.putExtra("name", name);
+                                UserInfoActivityIntent.putExtra(UserInfoActivity.EXTRA_NAME, name);
                                 startActivity(UserInfoActivityIntent);
                             }
                         });
@@ -150,7 +153,7 @@ public class StreetRankActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(this, "Error getting street rank", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_info), Toast.LENGTH_SHORT).show();
             }
             return true;
         } else if (req.equals("add-points")) {
@@ -158,7 +161,7 @@ public class StreetRankActivity extends AppCompatActivity
                 setContentView(R.layout.activity_street_rank);
                 connectionManager.getStreetRank(street);
             } else {
-                Toast.makeText(this, "Error adding points", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_info), Toast.LENGTH_SHORT).show();
 
             }
             return true;

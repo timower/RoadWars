@@ -24,6 +24,8 @@ import java.util.Locale;
 public class UserInfoActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
 
+    public static final String EXTRA_NAME = "org.peno.name";
+
     private ConnectionManager connectionManager;
     private String infoName;
 
@@ -32,7 +34,7 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        infoName = getIntent().getStringExtra("name");
+        infoName = getIntent().getStringExtra(EXTRA_NAME);
         setContentView(R.layout.activity_user_info);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
@@ -43,9 +45,11 @@ public class UserInfoActivity extends AppCompatActivity
         connectionManager = ConnectionManager.getInstance(this, this);
 
         if (!infoName.equals(connectionManager.user)) {
-            getSupportActionBar().setTitle(getString(R.string.user_info));
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(getString(R.string.user_info));
         } else {
-            getSupportActionBar().setTitle(getString(R.string.my_profile));
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(getString(R.string.my_profile));
         }
         // clear ui:
         setContentView(R.layout.activity_user_info);
@@ -75,189 +79,190 @@ public class UserInfoActivity extends AppCompatActivity
     public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
-        if (req.equals("user-info")) {
-            if (result) {
-                try {
-                    final String resName = response.getString("user");
-                    TextView name = (TextView) findViewById(R.id.user_name_value);
-                    name.setText(resName);
+        switch (req) {
+            case "user-info":
+                if (result) {
+                    try {
+                        final String resName = response.getString("user");
+                        TextView name = (TextView) findViewById(R.id.user_name_value);
+                        name.setText(resName);
 
-                    if (resName.equals(connectionManager.user)) {
-                        TextView email = (TextView) findViewById(R.id.user_email_value);
-                        email.setText(response.getString("email"));
-                    } else  {
-                        TextView email_label = (TextView)findViewById(R.id.email_id);
-                        email_label.setVisibility(View.GONE);
-                    }
-                    TextView totalnumberownedstreets = (TextView) findViewById(R.id.totalnumberownedstreets);
-                    totalnumberownedstreets.setText("" + response.getInt("n-streets"));
+                        if (resName.equals(connectionManager.user)) {
+                            TextView email = (TextView) findViewById(R.id.user_email_value);
+                            email.setText(response.getString("email"));
+                        } else {
+                            TextView email_label = (TextView) findViewById(R.id.email_id);
+                            email_label.setVisibility(View.GONE);
+                        }
+                        TextView totalnumberownedstreets = (TextView) findViewById(R.id.totalnumberownedstreets);
+                        totalnumberownedstreets.setText(getString(R.string.integer, response.getInt("n-streets")));
 
-                    View color = findViewById(R.id.user_color_value);
-                    color.setBackgroundColor(response.getInt("color"));
-                    //friend:
-                    boolean friend = response.getBoolean("friend");
-                    boolean friend_req = response.getBoolean("friend-req");
-                    boolean sent_friend_req = response.getBoolean("sent-friend-req");
-                    if (friend) {
-                        // add info he's friend?
-                        findViewById(R.id.add_friend).setVisibility(View.GONE);
-                        findViewById(R.id.accept_req).setVisibility(View.GONE);
-                        findViewById(R.id.remove_req).setVisibility(View.GONE);
-                        findViewById(R.id.remove_friend).setVisibility(View.VISIBLE);
-                        View v = findViewById(R.id.remove_friend);
-                        v.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                connectionManager.removeFriend(resName);
-                                Button b = (Button)v;
-                                b.setClickable(false);
-                            }
-                        });
-                    }
-                    if (friend_req) {
-                        findViewById(R.id.add_friend).setVisibility(View.GONE);
-                        findViewById(R.id.accept_req).setVisibility(View.VISIBLE);
-                        findViewById(R.id.remove_req).setVisibility(View.VISIBLE);
-                        findViewById(R.id.remove_friend).setVisibility(View.GONE);
-                        View v = findViewById(R.id.accept_req);
-                        v.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                connectionManager.acceptFriend(resName);
-                                Button b = (Button)v;
-                                b.setClickable(false);
-                            }
-                        });
-                        View b = findViewById(R.id.remove_req);
-                        b.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                connectionManager.declineFriend(resName);
-                                Button d = (Button)v;
-                                d.setClickable(false);
-                            }
-                        });
-                    }
-                    if (sent_friend_req)  {
-                        findViewById(R.id.add_friend).setVisibility(View.GONE);
-                        findViewById(R.id.accept_req).setVisibility(View.GONE);
-                        findViewById(R.id.remove_req).setVisibility(View.GONE);
-                        findViewById(R.id.remove_friend).setVisibility(View.GONE);
-                    }
-                    if (!friend && !friend_req && !resName.equals(connectionManager.user) && !sent_friend_req) {
-                        View v = findViewById(R.id.add_friend);
-                        v.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                connectionManager.addFriend(resName);
-                                Button b = (Button)v;
-                                b.setClickable(false);
-                            }
-                        });
-                        findViewById(R.id.add_friend).setVisibility(View.VISIBLE);
-                        findViewById(R.id.accept_req).setVisibility(View.GONE);
-                        findViewById(R.id.remove_friend).setVisibility(View.GONE);
-                        findViewById(R.id.remove_req).setVisibility(View.GONE);
+                        View color = findViewById(R.id.user_color_value);
+                        color.setBackgroundColor(response.getInt("color"));
+                        //friend:
+                        boolean friend = response.getBoolean("friend");
+                        boolean friend_req = response.getBoolean("friend-req");
+                        boolean sent_friend_req = response.getBoolean("sent-friend-req");
+                        if (friend) {
+                            // add info he's friend?
+                            findViewById(R.id.add_friend).setVisibility(View.GONE);
+                            findViewById(R.id.accept_req).setVisibility(View.GONE);
+                            findViewById(R.id.remove_req).setVisibility(View.GONE);
+                            findViewById(R.id.remove_friend).setVisibility(View.VISIBLE);
+                            View v = findViewById(R.id.remove_friend);
+                            v.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    connectionManager.removeFriend(resName);
+                                    Button b = (Button) v;
+                                    b.setClickable(false);
+                                }
+                            });
+                        }
+                        if (friend_req) {
+                            findViewById(R.id.add_friend).setVisibility(View.GONE);
+                            findViewById(R.id.accept_req).setVisibility(View.VISIBLE);
+                            findViewById(R.id.remove_req).setVisibility(View.VISIBLE);
+                            findViewById(R.id.remove_friend).setVisibility(View.GONE);
+                            View v = findViewById(R.id.accept_req);
+                            v.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    connectionManager.acceptFriend(resName);
+                                    Button b = (Button) v;
+                                    b.setClickable(false);
+                                }
+                            });
+                            View b = findViewById(R.id.remove_req);
+                            b.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    connectionManager.declineFriend(resName);
+                                    Button d = (Button) v;
+                                    d.setClickable(false);
+                                }
+                            });
+                        }
+                        if (sent_friend_req) {
+                            findViewById(R.id.add_friend).setVisibility(View.GONE);
+                            findViewById(R.id.accept_req).setVisibility(View.GONE);
+                            findViewById(R.id.remove_req).setVisibility(View.GONE);
+                            findViewById(R.id.remove_friend).setVisibility(View.GONE);
+                        }
+                        if (!friend && !friend_req && !resName.equals(connectionManager.user) && !sent_friend_req) {
+                            View v = findViewById(R.id.add_friend);
+                            v.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    connectionManager.addFriend(resName);
+                                    Button b = (Button) v;
+                                    b.setClickable(false);
+                                }
+                            });
+                            findViewById(R.id.add_friend).setVisibility(View.VISIBLE);
+                            findViewById(R.id.accept_req).setVisibility(View.GONE);
+                            findViewById(R.id.remove_friend).setVisibility(View.GONE);
+                            findViewById(R.id.remove_req).setVisibility(View.GONE);
 
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    connectionManager.getAllPoints(infoName);
+                } else {
+                    Toast.makeText(this, getString(R.string.error_info), Toast.LENGTH_SHORT).show();
+                    finish();
                 }
-                connectionManager.getAllPoints(infoName);
-            } else {
-                Toast.makeText(this, "Error getting user info", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-            return true;
-        } else if (req.equals("get-all-points")) {
-            if (result) {
-                try {
-                    JSONArray points = response.getJSONArray("points");
-                    int length = points.length();
+                return true;
+            case "get-all-points":
+                if (result) {
+                    try {
+                        JSONArray points = response.getJSONArray("points");
+                        int length = points.length();
 
-                    TableLayout table = (TableLayout)findViewById(R.id.streets_table);
-                    TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
-                            TableLayout.LayoutParams.WRAP_CONTENT,
-                            TableLayout.LayoutParams.WRAP_CONTENT);
-                    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
-                            TableRow.LayoutParams.WRAP_CONTENT,
-                            TableRow.LayoutParams.WRAP_CONTENT);
+                        TableLayout table = (TableLayout) findViewById(R.id.streets_table);
+                        TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
+                                TableLayout.LayoutParams.WRAP_CONTENT,
+                                TableLayout.LayoutParams.WRAP_CONTENT);
+                        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
+                                TableRow.LayoutParams.WRAP_CONTENT,
+                                TableRow.LayoutParams.WRAP_CONTENT);
 
-                    for (int i = 0; i < length; i++) {
-                        JSONArray subA = points.getJSONArray(i);
-                        if (subA.length() != 2)
-                            continue;
-                        final String street = subA.getString(0);
-                        int pointsS = subA.getInt(1);
+                        for (int i = 0; i < length; i++) {
+                            JSONArray subA = points.getJSONArray(i);
+                            if (subA.length() != 2)
+                                continue;
+                            final String street = subA.getString(0);
+                            int pointsS = subA.getInt(1);
 
-                        TableRow nRow = new TableRow(this);
-                        nRow.setLayoutParams(tableParams);
+                            TableRow nRow = new TableRow(this);
+                            nRow.setLayoutParams(tableParams);
 
-                        TextView streetView = new TextView(this);
-                        streetView.setLayoutParams(rowParams);
-                        streetView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(UserInfoActivity.this, StreetRankActivity.class);
-                                intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
-                                startActivity(intent);
-                            }
-                        });
+                            TextView streetView = new TextView(this);
+                            streetView.setLayoutParams(rowParams);
+                            streetView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(UserInfoActivity.this, StreetRankActivity.class);
+                                    intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
+                                    startActivity(intent);
+                                }
+                            });
 
-                        TextView pointsView = new TextView(this);
-                        pointsView.setLayoutParams(rowParams);
-                        pointsView.setGravity(Gravity.CENTER);
+                            TextView pointsView = new TextView(this);
+                            pointsView.setLayoutParams(rowParams);
+                            pointsView.setGravity(Gravity.CENTER);
 
-                        streetView.setText(street);
-                        pointsView.setText(String.format(Locale.getDefault(), "%d", pointsS));
+                            streetView.setText(street);
+                            pointsView.setText(String.format(Locale.getDefault(), "%d", pointsS));
 
-                        nRow.addView(streetView);
-                        nRow.addView(pointsView);
-                        table.addView(nRow);
+                            nRow.addView(streetView);
+                            nRow.addView(pointsView);
+                            table.addView(nRow);
 
-                        Log.d("TEST", street);
+                            Log.d("TEST", street);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
-            return true;
-        } else if (req.equals("add-friend")) {
-            if (result) {
-                //clear ui:
-                setContentView(R.layout.activity_user_info);
-                connectionManager.getUserInfo(infoName);
-            } else {
-                Toast.makeText(this, "error adding friend", Toast.LENGTH_SHORT).show();
-            }
-            return true;
-        } else if (req.equals("remove-friend")) {
-            if (result) {
-                //clear ui:
-                setContentView(R.layout.activity_user_info);
-                connectionManager.getUserInfo(infoName);
-            } else {
-                Toast.makeText(this, "error removing friend", Toast.LENGTH_SHORT).show();
-            }
-            return true;
-        } else if (req.equals("remove-friend-req")) {
-            if (result) {
-                //clear ui:
-                setContentView(R.layout.activity_user_info);
-                connectionManager.getUserInfo(infoName);
-            } else {
-                Toast.makeText(this, "error declining friend", Toast.LENGTH_SHORT).show();
-            }
-            return true;
-        } else if (req.equals("accept-friend")) {
-            if (result) {
-                //clear ui:
-                setContentView(R.layout.activity_user_info);
-                connectionManager.getUserInfo(infoName);
-            } else {
-                Toast.makeText(this, "error accepting friend", Toast.LENGTH_SHORT).show();
-            }
-            return true;
+                return true;
+            case "add-friend":
+                if (result) {
+                    //clear ui:
+                    setContentView(R.layout.activity_user_info);
+                    connectionManager.getUserInfo(infoName);
+                } else {
+                    Toast.makeText(this, "error adding friend", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case "remove-friend":
+                if (result) {
+                    //clear ui:
+                    setContentView(R.layout.activity_user_info);
+                    connectionManager.getUserInfo(infoName);
+                } else {
+                    Toast.makeText(this, "error removing friend", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case "remove-friend-req":
+                if (result) {
+                    //clear ui:
+                    setContentView(R.layout.activity_user_info);
+                    connectionManager.getUserInfo(infoName);
+                } else {
+                    Toast.makeText(this, "error declining friend", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case "accept-friend":
+                if (result) {
+                    //clear ui:
+                    setContentView(R.layout.activity_user_info);
+                    connectionManager.getUserInfo(infoName);
+                } else {
+                    Toast.makeText(this, "error accepting friend", Toast.LENGTH_SHORT).show();
+                }
+                return true;
         }
         return false;
     }

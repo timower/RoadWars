@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressTracker progressTracker;
 
     private TextView connectionLostBanner;
-    private TextView inMinigame;
+    // private TextView inMinigame;
 
     /** Creates the activity, initializes the map and searches for certain text views. (UNFINISHED)
      *
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 String name = data.getData().getHost();
                 Intent UserInfoActivityIntent = new Intent(this, UserInfoActivity.class);
-                UserInfoActivityIntent.putExtra("name", name);
+                UserInfoActivityIntent.putExtra(UserInfoActivity.EXTRA_NAME, name);
                 startActivity(UserInfoActivityIntent);
             }
         }
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity
                     try {
                         JSONArray info = response.getJSONArray("info");
                         String street = response.getString("street");
-                        Toast.makeText(this, "Owner of " + street + ": " + info.getString(1), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.owner_toast, street, info.getString(1)), Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -276,9 +276,9 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case "add-points":
                 if (result) {
-                    Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "error saving points", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.error_points), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case "user-info":
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity
                 }
             case "nfc-friend":
                 if (result) {
-                    Toast.makeText(this, "Ok, you are now friends", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.nfc_friend), Toast.LENGTH_SHORT).show();
                 }
                 return true;
         }
@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity
                     return super.onOptionsItemSelected(item);
                 }
                 Intent intent = new Intent(this, UserInfoActivity.class);
-                intent.putExtra("name", this.connectionManager.user);
+                intent.putExtra(UserInfoActivity.EXTRA_NAME, this.connectionManager.user);
                 startActivity(intent);
                 return super.onOptionsItemSelected(item);
             case R.id.action_about:
@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity
                         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
                             showGPSDisabledAlertToUser();
                         }else {
-                            Toast.makeText(this, "GPS is Enabled", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(this, "GPS is Enabled", Toast.LENGTH_SHORT).show();
                             if (progressTracker.visible()) {
                                 return super.onOptionsItemSelected(item);
                             }

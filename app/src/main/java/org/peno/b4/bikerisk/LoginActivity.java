@@ -27,6 +27,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
+        findViewById(R.id.user_name).requestFocus();
     }
 
     @Override
@@ -43,10 +44,10 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
 
     //login button
     public void loginClick(View view) {
-        EditText result1 = (EditText) findViewById(R.id.editText);
-        EditText result2 = (EditText) findViewById(R.id.editText2);
-        username = result1.getText().toString();
-        String password = result2.getText().toString();
+        EditText userNameView = (EditText) findViewById(R.id.user_name);
+        EditText passWordView = (EditText) findViewById(R.id.pass_word);
+        username = userNameView.getText().toString();
+        String password = passWordView.getText().toString();
         connectionManager.login(username, password);
     }
 
@@ -55,11 +56,11 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("login")) {
             if (result) {
-                Toast.makeText(this, "Welcome "+ username+ "!",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.welcom_message, username),Toast.LENGTH_LONG).show();
                 setResult(Activity.RESULT_OK);
                 finish();
             } else {
-                Toast.makeText(this, "Failed to login.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.failed_login), Toast.LENGTH_SHORT).show();
             }
         }
         // absorb all responses and requests from server

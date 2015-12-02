@@ -54,7 +54,6 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.search_new_friends:
-                Toast.makeText(FriendsActivity.this, "search for friends", Toast.LENGTH_SHORT).show();
                 Intent SearchFriendsIntent = new Intent(this, UserSearchActivity.class);
                 SearchFriendsIntent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, true);
                 SearchFriendsIntent.putExtra(UserSearchActivity.EXTRA_UNKNOWN_USERS, true);
@@ -72,7 +71,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
             if (resultCode == RESULT_OK) {
                 String name = data.getData().getHost();
                 Intent UserInfoActivityIntent = new Intent(getApplicationContext(), UserInfoActivity.class);
-                UserInfoActivityIntent.putExtra("name", name);
+                UserInfoActivityIntent.putExtra(UserInfoActivity.EXTRA_NAME, name);
                 startActivity(UserInfoActivityIntent);
             }
         }
@@ -119,7 +118,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                             @Override
                             public void onClick(View v) {
                                 Intent UserInfoActivityIntent = new Intent(getApplicationContext(), UserInfoActivity.class);
-                                UserInfoActivityIntent.putExtra("name", name);
+                                UserInfoActivityIntent.putExtra(UserInfoActivity.EXTRA_NAME, name);
                                 startActivity(UserInfoActivityIntent);
                             }
                         });
@@ -132,7 +131,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                             @Override
                             public void onClick(View v) {
                                 connectionManager.removeFriend(name);
-                                Toast.makeText(FriendsActivity.this, "Friend " + name + " removed!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(FriendsActivity.this, getString(R.string.friend_removed, name), Toast.LENGTH_SHORT).show();
                                 v.setClickable(false);
                                 v.setBackgroundColor(Color.GRAY);
                             }
@@ -163,7 +162,6 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                     int length = reqs.length();
 
                     if (length != 0) {
-                        Toast.makeText(this, "Got friend requests!", Toast.LENGTH_SHORT).show();
                         findViewById(R.id.request_list).setVisibility(View.VISIBLE);
                     }
 
@@ -189,7 +187,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                             @Override
                             public void onClick(View v) {
                                 Intent UserInfoActivityIntent = new Intent(getApplicationContext(), UserInfoActivity.class);
-                                UserInfoActivityIntent.putExtra("name", name);
+                                UserInfoActivityIntent.putExtra(UserInfoActivity.EXTRA_NAME, name);
                                 startActivity(UserInfoActivityIntent);
                             }
                         });
@@ -200,7 +198,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         accept.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(FriendsActivity.this, "Request from " + name + " accepted!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(FriendsActivity.this, getString(R.string.friend_request_accepted, name), Toast.LENGTH_SHORT).show();
                                 connectionManager.acceptFriend(name);
                                 v.setClickable(false);
                                 v.setBackgroundColor(Color.GRAY);                            }
@@ -212,7 +210,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         decline.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(FriendsActivity.this, "Request from " + name + " declined!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(FriendsActivity.this, getString(R.string.friend_request_declined, name), Toast.LENGTH_SHORT).show();
                                 connectionManager.declineFriend(name);
                                 v.setClickable(false);
                                 v.setBackgroundColor(Color.GRAY);
@@ -236,7 +234,8 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
         }
         if (req.equals("accept-friend") || req.equals("remove-friend") || req.equals("remove-friend-req")){
             resetUI();
-            if (!result) {Toast.makeText(FriendsActivity.this, "Action Failed", Toast.LENGTH_SHORT).show();
+            if (!result) {
+                Toast.makeText(FriendsActivity.this, getString(R.string.friend_failed), Toast.LENGTH_SHORT).show();
             }
             return true;
         }

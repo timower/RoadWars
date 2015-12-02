@@ -63,7 +63,7 @@
             android:visibility="gone"
             android:background="#707070"
             android:id="@+id/streets_table">
-            <TableRow>
+            <TableRow tools:ignore="UselessParent">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

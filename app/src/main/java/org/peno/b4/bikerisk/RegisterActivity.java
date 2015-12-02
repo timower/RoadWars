@@ -47,6 +47,8 @@ public class RegisterActivity extends AppCompatActivity
 
         View color = findViewById(R.id.colorView);
         int colorCode = ((ColorDrawable)color.getBackground()).getColor();
+        // TODO: verify email, user and pass (min length, illegal chars)
+        // TODO: put strings in strings.xml!!!!!
         if (name.equals("")) {Toast.makeText(this, "Please fill in a name!", Toast.LENGTH_SHORT).show();}
         else if (pass.equals("")) {Toast.makeText(this, "Please fill in a password!", Toast.LENGTH_SHORT).show();}
         else if (email.equals("")) {Toast.makeText(this, "Please fill in an email address!", Toast.LENGTH_SHORT).show();}
@@ -60,10 +62,10 @@ public class RegisterActivity extends AppCompatActivity
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("create-user")) {
             if (result) {
-                Toast.makeText(this, "successfully created user", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.register_ok), Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                Toast.makeText(this, "Error creating user", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.register_fail), Toast.LENGTH_SHORT).show();
             }
         }
         // absorb all server requests

@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -17,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
+ * Static constants and functions used across different activities;
+ *
  * Created by timo on 10/26/15.
  */
 public class Utils {
@@ -40,7 +41,6 @@ public class Utils {
     }
 
     public static String lookupStreet(Geocoder geocoder, LatLng pos) {
-        //TODO: support different cities
         if (geocoder != null) {
             try {
                 List<Address> locations = geocoder.getFromLocation(pos.latitude,

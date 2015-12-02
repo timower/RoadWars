@@ -11,13 +11,12 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.Random;
 
 /**
- * Created by timo on 11/14/15.
- * mmeeerr uuitleg
+ * TODO: everything!!!!!!!!!!!!!
  */
 public class MiniGameManager {
 
     // read: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
-    public enum MiniGame {
+    public enum MiniGame { //TODO: save string id as discription -> use getString to use
         TARGET_RACE("race to target",1000),
         PHOTO_ROUND("take picture of place", 1000),
         NONE("",0);

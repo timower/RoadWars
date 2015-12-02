@@ -5,10 +5,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 /**
+ * Tracks reasons to show or hide the progressBar
+ *
+ *
  * Created by timo on 12/1/15.
  */
 public class ProgressTracker {
-    public final static int REASON_CALCULATING = 1 << 0;
+    public final static int REASON_CALCULATING = 1; // 1 << 0
     public final static int REASON_GPS = 1 << 1;
     public final static int REASON_LOGIN = 1 << 2;
     public final static int REASON_GPS_DISABLED = 1 << 3;
@@ -29,7 +32,7 @@ public class ProgressTracker {
     }
 
     public void hideProgressBar(int reason) {
-        reasons &= ~reason; //TODO: fix
+        reasons &= ~reason;
         updateProgressBar();
     }
 

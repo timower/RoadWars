@@ -31,14 +31,14 @@ public class nfcReceiverActivity extends AppCompatActivity {
                 case Utils.FRIEND_NFC_INTENT:
                     String naam = delen[1];
                     ConnectionManager.getInstance().nfcFriend(naam);
+                    Toast.makeText(this, getString(R.string.nfc_friend), Toast.LENGTH_LONG).show();
                     break;
                 case Utils.MINIGAME_NFC_INTENT:
-
+                    //TODO: start minigame
                     break;
 
             }
 
-            Toast.makeText(this,data, Toast.LENGTH_LONG).show();
         }
         //Intent intent2 = new Intent(this, MainActivity.class);
         //startActivity(intent2);

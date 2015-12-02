@@ -66,7 +66,8 @@ public class UserSearchActivity extends AppCompatActivity
         setContentView(R.layout.activity_user_search);
         resetLayout();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         Intent intent = getIntent();
@@ -189,7 +190,7 @@ public class UserSearchActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
             } else {
-                Toast.makeText(this, "Error getting user data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.error_info), Toast.LENGTH_SHORT).show();
             }
             return true;
         }
@@ -305,7 +306,6 @@ public class UserSearchActivity extends AppCompatActivity
     public NdefMessage createNdefMessage(NfcEvent event) {
         String message = nfcIntent + ":" + connectionManager.user;
         NdefRecord ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());
-        NdefMessage ndefMessage = new NdefMessage(ndefRecord);
-        return ndefMessage;
+        return new NdefMessage(ndefRecord);
     }
 }

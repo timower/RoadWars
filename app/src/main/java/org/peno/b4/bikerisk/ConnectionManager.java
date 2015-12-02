@@ -158,7 +158,7 @@ public class ConnectionManager {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("user", user);
         editor.putString("key", key);
-        editor.commit();
+        editor.apply();
     }
 
     private void sendRequest(Object... kvs) {

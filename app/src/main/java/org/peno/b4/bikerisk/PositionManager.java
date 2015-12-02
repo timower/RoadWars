@@ -18,7 +18,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -89,8 +88,6 @@ public class PositionManager implements LocationListener {
     private ConnectionManager connectionManager;
 
     private LocationManager locationManager;
-
-    private Location lastLocation;
 
     private RouteInfo routeInfo;
 
@@ -179,18 +176,18 @@ public class PositionManager implements LocationListener {
                 float speed = mRouteInfo.routeSpeeds.get(i);
 
                 String street = Utils.lookupStreet(geocoder, new LatLng(pos.lat, pos.lng));
-                //TODO: fix ifs
-                if (street != null) {
-                    if (!street.equals("") && lastStreet.equals("")) {
+
+                if (street != null && !street.equals("")) {
+                    if (lastStreet.equals("")) { // start with first found street
                         lastStreet = street;
-                    } else if (!lastStreet.equals("") && street.equals(lastStreet) && lastPos != null) {
+                    } else if (street.equals(lastStreet) && lastPos != null) { // same street -> add points
                         if (speed > (10.0f / Utils.MPS_TO_KMH) &&
                                 speed < (45.0f / Utils.MPS_TO_KMH)) {
                             Location.distanceBetween(lastPos.lat, lastPos.lng,
                                     pos.lat, pos.lng, results);
                             points += results[0] * speed;
                         }
-                    } else if (!street.equals(lastStreet) && !lastStreet.equals("")) {
+                    } else if (!street.equals(lastStreet)) { // street changed -> save points
                         if (points != 0)
                             publishProgress(new StreetPoints(lastStreet, points));
                         points = 0;
@@ -209,7 +206,7 @@ public class PositionManager implements LocationListener {
 
             connectionManager.addPoints(street, points);
 
-            Toast.makeText(context, "Street: " + street + " points: " + points, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Street: " + street + " points: " + points, Toast.LENGTH_SHORT).show();
 
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(
                     TableLayout.LayoutParams.WRAP_CONTENT,
@@ -239,7 +236,7 @@ public class PositionManager implements LocationListener {
 
         @Override
         protected void onPostExecute(Void t) {
-            Toast.makeText(context, "finished adding points", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.finished_points), Toast.LENGTH_SHORT).show();
             if (UIobjects != null)
                 UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_CALCULATING);
             routeInfo.routePoints.clear();
@@ -301,13 +298,23 @@ public class PositionManager implements LocationListener {
             userRoute.remove();
         started = true;
         pOptions = new PolylineOptions().color(Color.BLUE).width(5);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2 * 1000, 1, this);
+        } catch (SecurityException e) {
+            Toast.makeText(context, context.getString(R.string.enable_location_access), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
         return true;
     }
 
     public void stop() {
         started = false;
-        locationManager.removeUpdates(this);
+        try {
+            locationManager.removeUpdates(this);
+        } catch (SecurityException e) {
+            Toast.makeText(context, context.getString(R.string.enable_location_access), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
 
         if (UIobjects != null)
             UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS_DISABLED);
@@ -332,7 +339,6 @@ public class PositionManager implements LocationListener {
         }
 
         if (routeInfo.routePoints.size() > 1) {
-            lastLocation = null;
             if (UIobjects != null) {
                 UIobjects.progressTracker.showProgressBar(ProgressTracker.REASON_CALCULATING);
                 UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
@@ -366,7 +372,6 @@ public class PositionManager implements LocationListener {
         this.locRad = null;
 
         this.connectionManager = null;
-        //this.lastLocation = null;
     }
 
     @Override
@@ -390,8 +395,6 @@ public class PositionManager implements LocationListener {
         pOptions.add(pos);
         routeInfo.add(pos, speed);
 
-        lastLocation = location;
-
         // UI code:
         if (UIobjects == null) {
             Log.d("LOC", "no UIobjects in locationUpdate");
@@ -401,7 +404,7 @@ public class PositionManager implements LocationListener {
         // convert to km/h
         speed *= Utils.MPS_TO_KMH;
 
-        UIobjects.speedText.setText(String.format("%.2f km/h", speed));
+        UIobjects.speedText.setText(context.getString(R.string.speed_info, speed)); //TODO: support mph
         UIobjects.speedText.setTextColor((speed > 10.0f && speed < 45.0f)? Color.GREEN : Color.RED);
 
         drawRoute();
