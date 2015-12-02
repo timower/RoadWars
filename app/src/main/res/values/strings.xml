@@ -21,6 +21,11 @@
     <string name="hue">Hue</string>
     <string name="register_ok">Successfully created user</string>
     <string name="register_fail">Error creating user</string>
+    <string name="fill_name">Please fill in a name!</string>
+    <string name="fill_pass">Please fill in a password!</string>
+    <string name="fill_email">Please fill in an email address!</string>
+    <string name="choose_color">Please choose a color!</string>
+
 
     <!-- MainActivity -->
     <string name="logout">Logout</string>
@@ -99,5 +104,6 @@
     <string name="icon">Icon</string>
     <string name="version_str">Version: %s</string>
     <string name="about">About</string>
+
 
 </resources>
