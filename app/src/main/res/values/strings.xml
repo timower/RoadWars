@@ -41,7 +41,9 @@
     
     <string name="added_points">Added points to this street</string>
     <string name="race_to">Race to: %s</string>
-
+    <string name="opponent_quit">Opponent has quit</string>
+    <string name="player_win">You won, points: %d</string>
+    <string name="player_lose">You lost</string>
 
 
     <!-- App -->

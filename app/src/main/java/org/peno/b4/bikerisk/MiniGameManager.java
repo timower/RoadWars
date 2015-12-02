@@ -28,6 +28,7 @@ public class MiniGameManager {
     public enum MiniGame { //TODO: save string id as discription -> use getString to use
         TARGET_RACE("race to target", 2000),
         PHOTO_ROUND("take picture of place", 1000),
+        UI("", 0),
         NONE("",0);
 
         private String fullName;
@@ -110,6 +111,7 @@ public class MiniGameManager {
     private Marker marker;
     private Circle circle;
 
+    private String UIstring;
 
     private MiniGameManager() {
         runningMiniGame = MiniGame.NONE;
@@ -165,9 +167,12 @@ public class MiniGameManager {
         if (won) {
             connectionManager.addPoints(street, runningMiniGame.getpoints());
             Toast.makeText(context, "You won!", Toast.LENGTH_SHORT).show();
+            UIstring = context.getString(R.string.player_win, runningMiniGame.getpoints());
+        } else {
+            Toast.makeText(context, "You lost!", Toast.LENGTH_SHORT).show();
+            UIstring = context.getString(R.string.player_lose);
         }
-        Toast.makeText(context, "You lost!", Toast.LENGTH_SHORT).show();
-        runningMiniGame = MiniGame.NONE;
+        runningMiniGame = MiniGame.UI;
         drawUI();
     }
 
@@ -178,14 +183,18 @@ public class MiniGameManager {
                 break;
             case PHOTO_ROUND:
                 break;
+            case UI:
+                UIstring = "";
+                break;
         }
         runningMiniGame = MiniGame.NONE;
         drawUI();
     }
 
     public void onStop() {
-        Toast.makeText(context, "Opponent has quit!", Toast.LENGTH_SHORT).show();
-        runningMiniGame = MiniGame.NONE;
+        Toast.makeText(context, R.string.opponent_quit, Toast.LENGTH_SHORT).show();
+        UIstring = context.getString(R.string.opponent_quit);
+        runningMiniGame = MiniGame.UI;
         drawUI();
     }
 
@@ -217,6 +226,11 @@ public class MiniGameManager {
 
                 UIobjects.container.setVisibility(View.VISIBLE);
                 UIobjects.textView.setText(context.getString(R.string.take_picture_of, currentLocation.getFullName())); //with placeholders: context needed
+                UIobjects.container.setBackgroundColor(Color.WHITE);
+                break;
+            case UI:
+                UIobjects.container.setVisibility(View.VISIBLE);
+                UIobjects.textView.setText(UIstring);
                 UIobjects.container.setBackgroundColor(Color.WHITE);
                 break;
             case NONE:
