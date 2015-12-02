@@ -374,6 +374,7 @@ public class MainActivity extends AppCompatActivity
                                 return super.onOptionsItemSelected(item);
                             }
                             if (positionManager.start()) {
+                                pointsTable.setVisibility(View.GONE);
                                 showStartedNotification();
                                 showInfoText();
                                 progressTracker.showProgressBar(ProgressTracker.REASON_GPS);

@@ -272,9 +272,14 @@ public class PositionManager implements LocationListener {
             instance.UIobjects = objects;
             instance.connectionManager = ConnectionManager.getInstance();
             instance.minigameManager = MiniGameManager.getInstance();
+
+            if (instance.locMarker != null)
+                instance.locMarker.remove();
             instance.locMarker = null;
+            if (instance.locRad != null)
+                instance.locRad.remove();
             instance.locRad = null;
-            instance.userRoute = null;
+
             instance.drawRoute();
             if (instance.lastCameraPosition != null) {
                 objects.mMap.moveCamera(CameraUpdateFactory.newCameraPosition(instance.lastCameraPosition));
