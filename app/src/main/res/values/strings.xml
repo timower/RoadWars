@@ -97,4 +97,9 @@
     <string name="version_str">Version: %s</string>
     <string name="about">About</string>
 
+    <!-- UserInfoActivity -->
+    <string name="error_add_friend">Error adding friend</string>
+    <string name="error_remove_friend_req">Error removing friend request</string>
+    <string name="error_remove_friend">Error removing friend</string>
+    <string name="error_accept_friend_req">Error accepting friend request</string>
 </resources>

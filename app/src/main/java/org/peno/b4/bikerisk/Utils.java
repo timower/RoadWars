@@ -31,14 +31,17 @@ public class Utils {
     public static final String MINIGAME_NFC_INTENT = "join_minigame";
 
     public static String removeNumbers(String orig) {
+        Log.d("Jef test", orig);
         String street = "";
-        for (String sub : orig.split(" ")) {
-            if (!sub.matches("[0-9][0-9]*[a-zA-Z]?-?[0-9]*[a-zA-Z]?")) {
+        for (String sub : orig.split(" |-")) {
+            Log.d("Jef test", sub);
+            if (!sub.matches("[0-9]+") && (!sub.matches("-")))  {
                 street += sub + " ";
             }
         }
 
         return street.trim();
+
     }
 
     public static String lookupStreet(Geocoder geocoder, LatLng pos) {
@@ -117,22 +120,23 @@ public class Utils {
         MiniGameManager minigameInstance = MiniGameManager.getInstance();
         if (result) {
             try {
-                if (req.equals("started-minigame")) {
+                switch(req) {
+                    case "started-minigame":
                     // response.getString("minigame").equals("race") &&
-                    Log.d("IMP", "started-minigame");
-                    if ( minigameInstance != null) {
-                        minigameInstance.startRaceGame(response.getString("street"), response.getString("name"));
-                    }
-                }
-                else if (req.equals("finished-minigame")) {
+                        Log.d("IMP", "started-minigame");
+                        if ( minigameInstance != null) {
+                            minigameInstance.startRaceGame(response.getString("street"), response.getString("name"));
+                        }
+
+                    case "finished-minigame":
                     //you won
-                    String street = response.getString("street");
-                    ConnectionManager.getInstance().addPoints(street, MiniGameManager.getInstance().runningMiniGame.getpoints());
-                    MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
-                }
-                else if (req.equals("stopped-minigame")) {
-                    //you "won"
-                    MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
+                        String street = response.getString("street");
+                        ConnectionManager.getInstance().addPoints(street, MiniGameManager.getInstance().runningMiniGame.getpoints());
+                        MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
+
+                    case "stopped-minigame":
+                    // game was ended by other user = no points
+                        MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
 
                 }
             }  catch (JSONException e) {

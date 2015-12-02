@@ -233,7 +233,7 @@ public class UserInfoActivity extends AppCompatActivity
                     setContentView(R.layout.activity_user_info);
                     connectionManager.getUserInfo(infoName);
                 } else {
-                    Toast.makeText(this, "error adding friend", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.error_add_friend), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case "remove-friend":
@@ -242,7 +242,7 @@ public class UserInfoActivity extends AppCompatActivity
                     setContentView(R.layout.activity_user_info);
                     connectionManager.getUserInfo(infoName);
                 } else {
-                    Toast.makeText(this, "error removing friend", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.error_remove_friend), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case "remove-friend-req":
@@ -251,7 +251,7 @@ public class UserInfoActivity extends AppCompatActivity
                     setContentView(R.layout.activity_user_info);
                     connectionManager.getUserInfo(infoName);
                 } else {
-                    Toast.makeText(this, "error declining friend", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.error_remove_friend_req), Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case "accept-friend":
@@ -260,7 +260,7 @@ public class UserInfoActivity extends AppCompatActivity
                     setContentView(R.layout.activity_user_info);
                     connectionManager.getUserInfo(infoName);
                 } else {
-                    Toast.makeText(this, "error accepting friend", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.error_accept_friend_req), Toast.LENGTH_SHORT).show();
                 }
                 return true;
         }
