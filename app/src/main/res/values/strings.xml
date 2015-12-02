@@ -35,6 +35,9 @@
     <string name="enable_location_access">Please allow RoadWars access to location</string>
     <string name="speed_info">%.2f km/h</string>
 
+    <string name="race_to">Race to: </string>
+
+
 
     <!-- App -->
     <string name="Preview">Preview</string>
