@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,6 +32,10 @@ public class Utils {
 
     public static String removeNumbers(String orig) {
         String street = "";
+        /*
+            for (String sub : orig.split(" |-")) {
+                if (!sub.matches("[0-9]+"))  {  
+         */
         for (String sub : orig.split(" ")) {
             if (!sub.matches("[0-9][0-9]*[a-zA-Z]?-?[0-9]*[a-zA-Z]?")) {
                 street += sub + " ";

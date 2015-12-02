@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("login")) {
             if (result) {
-                Toast.makeText(this, getString(R.string.welcom_message, username),Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.welcome_message, username),Toast.LENGTH_LONG).show();
                 setResult(Activity.RESULT_OK);
                 finish();
             } else {

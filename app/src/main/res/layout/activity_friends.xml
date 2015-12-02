@@ -65,13 +65,13 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/Color"
+                                    android:text="@string/color"
                                     android:textSize="18sp"
                                     android:textStyle="bold"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/Username"
+                                    android:text="@string/username"
                                     android:textSize="18sp"
                                     android:textStyle="bold"
                                     android:gravity="center"/>
@@ -111,7 +111,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/My_friends"
+                        android:text="@string/my_friends"
                         android:textSize="25sp"
                         android:paddingRight="8dp"
                         android:paddingLeft="8dp"/>
@@ -125,13 +125,13 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/Color"
+                                android:text="@string/color"
                                 android:textSize="18sp"
                                 android:textStyle="bold"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/Username"
+                                android:text="@string/username"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
                                 android:gravity="center"/>

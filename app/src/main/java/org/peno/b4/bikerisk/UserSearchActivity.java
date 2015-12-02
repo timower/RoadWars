@@ -284,7 +284,7 @@ public class UserSearchActivity extends AppCompatActivity
         //username
         TextView userView = new TextView(this);
         userView.setLayoutParams(rowParams);
-        userView.setText(R.string.Username);
+        userView.setText(R.string.username);
         userView.setTextSize(18);
         userView.setTypeface(null, Typeface.BOLD);
         userView.setGravity(Gravity.CENTER);

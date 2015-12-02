@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:hint="@string/Search_for_user"
+        android:hint="@string/search_for_user"
         android:id="@+id/search_text_bar" />
 
     <ScrollView
