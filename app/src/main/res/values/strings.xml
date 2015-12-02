@@ -20,6 +20,11 @@
     <string name="hue">Hue</string>
     <string name="register_ok">Successfully created user</string>
     <string name="register_fail">Error creating user</string>
+    <string name="fill_name">Please fill in a name!</string>
+    <string name="fill_pass">Please fill in a password!</string>
+    <string name="fill_email">Please fill in an email address!</string>
+    <string name="choose_color">Please choose a color!</string>
+
 
     <!-- MainActivity -->
     <string name="logout">Logout</string>
@@ -33,6 +38,9 @@
     <string name="finished_points">Finished saving points!</string>
     <string name="enable_location_access">Please allow RoadWars access to location</string>
     <string name="speed_info">%.2f km/h</string>
+
+    <string name="race_to">Race to: </string>
+
 
 
     <!-- App -->

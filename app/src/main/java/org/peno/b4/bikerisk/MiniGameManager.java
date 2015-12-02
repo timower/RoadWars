@@ -2,6 +2,7 @@ package org.peno.b4.bikerisk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
 import android.view.View;
@@ -126,7 +127,8 @@ public class MiniGameManager {
             UIobjects.mMap.addMarker(new MarkerOptions()
                     .title("target")
                     .position(Utils.getLatLng(geocoder, street)));
-            UIobjects.view.setText("Race to: " + street);
+            UIobjects.view.setText(R.string.race_to + street); //with placeholders: context needed
+            UIobjects.view.setBackgroundColor(Color.WHITE);
         }
         runningMiniGame = MiniGame.TARGET_RACE;
     }

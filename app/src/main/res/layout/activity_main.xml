@@ -52,11 +52,12 @@
             android:layout_marginBottom="50dp"
             android:visibility="gone"/>
 
-        <!-- TODO: add view for minigames (linearLayout) -->
         <TextView
             android:id="@+id/in_minigame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_alignParentBottom="true">
         </TextView>
 
         <TableLayout

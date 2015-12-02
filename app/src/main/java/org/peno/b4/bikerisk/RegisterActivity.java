@@ -48,11 +48,10 @@ public class RegisterActivity extends AppCompatActivity
         View color = findViewById(R.id.colorView);
         int colorCode = ((ColorDrawable)color.getBackground()).getColor();
         // TODO: verify email, user and pass (min length, illegal chars)
-        // TODO: put strings in strings.xml!!!!!
-        if (name.equals("")) {Toast.makeText(this, "Please fill in a name!", Toast.LENGTH_SHORT).show();}
-        else if (pass.equals("")) {Toast.makeText(this, "Please fill in a password!", Toast.LENGTH_SHORT).show();}
-        else if (email.equals("")) {Toast.makeText(this, "Please fill in an email address!", Toast.LENGTH_SHORT).show();}
-        else if (colorCode == Color.rgb(0,0,0)) {Toast.makeText(this, "Please choose a color!", Toast.LENGTH_SHORT).show();}
+        if (name.equals("")) {Toast.makeText(this, getString(R.string.fill_name), Toast.LENGTH_SHORT).show();}
+        else if (pass.equals("")) {Toast.makeText(this, getString(R.string.fill_pass), Toast.LENGTH_SHORT).show();}
+        else if (email.equals("")) {Toast.makeText(this, getString(R.string.fill_email), Toast.LENGTH_SHORT).show();}
+        else if (colorCode == Color.rgb(0,0,0)) {Toast.makeText(this, getString(R.string.choose_color), Toast.LENGTH_SHORT).show();}
         else connectionManager.createUser(name, pass, email, colorCode);
               //create account with username, password, email and color
     }
