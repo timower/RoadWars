@@ -38,7 +38,7 @@
     <string name="finished_points">Finished saving points!</string>
     <string name="enable_location_access">Please allow RoadWars access to location</string>
     <string name="speed_info">%.2f km/h</string>
-
+    <string name="added_points">Added points to this street</string>
     <string name="race_to">Race to: </string>
 
 
@@ -67,7 +67,7 @@
     <string name="minigame">Minigame</string>
     <string name="title_activity_minigame">Minigame</string>
     <string name="minigame_started">Minigame started!</string>
-    <string name="other_offline">Other player is offline :(</string>
+    <string name="other_offline">Other player is offline</string>
 
     <!-- UserSearchActivity -->
     <string name="search_for_user">Search for user</string>
@@ -84,7 +84,6 @@
     <string name="add_friend">add friend</string>
     <string name="accept_request">accept request</string>
     <string name="decline_req">decline request</string>
-    <string name="user">remove</string> <!-- ???WHAT?? -->
     <string name="friend_failed">Action Failed</string>
     <string name="friend_removed">Friend %s removed!</string>
     <string name="friend_request_accepted">Request from %s accepted!</string>
@@ -107,4 +106,7 @@
     <string name="error_remove_friend_req">Error removing friend request</string>
     <string name="error_remove_friend">Error removing friend</string>
     <string name="error_accept_friend_req">Error accepting friend request</string>
+
+    <!-- MiniGameManager -->
+    <string name="race_description">Race to a specific location</string>
 </resources>

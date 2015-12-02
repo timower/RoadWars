@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case "add-points":
                 if (result) {
-                    //Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.added_points, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, getString(R.string.error_points), Toast.LENGTH_SHORT).show();
                 }
@@ -289,6 +289,7 @@ public class MainActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
                 }
+                return true;
             case "nfc-friend":
                 if (result) {
                     Toast.makeText(this, getString(R.string.nfc_friend), Toast.LENGTH_SHORT).show();
