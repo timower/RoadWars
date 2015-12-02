@@ -18,7 +18,13 @@ public class ProgressTracker {
     private ProgressBar progressBar;
     private int reasons = 0;
 
-    public ProgressTracker() {
+    private static ProgressTracker instance = new ProgressTracker();
+
+    private ProgressTracker() {
+    }
+
+    public static ProgressTracker getInstance() {
+        return instance;
     }
 
     public void setProgressBar(ProgressBar pb) {

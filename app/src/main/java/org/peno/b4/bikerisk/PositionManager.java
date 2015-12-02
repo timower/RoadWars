@@ -46,14 +46,12 @@ public class PositionManager implements LocationListener {
         public GoogleMap mMap;
         public TextView speedText;
         public TableLayout table;
-        public ProgressTracker progressTracker;
         public TextView connectionLostBanner;
 
-        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, ProgressTracker p, TextView connectionLostBanner) {
+        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, TextView connectionLostBanner) {
             this.mMap = mMap;
             this.speedText = spt;
             this.table = table;
-            this.progressTracker = p;
             this.connectionLostBanner = connectionLostBanner;
         }
     }
@@ -107,6 +105,8 @@ public class PositionManager implements LocationListener {
 
     private Context context;
     private GeoApiContext geoApiContext;
+
+    private ProgressTracker progressTracker;
 
     private boolean gotFirstLocation = false;
     private boolean canStart = true;
@@ -237,8 +237,7 @@ public class PositionManager implements LocationListener {
         @Override
         protected void onPostExecute(Void t) {
             Toast.makeText(context, context.getString(R.string.finished_points), Toast.LENGTH_SHORT).show();
-            if (UIobjects != null)
-                UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_CALCULATING);
+            progressTracker.hideProgressBar(ProgressTracker.REASON_CALCULATING);
             routeInfo.routePoints.clear();
             routeInfo.routeSpeeds.clear();
             canStart = true;
@@ -262,6 +261,8 @@ public class PositionManager implements LocationListener {
 
         this.pOptions = new PolylineOptions().color(Color.BLUE).width(5);
 
+        progressTracker = ProgressTracker.getInstance();
+
         instance = this;
     }
 
@@ -284,7 +285,6 @@ public class PositionManager implements LocationListener {
             if (instance.lastCameraPosition != null) {
                 objects.mMap.moveCamera(CameraUpdateFactory.newCameraPosition(instance.lastCameraPosition));
             }
-            //TODO: call minigameManager -> resume()
         }
         return instance;
 
@@ -315,9 +315,8 @@ public class PositionManager implements LocationListener {
             Toast.makeText(context, context.getString(R.string.enable_location_access), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-        //TODO: fix -> make ProgressTracker a singleton
-        if (UIobjects != null)
-            UIobjects.progressTracker.showProgressBar(ProgressTracker.REASON_GPS);
+
+        progressTracker.showProgressBar(ProgressTracker.REASON_GPS);
         return true;
     }
 
@@ -330,8 +329,7 @@ public class PositionManager implements LocationListener {
             e.printStackTrace();
         }
 
-        if (UIobjects != null)
-            UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS_DISABLED);
+        progressTracker.hideProgressBar(ProgressTracker.REASON_GPS_DISABLED);
 
         if (locMarker != null)
             locMarker.remove();
@@ -353,17 +351,15 @@ public class PositionManager implements LocationListener {
         }
 
         if (routeInfo.routePoints.size() > 1) {
-            if (UIobjects != null) {
-                UIobjects.progressTracker.showProgressBar(ProgressTracker.REASON_CALCULATING);
-                UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
-            }
+            progressTracker.showProgressBar(ProgressTracker.REASON_CALCULATING);
+            progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
+
             canStart = false;
             new SnapToRoadTask().execute();
         } else {
             routeInfo.routePoints.clear();
             routeInfo.routeSpeeds.clear();
-            if (UIobjects != null)
-                UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
+            progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
         }
     }
 
@@ -393,8 +389,7 @@ public class PositionManager implements LocationListener {
         Log.d("LOC", "accuracy: " + location.getAccuracy() + " gotFirstLocation: " + gotFirstLocation);
         if (!gotFirstLocation && location.getAccuracy() < Utils.MIN_ACCURACY) {
             gotFirstLocation = true;
-            if (UIobjects != null)
-                UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
+            progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
         }
         if (!gotFirstLocation){
             return;
@@ -462,7 +457,9 @@ public class PositionManager implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
-        UIobjects.progressTracker.hideProgressBar(ProgressTracker.REASON_GPS_DISABLED);
+        progressTracker.hideProgressBar(ProgressTracker.REASON_GPS_DISABLED);
+        if (UIobjects == null)
+            return;
         UIobjects.connectionLostBanner.setVisibility(View.GONE);
         UIobjects.connectionLostBanner.setText(R.string.connection_lost);
         UIobjects.connectionLostBanner.setTextSize(25);
@@ -470,7 +467,9 @@ public class PositionManager implements LocationListener {
 
     @Override
     public void onProviderDisabled(String provider) {
-        UIobjects.progressTracker.showProgressBar(ProgressTracker.REASON_GPS_DISABLED);
+        progressTracker.showProgressBar(ProgressTracker.REASON_GPS_DISABLED);
+        if (UIobjects == null)
+            return;
         UIobjects.connectionLostBanner.setVisibility(View.VISIBLE);
         UIobjects.connectionLostBanner.setText(R.string.gps_service_not_available);
         UIobjects.connectionLostBanner.setTextSize(20);

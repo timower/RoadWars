@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressTracker = ProgressTracker.getInstance();
 
         // get map object (calls onMapReady)
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -98,7 +99,6 @@ public class MainActivity extends AppCompatActivity
         // find textviews for street and speed
         pointsTable = (TableLayout)findViewById(R.id.streets_table);
         speedText = (TextView)findViewById(R.id.speed_text);
-        progressTracker = new ProgressTracker();
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
 
         minigameText = (TextView)findViewById(R.id.minigame_text);
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity
 
         MiniGameManager.getInstance().setContext(this);
 
-        progressTracker.setProgressBar((ProgressBar)findViewById(R.id.main_progressbar));
+        progressTracker.setProgressBar((ProgressBar) findViewById(R.id.main_progressbar));
 
         // login:
         if (connectionManager.loadFromSharedPrefs()) {
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity
 
         if (mMap != null) {
             PositionManager.getInstance(this, new PositionManager.UIObjects(mMap, speedText,
-                    pointsTable, progressTracker, connectionLostBanner));
+                    pointsTable, connectionLostBanner));
             MiniGameManager.getInstance().setUIObjects(
                     new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
         } else {
@@ -352,7 +352,10 @@ public class MainActivity extends AppCompatActivity
                 if (positionManager.started) {
                     hideStartedNotification();
                     hideInfoText();
-                    progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
+                    progressTracker.hideProgressBar(ProgressTracker.REASON_GPS |
+                            ProgressTracker.REASON_CALCULATING |
+                            ProgressTracker.REASON_GPS_DISABLED);
+
                     positionManager.stop();
 
                     invalidateOptionsMenu();
@@ -424,7 +427,7 @@ public class MainActivity extends AppCompatActivity
         geocoder = new Geocoder(this);
 
         positionManager = PositionManager.getInstance(this,
-                new PositionManager.UIObjects(mMap, speedText, pointsTable, progressTracker, connectionLostBanner));
+                new PositionManager.UIObjects(mMap, speedText, pointsTable, connectionLostBanner));
 
         MiniGameManager.getInstance().setUIObjects(
                 new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
