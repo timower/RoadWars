@@ -31,11 +31,9 @@ public class Utils {
     public static final String MINIGAME_NFC_INTENT = "join_minigame";
 
     public static String removeNumbers(String orig) {
-        Log.d("Jef test", orig);
         String street = "";
         for (String sub : orig.split(" |-")) {
-            Log.d("Jef test", sub);
-            if (!sub.matches("[0-9]+") && (!sub.matches("-")))  {
+            if (!sub.matches("[0-9]+"))  {
                 street += sub + " ";
             }
         }

@@ -1,23 +1,22 @@
 <resources>
-    <!-- TODO: remove capitals from name, remove duplicates -->
     <string name="app_name">RoadWars</string>
 
     <!-- LoginActivity -->
-    <string name="Login">Login</string>
-    <string name="Password">Password</string>
-    <string name="Go">Go!</string>
-    <string name="Or_register">Or register!</string>
-    <string name="welcom_message">Welcome %s!</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="go">Go!</string>
+    <string name="or_register">Or register!</string>
+    <string name="welcome_message">Welcome %s!</string>
     <string name="failed_login">Failed to login</string>
 
     <!-- RegisterActivity -->
-    <string name="Register">Register</string>
+    <string name="register">Register</string>
     <string name="user_name">Username:</string>
     <string name="email">e-mail:</string>
     <string name="color">Color</string>
-    <string name="Username">Username</string>
-    <string name="Email_address">Email address</string>
-    <string name="Choose_a_color">Choose a color</string>
+    <string name="username">Username</string>
+    <string name="email_address">Email address</string>
+    <string name="choose_a_color">Choose a color</string>
     <string name="hue">Hue</string>
     <string name="register_ok">Successfully created user</string>
     <string name="register_fail">Error creating user</string>
@@ -37,7 +36,7 @@
 
 
     <!-- App -->
-    <string name="Preview">Preview</string>
+    <string name="preview">Preview</string>
 
     <string name="title_activity_maps">Map</string>
     <string name="integer">%d</string>
@@ -54,21 +53,20 @@
     <string name="error_info">Error getting info</string>
 
     <!-- MinigameSelectorActivity -->
-    <string name="LiveRace">Target Race</string>
-    <string name="Choose_a_minigame_for">Choose a Minigame for</string>
-    <string name="Fotoronde">In the picture</string>
+    <string name="live_race">Target Race</string>
+    <string name="choose_a_minigame_for">Choose a Minigame for</string>
+    <string name="fotoronde">In the picture</string>
     <string name="minigame">Minigame</string>
     <string name="title_activity_minigame">Minigame</string>
     <string name="minigame_started">Minigame started!</string>
     <string name="other_offline">Other player is offline :(</string>
 
     <!-- UserSearchActivity -->
-    <string name="Search_for_user">Search for user</string>
+    <string name="search_for_user">Search for user</string>
     <string name="nfc_allowed">NFC</string>
 
     <!-- FriendsActivity -->
-    <string name="My_friends">My friends</string>
-    <string name="Color">Color</string>
+    <string name="my_friends">My friends</string>
     <string name="remove_friend">Remove friend</string>
     <string name="new_requests">New requests</string>
     <string name="search_new_friends">Search new friends!</string>
@@ -85,10 +83,9 @@
     <string name="friend_request_declined">Request from %s declined!</string>
 
     <!-- CameraActivity -->
-    <string name="Capture">Capture</string>
-    <string name="Take_picture">Take a picture!</string>
+    <string name="capture">Capture</string>
+    <string name="take_picture">Take a picture!</string>
     <string name="camera">Camera</string>
-    <string name="take_picture">Take a Picture</string>
 
     <!-- AboutActivity -->
     <string name="creators">Creators:</string>
