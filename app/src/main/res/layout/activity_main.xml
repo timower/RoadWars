@@ -53,6 +53,11 @@
             android:visibility="gone"/>
 
         <!-- TODO: add view for minigames (linearLayout) -->
+        <TextView
+            android:id="@+id/in_minigame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </TextView>
 
         <TableLayout
             android:layout_width="match_parent"

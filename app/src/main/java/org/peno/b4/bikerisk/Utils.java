@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -123,8 +124,25 @@ public class Utils {
                         minigameInstance.startRaceGame(response.getString("street"), response.getString("name"));
                     }
                 }
+                else if (req.equals("finished-minigame")) {
+                    //you won
+                    String street = response.getString("street");
+                    ConnectionManager.getInstance().addPoints(street, MiniGameManager.getInstance().runningMiniGame.getpoints());
+                    MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
+                }
+                else if (req.equals("stopped-minigame")) {
+                    //you "won"
+                    MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
+
+                }
             }  catch (JSONException e) {
                 e.printStackTrace();
+            }
+        }
+        else {
+            if (req.equals("finished-minigame")) {
+                //you lost
+                MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
             }
         }
     }

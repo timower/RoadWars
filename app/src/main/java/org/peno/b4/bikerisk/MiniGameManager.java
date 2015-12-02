@@ -1,12 +1,18 @@
 package org.peno.b4.bikerisk;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.location.Location;
+import android.view.View;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Random;
 
@@ -68,13 +74,14 @@ public class MiniGameManager {
     }
 
     private String street;
-    private Geocoder geocoder;
+    private String opponent;
     private LatLng target;
+    private Geocoder geocoder;
     private Boolean first;
 
+    public MiniGame runningMiniGame;
     private PhotoLocation currentLocation;
 
-    private MiniGame runningMiniGame;
     private ConnectionManager connectionManager;
 
     private static MiniGameManager instance = null;
@@ -84,21 +91,46 @@ public class MiniGameManager {
         connectionManager = ConnectionManager.getInstance();
     }
 
+    public static class UIObjects {
+        public GoogleMap mMap;
+        public TextView view;
+
+        public UIObjects(GoogleMap mMap, TextView view) {
+            this.mMap = mMap;
+            this.view = view;
+        }
+    }
+
+    private UIObjects UIobjects;
+
+    public void setUIObjects(UIObjects newObjects) {
+        this.UIobjects = newObjects;
+    }
+
+    public void setContext(Context ctx) {
+        this.geocoder = new Geocoder(ctx);
+    }
+
     public static MiniGameManager getInstance() {
         if (instance == null)
             instance = new MiniGameManager();
         return instance;
     }
 
-    //TODO implement mini games
     public void startRaceGame(String street, String user) {
         this.street = street;
+        this.opponent = user;
         this.target = Utils.getLatLng(geocoder, street);
-        //TODO to server: game started (boolean)
-        // tooon finish marker
+        // TODO:  toon finish marker en "minigame gestart"
+        if (UIobjects != null) {
+            UIobjects.mMap.addMarker(new MarkerOptions()
+                    .title("target")
+                    .position(Utils.getLatLng(geocoder, street)));
+            UIobjects.view.setText("Race to: " + street);
+        }
         runningMiniGame = MiniGame.TARGET_RACE;
     }
-
+    
     public void resume() {
         switch (runningMiniGame) {
             case PHOTO_ROUND:
@@ -114,9 +146,8 @@ public class MiniGameManager {
 
     public void setFirst(Boolean result){
         first = result;
-
-
     }
+
     public void onLocationChanged(Location location) {
         switch (runningMiniGame) {
             case TARGET_RACE:
@@ -125,8 +156,9 @@ public class MiniGameManager {
                 Location.distanceBetween(location.getLatitude(),location.getLongitude(),this.target.latitude,this.target.longitude,distance);
                 if (distance[0]<10){
                     //TODO: game stopped
-                    //connectionManager.getFirst();
+                    connectionManager.finishMinigame(this.opponent, street);
                 }
+
                 break;
             case PHOTO_ROUND:
                 float[] distanceToStart = new float[3];

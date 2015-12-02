@@ -259,6 +259,10 @@ public class ConnectionManager {
         sendRequest("req", "start-minigame", "key", key, "user", user, "name", name, "street", street);
     }
 
+    public void finishMinigame(String name, String street) {
+        sendRequest("req", "finish-minigame", "key", key, "user", user, "name", name, "street", street);
+    }
+
     /**
      * main communication class,
      *  the class starts a connection with the server and listens for responses
