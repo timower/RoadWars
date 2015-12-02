@@ -27,6 +27,8 @@ public class MinigameSelectorActivity extends AppCompatActivity
 
     private TextView connectionLostBanner;
 
+    private String opponent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +38,6 @@ public class MinigameSelectorActivity extends AppCompatActivity
         street = intent.getStringExtra(EXTRA_STREET);
         TextView StreetName = (TextView) findViewById(R.id.street_name_value);
         StreetName.setText(street);
-        //String city = intent.getStringExtra(EXTRA_CITY);
-        //getSupport²nBar().setTitle("Minigame");
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
     }
 
@@ -54,8 +54,11 @@ public class MinigameSelectorActivity extends AppCompatActivity
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("start-minigame")) {
             if (result) {
-                //TODO: minigameManager.startRaceGame();
+                //TODO: check result of startRaceGame
+                MiniGameManager.getInstance().startRaceGame(street, opponent);
                 Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
             }
             else {
                 Toast.makeText(this, getString(R.string.other_offline), Toast.LENGTH_LONG).show();
@@ -87,16 +90,22 @@ public class MinigameSelectorActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "clicked user, starting minigame:");
                 //Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_SHORT).show();
-                connectionManager.startMinigame(data.getData().getHost(), street);
+                opponent = data.getData().getHost();
+                connectionManager.startMinigame(opponent, street);
             } else {
+                Log.d(TAG, "user canceled");
                 //Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
             }
         }
     }
 
     public void FotorondeClicked(View view) {
-        Toast.makeText(this, "This minigame is not available yet!", Toast.LENGTH_LONG).show();
-
+        // start photo ronde:
+        //TODO: check result of startPhotoRound()
+        MiniGameManager.getInstance().startPhotoRound();
+        Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Override

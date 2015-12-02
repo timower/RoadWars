@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -117,23 +116,28 @@ public class Utils {
         MiniGameManager minigameInstance = MiniGameManager.getInstance();
         if (result) {
             try {
-                if (req.equals("started-minigame")) {
-                    // response.getString("minigame").equals("race") &&
-                    Log.d("IMP", "started-minigame");
-                    if ( minigameInstance != null) {
-                        minigameInstance.startRaceGame(response.getString("street"), response.getString("name"));
-                    }
-                }
-                else if (req.equals("finished-minigame")) {
-                    //you won
-                    String street = response.getString("street");
-                    ConnectionManager.getInstance().addPoints(street, MiniGameManager.getInstance().runningMiniGame.getpoints());
-                    MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
-                }
-                else if (req.equals("stopped-minigame")) {
-                    //you "won"
-                    MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
-
+                switch (req) {
+                    case "started-minigame":
+                        // response.getString("minigame").equals("race") &&
+                        Log.d("IMP", "started-minigame");
+                        if (minigameInstance != null) {
+                            //TODO: check result of startRaceGame
+                            minigameInstance.startRaceGame(response.getString("street"), response.getString("name"));
+                        } else {
+                            throw new RuntimeException("what????");
+                        }
+                        break;
+                    case "finished-minigame":
+                        //you won
+                        String street = response.getString("street");
+                        minigameInstance.finish(true);
+                        break;
+                    case "stopped-minigame":
+                        minigameInstance.onStop();
+                        break;
+                    case "stop-minigame":
+                        Log.d("Mini", "successfully stopped minigame");
+                        break;
                 }
             }  catch (JSONException e) {
                 e.printStackTrace();
@@ -142,7 +146,7 @@ public class Utils {
         else {
             if (req.equals("finished-minigame")) {
                 //you lost
-                MiniGameManager.getInstance().runningMiniGame = MiniGameManager.MiniGame.NONE;
+                minigameInstance.finish(false);
             }
         }
     }

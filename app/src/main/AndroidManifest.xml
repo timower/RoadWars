@@ -67,7 +67,8 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".MinigameSelectorActivity" >
+            android:name=".MinigameSelectorActivity"
+            android:label="@string/minigame">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StreetRankActivity" />

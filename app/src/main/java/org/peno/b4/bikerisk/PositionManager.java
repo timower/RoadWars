@@ -290,6 +290,12 @@ public class PositionManager implements LocationListener {
 
     }
 
+    public static PositionManager getInstance() {
+        if (instance == null)
+            throw new RuntimeException("what, positionManager was null");
+        return instance;
+    }
+
     public void setUserColor(int color){
         float HSV[] = new float[3];
         Color.colorToHSV(color, HSV);

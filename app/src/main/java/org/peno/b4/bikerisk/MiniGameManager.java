@@ -6,25 +6,27 @@ import android.graphics.Color;
 import android.location.Geocoder;
 import android.location.Location;
 import android.view.View;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Random;
 
 /**
- * TODO: everything!!!!!!!!!!!!!
+ * TODO: what if connection is lost or something??
  */
 public class MiniGameManager {
 
     // read: https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html
     public enum MiniGame { //TODO: save string id as discription -> use getString to use
-        TARGET_RACE("race to target",1000),
+        TARGET_RACE("race to target", 2000),
         PHOTO_ROUND("take picture of place", 1000),
         NONE("",0);
 
@@ -74,42 +76,44 @@ public class MiniGameManager {
         }
     }
 
-    private String street;
-    private String opponent;
-    private LatLng target;
-    private Geocoder geocoder;
-    private Boolean first;
+    public static class UIObjects {
+        public GoogleMap mMap;
+        public TextView textView;
+        public View container;
 
-    public MiniGame runningMiniGame;
+        public UIObjects(GoogleMap mMap, TextView view, View container) {
+            this.mMap = mMap;
+            this.textView = view;
+            this.container = container;
+        }
+    }
+
+    private Geocoder geocoder;
+    private UIObjects UIobjects;
+    private Context context;
+
+
+    // street to race to:
+    private String street;
+    private LatLng target; // coordinates of street
     private PhotoLocation currentLocation;
+
+    // name of  opponent:
+    private String opponent;
+
+    private MiniGame runningMiniGame;
 
     private ConnectionManager connectionManager;
 
     private static MiniGameManager instance = null;
-    
+
+    private Marker marker;
+    private Circle circle;
+
+
     private MiniGameManager() {
         runningMiniGame = MiniGame.NONE;
         connectionManager = ConnectionManager.getInstance();
-    }
-
-    public static class UIObjects {
-        public GoogleMap mMap;
-        public TextView view;
-
-        public UIObjects(GoogleMap mMap, TextView view) {
-            this.mMap = mMap;
-            this.view = view;
-        }
-    }
-
-    private UIObjects UIobjects;
-
-    public void setUIObjects(UIObjects newObjects) {
-        this.UIobjects = newObjects;
-    }
-
-    public void setContext(Context ctx) {
-        this.geocoder = new Geocoder(ctx);
     }
 
     public static MiniGameManager getInstance() {
@@ -118,55 +122,127 @@ public class MiniGameManager {
         return instance;
     }
 
-    public void startRaceGame(String street, String user) {
-        this.street = street;
-        this.opponent = user;
-        this.target = Utils.getLatLng(geocoder, street);
-        // TODO:  toon finish marker en "minigame gestart"
-        if (UIobjects != null) {
-            UIobjects.mMap.addMarker(new MarkerOptions()
-                    .title("target")
-                    .position(Utils.getLatLng(geocoder, street)));
-            UIobjects.view.setText(R.string.race_to + street); //with placeholders: context needed
-            UIobjects.view.setBackgroundColor(Color.WHITE);
-        }
-        runningMiniGame = MiniGame.TARGET_RACE;
+
+
+    public void setContext(Context ctx) {
+        this.geocoder = new Geocoder(ctx);
+        this.context = ctx.getApplicationContext();
     }
-    
-    public void resume() {
+
+    public void setUIObjects(UIObjects newObjects) {
+        this.UIobjects = newObjects;
+        drawUI();
+    }
+
+
+
+    public boolean startRaceGame(String street, String user) {
+        if (PositionManager.getInstance().start()) {
+            this.street = street;
+            this.opponent = user;
+            this.target = Utils.getLatLng(geocoder, street);
+
+            runningMiniGame = MiniGame.TARGET_RACE;
+
+            drawUI();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean startPhotoRound() {
+        if (PositionManager.getInstance().start()) {
+            this.runningMiniGame = MiniGame.PHOTO_ROUND;
+            this.currentLocation = PhotoLocation.randomLocation();
+            drawUI();
+            return  true;
+        }
+        return false;
+    }
+
+
+    public void finish(boolean won) {
+        if (won) {
+            connectionManager.addPoints(street, runningMiniGame.getpoints());
+            Toast.makeText(context, "You won!", Toast.LENGTH_SHORT).show();
+        }
+        Toast.makeText(context, "You lost!", Toast.LENGTH_SHORT).show();
+        runningMiniGame = MiniGame.NONE;
+        drawUI();
+    }
+
+    public void stop() {
         switch (runningMiniGame) {
+            case TARGET_RACE:
+                connectionManager.stopMinigame(opponent, street);
+                break;
             case PHOTO_ROUND:
-                //teken ui opnieuw
+                break;
+        }
+        runningMiniGame = MiniGame.NONE;
+        drawUI();
+    }
+
+    public void onStop() {
+        Toast.makeText(context, "Opponent has quit!", Toast.LENGTH_SHORT).show();
+        runningMiniGame = MiniGame.NONE;
+        drawUI();
+    }
+
+
+    private void drawUI() {
+        if (UIobjects == null)
+            return;
+        if (circle != null)
+            circle.remove();
+        if (marker != null)
+            marker.remove();
+        switch (runningMiniGame) {
+            case TARGET_RACE:
+                marker = UIobjects.mMap.addMarker(new MarkerOptions()
+                        .title("target")
+                        .position(target));
+                circle = UIobjects.mMap.addCircle(new CircleOptions().center(target).radius(10.0f));
+
+                UIobjects.container.setVisibility(View.VISIBLE);
+                UIobjects.textView.setText(context.getString(R.string.race_to, street)); //with placeholders: context needed
+                UIobjects.container.setBackgroundColor(Color.WHITE);
+                break;
+            case PHOTO_ROUND:
+                LatLng t = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                circle = UIobjects.mMap.addCircle(new CircleOptions()
+                        .center(t)
+                        .radius(currentLocation.getDistance()));
+                marker = UIobjects.mMap.addMarker(new MarkerOptions().title("photo location").position(t));
+
+                UIobjects.container.setVisibility(View.VISIBLE);
+                UIobjects.textView.setText(context.getString(R.string.take_picture_of, currentLocation.getFullName())); //with placeholders: context needed
+                UIobjects.container.setBackgroundColor(Color.WHITE);
+                break;
+            case NONE:
+                UIobjects.container.setVisibility(View.GONE);
                 break;
         }
     }
 
-    public void startPhotoRound() {
-        this.runningMiniGame = MiniGame.PHOTO_ROUND;
-        this.currentLocation = PhotoLocation.randomLocation();
-    }
-
-    public void setFirst(Boolean result){
-        first = result;
-    }
 
     public void onLocationChanged(Location location) {
         switch (runningMiniGame) {
             case TARGET_RACE:
-                //TODO: visible if user is finished
                 float[] distance = new float[3];
                 Location.distanceBetween(location.getLatitude(),location.getLongitude(),this.target.latitude,this.target.longitude,distance);
-                if (distance[0]<10){
-                    //TODO: game stopped
+                if (distance[0] < 10){
                     connectionManager.finishMinigame(this.opponent, street);
+                    Log.d("Mini", "target reached");
                 }
-
                 break;
             case PHOTO_ROUND:
                 float[] distanceToStart = new float[3];
                 Location.distanceBetween(location.getLatitude(), location.getLongitude(), this.currentLocation.latitude, this.currentLocation.longitude, distanceToStart);
                 if (distanceToStart[0] < this.currentLocation.distance){
-                    //Intent intent = new Intent(CameraActivity);
+                    Intent intent = new Intent(context, CameraActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                     Log.d("Mini", "photo location reached");
                 }
             default:

@@ -68,7 +68,8 @@ public class MainActivity extends AppCompatActivity
     private ProgressTracker progressTracker;
 
     private TextView connectionLostBanner;
-    // private TextView inMinigame;
+    private TextView minigameText;
+    private View minigameContainer;
 
     /** Creates the activity, initializes the map and searches for certain text views. (UNFINISHED)
      *
@@ -99,7 +100,9 @@ public class MainActivity extends AppCompatActivity
         speedText = (TextView)findViewById(R.id.speed_text);
         progressTracker = new ProgressTracker();
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
-        //inMinigame = (TextView)findViewById(R.id.in_minigame);
+
+        minigameText = (TextView)findViewById(R.id.minigame_text);
+        minigameContainer = findViewById(R.id.minigame_container);
 
     }
 
@@ -112,7 +115,8 @@ public class MainActivity extends AppCompatActivity
 
         // start connection with server
         connectionManager = ConnectionManager.getInstance(this, this);
-        //MiniGameManager.getInstance().setContext(getApplicationContext());
+
+        MiniGameManager.getInstance().setContext(this);
 
         progressTracker.setProgressBar((ProgressBar)findViewById(R.id.main_progressbar));
 
@@ -130,7 +134,8 @@ public class MainActivity extends AppCompatActivity
         if (mMap != null) {
             PositionManager.getInstance(this, new PositionManager.UIObjects(mMap, speedText,
                     pointsTable, progressTracker, connectionLostBanner));
-            //MiniGameManager.getInstance().setUIObjects(new MiniGameManager.UIObjects(mMap, inMinigame));
+            MiniGameManager.getInstance().setUIObjects(
+                    new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
         } else {
             Log.d(TAG, "wtf??? mMap not ready in resume");
         }
@@ -276,8 +281,10 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case "add-points":
                 if (result) {
+                    Log.d("POINTS", "saved successfully");
                     //Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.d("POINTS", "save failed");
                     Toast.makeText(this, getString(R.string.error_points), Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -418,7 +425,8 @@ public class MainActivity extends AppCompatActivity
         positionManager = PositionManager.getInstance(this,
                 new PositionManager.UIObjects(mMap, speedText, pointsTable, progressTracker, connectionLostBanner));
 
-        //MiniGameManager.getInstance().setUIObjects(new MiniGameManager.UIObjects(mMap, inMinigame));
+        MiniGameManager.getInstance().setUIObjects(
+                new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
 
         if (positionManager.started) {
             // show notification
@@ -596,5 +604,9 @@ public class MainActivity extends AppCompatActivity
 
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+
+    public void onMinigameStopClicked(View view) {
+        MiniGameManager.getInstance().stop();
     }
 }

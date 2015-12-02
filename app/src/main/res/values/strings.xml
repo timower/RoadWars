@@ -35,12 +35,12 @@
     <string name="userlist">Search users</string>
     <string name="owner_toast">Owner of %1$s: %2$s</string>
     <string name="error_points">Error saving points</string>
-    <string name="nfc_friend">Ok, you\'re friends!</string>
+    <string name="nfc_friend">OK, you\'re friends!</string>
     <string name="finished_points">Finished saving points!</string>
     <string name="enable_location_access">Please allow RoadWars access to location</string>
     <string name="speed_info">%.2f km/h</string>
 
-    <string name="race_to">Race to: </string>
+    <string name="race_to">Race to: %s</string>
 
 
 
@@ -96,7 +96,9 @@
     <string name="Capture">Capture</string>
     <string name="Take_picture">Take a picture!</string>
     <string name="camera">Camera</string>
-    <string name="take_picture">Take a Picture</string>
+    <string name="take_picture">Take a picture</string>
+
+    <string name="take_picture_of">Take a picture of: %s</string>
 
     <!-- AboutActivity -->
     <string name="creators">Creators:</string>

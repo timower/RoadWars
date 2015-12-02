@@ -52,13 +52,34 @@
             android:layout_marginBottom="50dp"
             android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/in_minigame"
+        <RelativeLayout
+            android:id="@+id/minigame_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_alignParentBottom="true">
-        </TextView>
+            android:layout_alignParentBottom="true"
+            android:visibility="visible"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:id="@+id/minigame_text"
+                android:layout_width="wrap_content"
+                android:layout_toLeftOf="@+id/buttonMinigame"
+                android:layout_toStartOf="@+id/buttonMinigame"
+                android:layout_height="wrap_content"
+                android:textSize="20sp">
+            </TextView>
+            <Button
+                android:id="@+id/buttonMinigame"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="X"
+                android:onClick="onMinigameStopClicked"/>
+        </RelativeLayout>
+
 
         <TableLayout
             android:layout_width="match_parent"
