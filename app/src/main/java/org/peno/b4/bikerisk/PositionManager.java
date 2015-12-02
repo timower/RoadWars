@@ -315,6 +315,9 @@ public class PositionManager implements LocationListener {
             Toast.makeText(context, context.getString(R.string.enable_location_access), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+        //TODO: fix -> make ProgressTracker a singleton
+        if (UIobjects != null)
+            UIobjects.progressTracker.showProgressBar(ProgressTracker.REASON_GPS);
         return true;
     }
 

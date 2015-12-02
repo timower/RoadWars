@@ -94,7 +94,6 @@
     <string name="capture">Capture</string>
     <string name="take_picture">Take a picture!</string>
     <string name="camera">Camera</string>
-    <string name="take_picture">Take a picture</string>
 
     <string name="take_picture_of">Take a picture of: %s</string>
 

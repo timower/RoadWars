@@ -59,6 +59,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
                 Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
             else {
                 Toast.makeText(this, getString(R.string.other_offline), Toast.LENGTH_LONG).show();
@@ -106,6 +107,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
         Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override

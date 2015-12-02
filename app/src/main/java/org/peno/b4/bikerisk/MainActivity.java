@@ -386,7 +386,6 @@ public class MainActivity extends AppCompatActivity
                                 pointsTable.setVisibility(View.GONE);
                                 showStartedNotification();
                                 showInfoText();
-                                progressTracker.showProgressBar(ProgressTracker.REASON_GPS);
                                 connectionManager.getUserInfo(connectionManager.user);
                             }
                         }
