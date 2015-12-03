@@ -71,6 +71,7 @@
     <string name="title_activity_minigame">Minigame</string>
     <string name="minigame_started">Minigame started!</string>
     <string name="other_offline">Other player is offline</string>
+    <string name="error_start_minigame">Error starting minigame</string>
 
     <!-- UserSearchActivity -->
     <string name="search_for_user">Search for user</string>

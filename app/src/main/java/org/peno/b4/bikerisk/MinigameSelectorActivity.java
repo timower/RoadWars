@@ -10,6 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
+import org.peno.b4.bikerisk.Minigames.PhotoGame;
+import org.peno.b4.bikerisk.Minigames.StreetRaceGame;
 
 // FOR IN NEXT VERSION:
 //TDO: dynamically load minigames from minigamemanger.minigame.values()
@@ -55,11 +57,15 @@ public class MinigameSelectorActivity extends AppCompatActivity
         if (req.equals("start-minigame")) {
             if (result) {
                 //TODO: check result of startRaceGame
-                MiniGameManager.getInstance().startRaceGame(street, opponent);
-                Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                //MiniGameManager.getInstance().startRaceGame(street, opponent);
+                if (MiniGameManager.getInstance().startGame(new StreetRaceGame(this, street, opponent))) {
+                    Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(this, R.string.error_start_minigame, Toast.LENGTH_SHORT).show();
+                }
             }
             else {
                 Toast.makeText(this, getString(R.string.other_offline), Toast.LENGTH_LONG).show();
@@ -103,7 +109,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
     public void FotorondeClicked(View view) {
         // start photo ronde:
         //TODO: check result of startPhotoRound()
-        MiniGameManager.getInstance().startPhotoRound();
+        MiniGameManager.getInstance().startGame(new PhotoGame(this));
         Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
