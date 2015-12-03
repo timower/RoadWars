@@ -113,6 +113,8 @@ public class MiniGameManager {
 
     private String UIstring;
 
+    private boolean waitingForFinish;
+
     private MiniGameManager() {
         runningMiniGame = MiniGame.NONE;
         connectionManager = ConnectionManager.getInstance();
@@ -145,6 +147,7 @@ public class MiniGameManager {
             this.target = Utils.getLatLng(geocoder, street);
 
             runningMiniGame = MiniGame.TARGET_RACE;
+            waitingForFinish = false;
 
             drawUI();
             return true;
@@ -156,6 +159,7 @@ public class MiniGameManager {
         if (PositionManager.getInstance().start()) {
             this.runningMiniGame = MiniGame.PHOTO_ROUND;
             this.currentLocation = PhotoLocation.randomLocation();
+            waitingForFinish = false;
             drawUI();
             return  true;
         }
@@ -245,18 +249,26 @@ public class MiniGameManager {
             case TARGET_RACE:
                 float[] distance = new float[3];
                 Location.distanceBetween(location.getLatitude(),location.getLongitude(),this.target.latitude,this.target.longitude,distance);
-                if (distance[0] < 10){
+                if (distance[0] < 10 && !waitingForFinish){
                     connectionManager.finishMinigame(this.opponent, street);
+
+                    //prevent multiple requests to server -> wait unitil response
+                    waitingForFinish = true;
+
                     Log.d("Mini", "target reached");
                 }
                 break;
             case PHOTO_ROUND:
                 float[] distanceToStart = new float[3];
                 Location.distanceBetween(location.getLatitude(), location.getLongitude(), this.currentLocation.latitude, this.currentLocation.longitude, distanceToStart);
-                if (distanceToStart[0] < this.currentLocation.distance){
+                if (distanceToStart[0] < this.currentLocation.distance && !waitingForFinish){
                     Intent intent = new Intent(context, CameraActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+
+                    //prevent multiple requests to server -> wait unitil response
+                    waitingForFinish = true;
+
                     Log.d("Mini", "photo location reached");
                 }
             default:

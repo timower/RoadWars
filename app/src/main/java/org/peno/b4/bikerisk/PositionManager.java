@@ -303,6 +303,8 @@ public class PositionManager implements LocationListener {
     }
 
     public boolean start() {
+        if (started)
+            return true;
         if (!canStart)
             return false;
         if (userRoute != null)

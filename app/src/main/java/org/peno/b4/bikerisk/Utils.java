@@ -132,7 +132,7 @@ public class Utils {
                             throw new RuntimeException("what????");
                         }
                         break;
-                    case "finished-minigame":
+                    case "finish-minigame":
                         //you won
                         String street = response.getString("street");
                         minigameInstance.finish(true);
@@ -149,7 +149,7 @@ public class Utils {
             }
         }
         else {
-            if (req.equals("finished-minigame")) {
+            if (req.equals("finish-minigame")) {
                 //you lost
                 minigameInstance.finish(false);
             }
