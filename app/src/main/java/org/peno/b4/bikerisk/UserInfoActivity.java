@@ -91,7 +91,7 @@ public class UserInfoActivity extends AppCompatActivity
                             TextView email = (TextView) findViewById(R.id.user_email_value);
                             email.setText(response.getString("email"));
                         } else {
-                            TextView email_label = (TextView) findViewById(R.id.email_id);
+                            View email_label = findViewById(R.id.email_container);
                             email_label.setVisibility(View.GONE);
                         }
                         TextView totalnumberownedstreets = (TextView) findViewById(R.id.totalnumberownedstreets);

@@ -62,6 +62,7 @@
                             android:textStyle="bold"/>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/email_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -116,24 +117,32 @@
                             android:id="@+id/user_color_value" />
                     </LinearLayout>
                     <Button
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="4dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_friend"
                         android:id="@+id/add_friend"
                         android:visibility="gone"/>
                     <Button
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="4dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/accept_request"
                         android:id="@+id/accept_req"
                         android:visibility="gone"/>
                     <Button
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="4dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/remove_friend"
                         android:id="@+id/remove_friend"
                         android:visibility="gone"/>
                     <Button
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="4dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/decline_req"
