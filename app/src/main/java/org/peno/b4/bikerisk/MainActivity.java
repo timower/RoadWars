@@ -613,4 +613,9 @@ public class MainActivity extends AppCompatActivity
     public void onMinigameStopClicked(View view) {
         MiniGameManager.getInstance().stop();
     }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
 }
