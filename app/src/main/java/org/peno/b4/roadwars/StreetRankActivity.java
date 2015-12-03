@@ -1,4 +1,4 @@
-package org.peno.b4.bikerisk;
+package org.peno.b4.roadwars;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class StreetRankActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
-    public static final String EXTRA_STREET = "org.peno.b4.bikerisk.STREET";
+    public static final String EXTRA_STREET = "org.peno.b4.roadwars.STREET";
 
     public static final String TAG = "StreetRankActivity";
 

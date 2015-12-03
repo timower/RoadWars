@@ -1,4 +1,4 @@
-package org.peno.b4.bikerisk;
+package org.peno.b4.roadwars;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;

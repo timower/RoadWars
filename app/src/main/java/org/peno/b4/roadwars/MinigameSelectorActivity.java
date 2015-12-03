@@ -1,4 +1,4 @@
-package org.peno.b4.bikerisk;
+package org.peno.b4.roadwars;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
-import org.peno.b4.bikerisk.Minigames.PhotoGame;
-import org.peno.b4.bikerisk.Minigames.StreetRaceGame;
+import org.peno.b4.roadwars.Minigames.PhotoGame;
+import org.peno.b4.roadwars.Minigames.StreetRaceGame;
 
 // FOR IN NEXT VERSION:
 //TDO: dynamically load minigames from minigamemanger.minigame.values()
@@ -20,7 +20,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
 
 
-    public static final String EXTRA_STREET = "org.peno.b4.bikerisk.STREET";
+    public static final String EXTRA_STREET = "org.peno.b4.roadwars.STREET";
 
     private ConnectionManager connectionManager;
     private String street;

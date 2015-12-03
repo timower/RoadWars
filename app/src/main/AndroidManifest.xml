@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.peno.b4.bikerisk">
+    package="org.peno.b4.roadwars">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="org.peno.b4.roadwars.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +31,7 @@
         <activity
             android:launchMode="singleTop"
             android:label="@string/login"
-            android:name=".LoginActivity">
+            android:name="org.peno.b4.roadwars.LoginActivity">
         </activity>
 
         <!--
@@ -47,45 +47,45 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".UserInfoActivity"
+            android:name="org.peno.b4.roadwars.UserInfoActivity"
             android:label="@string/user_info">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
         <activity
             android:label="@string/create_user"
-            android:name=".RegisterActivity">
+            android:name="org.peno.b4.roadwars.RegisterActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity" />
+                android:value="org.peno.b4.roadwars.LoginActivity" />
         </activity>
         <activity
-            android:name=".StreetRankActivity">
+            android:name="org.peno.b4.roadwars.StreetRankActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
         <activity
-            android:name=".MinigameSelectorActivity"
+            android:name="org.peno.b4.roadwars.MinigameSelectorActivity"
             android:label="@string/minigame">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".StreetRankActivity" />
+                android:value="org.peno.b4.roadwars.StreetRankActivity" />
         </activity>
         <activity
             android:label="@string/search"
-            android:name=".UserSearchActivity">
+            android:name="org.peno.b4.roadwars.UserSearchActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MinigameSelectorActivity" />
+                android:value="org.peno.b4.roadwars.MinigameSelectorActivity" />
         </activity>
         <activity
             android:label="@string/friends"
-            android:name=".FriendsActivity" />
-        <activity android:name=".nfcReceiverActivity">
+            android:name="org.peno.b4.roadwars.FriendsActivity" />
+        <activity android:name="org.peno.b4.roadwars.nfcReceiverActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
@@ -94,12 +94,12 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutActivity">
+        <activity android:name="org.peno.b4.roadwars.AboutActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
-        <activity android:name=".CameraActivity"/>
+        <activity android:name="org.peno.b4.roadwars.CameraActivity"/>
 
     </application>
 

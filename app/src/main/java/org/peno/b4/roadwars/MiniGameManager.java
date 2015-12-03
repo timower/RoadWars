@@ -1,26 +1,15 @@
-package org.peno.b4.bikerisk;
+package org.peno.b4.roadwars;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
-import android.location.Geocoder;
 import android.location.Location;
 import android.view.View;
 import android.widget.TextView;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.peno.b4.bikerisk.Minigames.Minigame;
-import org.peno.b4.bikerisk.Minigames.UIGame;
-
-import java.util.Random;
+import org.peno.b4.roadwars.Minigames.Minigame;
+import org.peno.b4.roadwars.Minigames.UIGame;
 
 /**
  * TODO: what if connection is lost or something??

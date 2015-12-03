@@ -1,4 +1,4 @@
-package org.peno.b4.bikerisk;
+package org.peno.b4.roadwars;
 
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -254,7 +254,7 @@ public class UserSearchActivity extends AppCompatActivity
             userView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent result = new Intent("org.peno.b4.bikerisk.RESULT_ACTION", Uri.parse("username://" + name));
+                    Intent result = new Intent("org.peno.b4.roadwars.RESULT_ACTION", Uri.parse("username://" + name));
                     setResult(RESULT_OK, result);
                     finish();
                 }

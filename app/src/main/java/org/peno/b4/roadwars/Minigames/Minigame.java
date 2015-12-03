@@ -1,11 +1,11 @@
-package org.peno.b4.bikerisk.Minigames;
+package org.peno.b4.roadwars.Minigames;
 
 import android.content.Context;
 import android.location.Geocoder;
 import android.location.Location;
 
-import org.peno.b4.bikerisk.ConnectionManager;
-import org.peno.b4.bikerisk.MiniGameManager;
+import org.peno.b4.roadwars.ConnectionManager;
+import org.peno.b4.roadwars.MiniGameManager;
 
 /**
  *

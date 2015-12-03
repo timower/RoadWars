@@ -1,11 +1,11 @@
-package org.peno.b4.bikerisk.Minigames;
+package org.peno.b4.roadwars.Minigames;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.view.View;
 
-import org.peno.b4.bikerisk.MiniGameManager;
+import org.peno.b4.roadwars.MiniGameManager;
 
 /**
  * displays text in minigameUI

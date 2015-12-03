@@ -1,4 +1,4 @@
-package org.peno.b4.bikerisk.Minigames;
+package org.peno.b4.roadwars.Minigames;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,9 +15,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Random;
 
-import org.peno.b4.bikerisk.CameraActivity;
-import org.peno.b4.bikerisk.MiniGameManager;
-import org.peno.b4.bikerisk.R;
+import org.peno.b4.roadwars.CameraActivity;
+import org.peno.b4.roadwars.MiniGameManager;
+import org.peno.b4.roadwars.R;
 
 /**
  *

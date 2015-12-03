@@ -1,4 +1,4 @@
-package org.peno.b4.bikerisk;
+package org.peno.b4.roadwars;
 
 import android.content.Intent;
 import android.nfc.NdefMessage;
@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import org.peno.b4.bikerisk.Minigames.StreetRaceGame;
+import org.peno.b4.roadwars.Minigames.StreetRaceGame;
 
 public class nfcReceiverActivity extends AppCompatActivity {
 

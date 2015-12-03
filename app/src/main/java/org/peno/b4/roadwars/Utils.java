@@ -1,4 +1,4 @@
-package org.peno.b4.bikerisk;
+package org.peno.b4.roadwars;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -8,10 +8,9 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.peno.b4.bikerisk.Minigames.StreetRaceGame;
+import org.peno.b4.roadwars.Minigames.StreetRaceGame;
 
 import java.io.IOException;
 import java.util.HashMap;

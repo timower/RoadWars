@@ -1,4 +1,4 @@
-package org.peno.b4.bikerisk.Minigames;
+package org.peno.b4.roadwars.Minigames;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,9 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.peno.b4.bikerisk.MiniGameManager;
-import org.peno.b4.bikerisk.R;
-import org.peno.b4.bikerisk.Utils;
+import org.peno.b4.roadwars.MiniGameManager;
+import org.peno.b4.roadwars.R;
+import org.peno.b4.roadwars.Utils;
 
 /**
  * basic race to street game

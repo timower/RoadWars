@@ -28,9 +28,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/map"
-            tools:context="org.peno.b4.bikerisk.MainActivity"
+            tools:context="org.peno.b4.roadwars.MainActivity"
             class="com.google.android.gms.maps.SupportMapFragment"
-            android:name="org.peno.b4.bikerisk.MainActivity"
+            android:name="org.peno.b4.roadwars.MainActivity"
             tools:layout="@android:layout/simple_gallery_item" />
         <ProgressBar
             android:id="@+id/main_progressbar"
