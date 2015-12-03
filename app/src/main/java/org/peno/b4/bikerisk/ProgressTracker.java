@@ -18,6 +18,15 @@ public class ProgressTracker {
     private ProgressBar progressBar;
     private int reasons = 0;
 
+    //TODO: find better solution:
+    private MainActivity mainActivity;
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
+    public void invalidateOptionsMenu() {
+        mainActivity.invalidateOptionsMenu();;
+    }
+
     private static ProgressTracker instance = new ProgressTracker();
 
     private ProgressTracker() {

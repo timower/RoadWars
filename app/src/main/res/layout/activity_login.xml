@@ -37,7 +37,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:layout_marginRight="30dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="30dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
@@ -79,7 +79,8 @@
             android:layout_alignEnd="@+id/button"
             android:clickable="true"
             android:onClick="regClick"
-            android:textColor="#26284a" />
+            android:textColor="#007bff"
+            android:layout_marginTop="8dp"/>
 
     </RelativeLayout>
 </LinearLayout>

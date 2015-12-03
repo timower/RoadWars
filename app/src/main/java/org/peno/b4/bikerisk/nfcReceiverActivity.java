@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import org.peno.b4.bikerisk.Minigames.StreetRaceGame;
+
 public class nfcReceiverActivity extends AppCompatActivity {
 
     @Override
@@ -34,7 +36,9 @@ public class nfcReceiverActivity extends AppCompatActivity {
                     Toast.makeText(this, getString(R.string.nfc_friend), Toast.LENGTH_LONG).show();
                     break;
                 case Utils.MINIGAME_NFC_INTENT:
-                    //TODO: start minigame
+                    //TODO: check delen length == 3
+                    MiniGameManager instance = MiniGameManager.getInstance();
+                    instance.startGame(new StreetRaceGame(instance.context, delen[1], delen[2]));
                     break;
 
             }

@@ -1,10 +1,14 @@
 package org.peno.b4.bikerisk;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -40,7 +44,25 @@ public class RegisterActivity extends AppCompatActivity
         connectionManager = ConnectionManager.getInstance(this, this);
     }
 
-    public void registerClicked(View view){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.actions_register, menu);
+        return  super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.register_button:
+                registerClicked();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void registerClicked(){
         String name = ((EditText)findViewById(R.id.user_name)).getText().toString();
         String pass = ((EditText)findViewById(R.id.password)).getText().toString();
         String email = ((EditText)findViewById(R.id.email)).getText().toString();

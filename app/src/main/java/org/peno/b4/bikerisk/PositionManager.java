@@ -363,6 +363,8 @@ public class PositionManager implements LocationListener {
             routeInfo.routeSpeeds.clear();
             progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
         }
+
+        MiniGameManager.getInstance().stop();
     }
 
     public void destroy() {

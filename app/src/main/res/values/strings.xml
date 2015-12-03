@@ -5,7 +5,7 @@
     <string name="login">Login</string>
     <string name="password">Password</string>
     <string name="go">Go!</string>
-    <string name="or_register">Or register!</string>
+    <string name="or_register"><u>Or register!</u></string>
     <string name="welcome_message">Welcome %s!</string>
     <string name="failed_login">Failed to login</string>
 
@@ -16,7 +16,7 @@
     <string name="color">Color</string>
     <string name="username">Username</string>
     <string name="email_address">Email address</string>
-    <string name="choose_a_color">Choose a color</string>
+    <string name="choose_a_color">Choose a color: </string>
     <string name="hue">Hue</string>
     <string name="register_ok">Successfully created user</string>
     <string name="register_fail">Error creating user</string>
@@ -24,6 +24,7 @@
     <string name="fill_pass">Please fill in a password!</string>
     <string name="fill_email">Please fill in an email address!</string>
     <string name="choose_color">Please choose a color!</string>
+    <string name="create_user">Create user</string>
 
 
     <!-- MainActivity -->
@@ -44,6 +45,7 @@
     <string name="opponent_quit">Opponent has quit</string>
     <string name="player_win">You won, points: %d</string>
     <string name="player_lose">You lost</string>
+    <string name="you_won">You won!</string>
 
 
     <!-- App -->
@@ -75,9 +77,11 @@
 
     <!-- UserSearchActivity -->
     <string name="search_for_user">Search for user</string>
+    <string name="search">Search</string>
     <string name="nfc_allowed">NFC</string>
 
     <!-- FriendsActivity -->
+    <string name="friends">Friends</string>
     <string name="my_friends">My friends</string>
     <string name="remove_friend">Remove friend</string>
     <string name="new_requests">New requests</string>

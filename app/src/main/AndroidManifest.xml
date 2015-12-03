@@ -30,6 +30,7 @@
         </activity>
         <activity
             android:launchMode="singleTop"
+            android:label="@string/login"
             android:name=".LoginActivity">
         </activity>
 
@@ -53,6 +54,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:label="@string/create_user"
             android:name=".RegisterActivity">
 
             <meta-data
@@ -73,12 +75,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".StreetRankActivity" />
         </activity>
-        <activity android:name=".UserSearchActivity">
+        <activity
+            android:label="@string/search"
+            android:name=".UserSearchActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MinigameSelectorActivity" />
         </activity>
-        <activity android:name=".FriendsActivity" />
+        <activity
+            android:label="@string/friends"
+            android:name=".FriendsActivity" />
         <activity android:name=".nfcReceiverActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />

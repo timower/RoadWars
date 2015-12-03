@@ -129,7 +129,8 @@ public class Utils {
                             //TODO: check result of startRaceGame
                             minigameInstance.startGame(new StreetRaceGame(minigameInstance.context,
                                     response.getString("street"), response.getString("name")));
-                            //TODO: invalidate MainActivity options menu
+                            //TODO: find better way:
+                            ProgressTracker.getInstance().invalidateOptionsMenu();
                         } else {
                             throw new RuntimeException("what????");
                         }

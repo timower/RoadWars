@@ -83,6 +83,9 @@ public class MainActivity extends AppCompatActivity
 
         progressTracker = ProgressTracker.getInstance();
 
+        //TODO: find better way:
+        progressTracker.setMainActivity(this);
+
         // get map object (calls onMapReady)
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

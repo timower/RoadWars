@@ -77,13 +77,15 @@ public class MiniGameManager {
 
 
     public void finish(boolean won) {
+        if (runningMiniGame == null)
+            return;
         runningMiniGame.finish(won);
         String UIstring;
         if (won) {
-            Toast.makeText(context, "You won!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.you_won, Toast.LENGTH_SHORT).show();
             UIstring = context.getString(R.string.player_win, runningMiniGame.getPoints());
         } else {
-            Toast.makeText(context, "You lost!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.player_lose, Toast.LENGTH_SHORT).show();
             UIstring = context.getString(R.string.player_lose);
         }
         runningMiniGame = new UIGame(context, UIstring);
@@ -91,13 +93,15 @@ public class MiniGameManager {
     }
 
     public void stop() {
-        runningMiniGame.stop();
+        if (runningMiniGame != null)
+            runningMiniGame.stop();
         runningMiniGame = null;
         drawUI();
     }
 
     public void onStop() {
-        runningMiniGame.onStop();
+        if (runningMiniGame != null)
+            runningMiniGame.onStop();
         Toast.makeText(context, R.string.opponent_quit, Toast.LENGTH_SHORT).show();
         runningMiniGame = new UIGame(context, context.getString(R.string.opponent_quit));
         drawUI();
