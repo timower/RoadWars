@@ -267,6 +267,10 @@ public class ConnectionManager {
         sendRequest("req", "stop-minigame", "key", key, "user", user, "name", name, "street", street);
     }
 
+    public void getOnlineUsers() {
+        sendRequest("req", "get-online-users", "key", key, "user", user);
+    }
+
     /**
      * main communication class,
      *  the class starts a connection with the server and listens for responses

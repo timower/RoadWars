@@ -118,7 +118,6 @@ public class Utils {
     }
 
     public static void onResponse(String req, boolean result, JSONObject response) {
-        //TODO
         MiniGameManager minigameInstance = MiniGameManager.getInstance();
         if (result) {
             try {
@@ -130,6 +129,7 @@ public class Utils {
                             //TODO: check result of startRaceGame
                             minigameInstance.startGame(new StreetRaceGame(minigameInstance.context,
                                     response.getString("street"), response.getString("name")));
+                            //TODO: invalidate MainActivity options menu
                         } else {
                             throw new RuntimeException("what????");
                         }

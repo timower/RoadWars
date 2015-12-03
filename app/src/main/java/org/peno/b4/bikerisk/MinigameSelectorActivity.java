@@ -56,7 +56,6 @@ public class MinigameSelectorActivity extends AppCompatActivity
         connectionLostBanner.setVisibility(View.GONE);
         if (req.equals("start-minigame")) {
             if (result) {
-                //TODO: check result of startRaceGame
                 //MiniGameManager.getInstance().startRaceGame(street, opponent);
                 if (MiniGameManager.getInstance().startGame(new StreetRaceGame(this, street, opponent))) {
                     Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
@@ -85,7 +84,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
     public void LiveRaceClicked(View view) {
         Intent intent = new Intent(this, UserSearchActivity.class);
         intent.putExtra(UserSearchActivity.EXTRA_ALLOW_NFC, true);
-        intent.putExtra(UserSearchActivity.EXTRA_ALL_FRIENDS, true);
+        intent.putExtra(UserSearchActivity.EXTRA_ONLINE_USERS, true);
         intent.putExtra(UserSearchActivity.EXTRA_NFC_INTENT, Utils.MINIGAME_NFC_INTENT + ":" + street);
 
         startActivityForResult(intent, UserSearchActivity.GET_USER_REQ);

@@ -43,6 +43,7 @@ public class UserSearchActivity extends AppCompatActivity
     public static final String EXTRA_ALL_USERS = "roadwars.all_users";
     public static final String EXTRA_ALL_FRIENDS = "roadwars.all_friends";
     public static final String EXTRA_UNKNOWN_USERS = "roadwars.unknown_users";
+    public static final String EXTRA_ONLINE_USERS = "roadwars.online_users";
 
     public static final String EXTRA_NFC_INTENT = "roadwars.nfc_intent";
 
@@ -52,6 +53,7 @@ public class UserSearchActivity extends AppCompatActivity
     private boolean allUsers; // if false -> only friends
     private boolean allFriends;
     private boolean unknownUsers;
+    private boolean onlineUsers;
     private String nfcIntent;
 
     private ArrayList<Pair<String, Integer>> users;
@@ -75,6 +77,7 @@ public class UserSearchActivity extends AppCompatActivity
         allUsers = intent.getBooleanExtra(EXTRA_ALL_USERS, false);
         allFriends = intent.getBooleanExtra(EXTRA_ALL_FRIENDS, false);
         unknownUsers = intent.getBooleanExtra(EXTRA_UNKNOWN_USERS, false);
+        onlineUsers = intent.getBooleanExtra(EXTRA_ONLINE_USERS, false);
         nfcIntent = intent.getStringExtra(EXTRA_NFC_INTENT);
 
         users = new ArrayList<>();
@@ -124,6 +127,8 @@ public class UserSearchActivity extends AppCompatActivity
             connectionManager.getFriends();
         } else if (unknownUsers) {
             connectionManager.getUnknownUsers();
+        } else if (onlineUsers) {
+            connectionManager.getOnlineUsers();
         } else {
             throw new RuntimeException("Fix uw intent!!!!!! voor userSearch (1 optie moet op true staan");
         }
@@ -174,12 +179,14 @@ public class UserSearchActivity extends AppCompatActivity
     public boolean onResponse(String req, Boolean result, JSONObject response) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.GONE);
-        if (req.equals("get-all-users") || req.equals("get-unknown-users") || req.equals("get-friends")) {
+        if (req.equals("get-all-users") || req.equals("get-unknown-users")
+                || req.equals("get-friends") || req.equals("get-online-users")) {
             if (result) {
                 users.clear();
                 Log.d(TAG, response.toString());
                 try {
-                    if (req.equals("get-all-users") || req.equals("get-unknown-users")) {
+                    if (req.equals("get-all-users") || req.equals("get-unknown-users")
+                            || req.equals("get-online-users")) {
                         JSONArray user = response.getJSONArray("users");
                         makeArray(user);
                     } else if (req.equals("get-friends")) {
