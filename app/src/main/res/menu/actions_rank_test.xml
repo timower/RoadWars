@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/add_points"
         android:title="@string/test_add_points"
+        android:visible="false"
         app:showAsAction="never"/>
     <item android:id="@+id/action_start_minigame"
         android:title="@string/minigame"

@@ -57,6 +57,10 @@ public class StreetRankActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actions_rank_test, menu);
+        MenuItem addPointsItem = menu.findItem(R.id.add_points);
+        if (connectionManager != null && connectionManager.user.equals("admin")){
+            addPointsItem.setVisible(true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
