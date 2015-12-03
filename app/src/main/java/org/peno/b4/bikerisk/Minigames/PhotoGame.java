@@ -70,17 +70,16 @@ public class PhotoGame extends Minigame {
 
     @Override
     public void finish(boolean won) {
-
     }
 
     @Override
     public void stop() {
-
+        clearUI();
     }
 
     @Override
     public void onStop() {
-
+        clearUI();
     }
 
     @Override
@@ -95,6 +94,7 @@ public class PhotoGame extends Minigame {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
 
+            //TODO: stop
             //prevent multiple requests to server -> wait unitil response
             waitingForFinish = true;
 
@@ -118,5 +118,12 @@ public class PhotoGame extends Minigame {
         uiObjects.container.setVisibility(View.VISIBLE);
         uiObjects.textView.setText(context.getString(R.string.take_picture_of, currentLocation.getFullName())); //with placeholders: context needed
         uiObjects.container.setBackgroundColor(Color.WHITE);
+    }
+
+    private void clearUI() {
+        if (marker != null)
+            marker.remove();
+        if (circle != null)
+            circle.remove();
     }
 }

@@ -47,11 +47,12 @@ public class StreetRaceGame extends Minigame{
     @Override
     public void stop() {
         connectionManager.stopMinigame(opponent, targetStreet);
+        clearUI();
     }
 
     @Override
     public void onStop() {
-
+        clearUI();
     }
 
     @Override
@@ -71,10 +72,7 @@ public class StreetRaceGame extends Minigame{
 
     @Override
     public void drawUI(MiniGameManager.UIObjects uiObjects) {
-        if (marker != null)
-            marker.remove();
-        if (circle != null)
-            circle.remove();
+        clearUI();
         marker = uiObjects.mMap.addMarker(new MarkerOptions()
                 .title("target")
                 .position(target));
@@ -83,5 +81,12 @@ public class StreetRaceGame extends Minigame{
         uiObjects.container.setVisibility(View.VISIBLE);
         uiObjects.textView.setText(context.getString(R.string.race_to, targetStreet)); //with placeholders: context needed
         uiObjects.container.setBackgroundColor(Color.WHITE);
+    }
+
+    private void clearUI() {
+        if (marker != null)
+            marker.remove();
+        if (circle != null)
+            circle.remove();
     }
 }
