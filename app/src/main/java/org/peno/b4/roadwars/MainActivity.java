@@ -2,8 +2,10 @@ package org.peno.b4.roadwars;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -107,6 +109,16 @@ public class MainActivity extends AppCompatActivity
 
         minigameText = (TextView)findViewById(R.id.minigame_text);
         minigameContainer = findViewById(R.id.minigame_container);
+
+        SharedPreferences prefs = getSharedPreferences("tutorial", Context.MODE_PRIVATE);
+        if (!prefs.getBoolean("shown-tut", false)) {
+            Intent intent = new Intent(this, TutorialActivity.class);
+            startActivity(intent);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("shown-tut", true);
+            editor.apply();
+        }
+
 
     }
 
