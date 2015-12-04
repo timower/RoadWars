@@ -81,7 +81,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
-        Log.d(TAG, "connection lost: " + reason);
+        //Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 
@@ -98,12 +98,12 @@ public class MinigameSelectorActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UserSearchActivity.GET_USER_REQ) {
             if (resultCode == RESULT_OK) {
-                Log.d(TAG, "clicked user, starting minigame:");
+                //Log.d(TAG, "clicked user, starting minigame:");
                 //Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_SHORT).show();
                 opponent = data.getData().getHost();
                 connectionManager.startMinigame(opponent, street);
             } else {
-                Log.d(TAG, "user canceled");
+                //Log.d(TAG, "user canceled");
                 //Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
             }
         }

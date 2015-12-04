@@ -91,7 +91,7 @@ public class StreetRankActivity extends AppCompatActivity
                 // clear layout:
                 setContentView(R.layout.activity_street_rank);
 
-                Log.d(TAG, response.toString());
+                //Log.d(TAG, response.toString());
                 try {
                     JSONArray rank = response.getJSONArray("rank");
                     int length = rank.length();
@@ -148,7 +148,7 @@ public class StreetRankActivity extends AppCompatActivity
                         nRow.addView(pointsView);
                         table.addView(nRow);
 
-                        Log.d(TAG, name);
+                        //Log.d(TAG, name);
                     }
 
                     TextView pText = (TextView)findViewById(R.id.points_text);
@@ -176,7 +176,7 @@ public class StreetRankActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
-        Log.d(TAG, "connection lost: " + reason);
+        //Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 

@@ -392,7 +392,7 @@ public class PositionManager implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("LOC", "accuracy: " + location.getAccuracy() + " gotFirstLocation: " + gotFirstLocation);
+        //Log.d("LOC", "accuracy: " + location.getAccuracy() + " gotFirstLocation: " + gotFirstLocation);
         if (!gotFirstLocation && location.getAccuracy() < Utils.MIN_ACCURACY) {
             gotFirstLocation = true;
             progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
@@ -412,14 +412,15 @@ public class PositionManager implements LocationListener {
 
         // UI code:
         if (UIobjects == null) {
-            Log.d("LOC", "no UIobjects in locationUpdate");
+            //Log.d("LOC", "no UIobjects in locationUpdate");
             return;
         }
-        Log.d("LOC", "showing UI");
+        //Log.d("LOC", "showing UI");
         // convert to km/h
         speed *= Utils.MPS_TO_KMH;
 
         UIobjects.speedText.setText(context.getString(R.string.speed_info, speed)); //TODO: support mph
+        //UIobjects.speedText.setText(context.getString(R.string.speed_info, speed*conversion factor))
         UIobjects.speedText.setTextColor((speed > 10.0f && speed < 45.0f)? Color.GREEN : Color.RED);
 
         drawRoute();

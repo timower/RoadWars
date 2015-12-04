@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
             MiniGameManager.getInstance().setUIObjects(
                     new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
         } else {
-            Log.d(TAG, "wtf??? mMap not ready in resume");
+            //Log.d(TAG, "wtf??? mMap not ready in resume");
         }
     }
 
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     protected void onPause() {
-        Log.d(TAG, "on pause");
+        //Log.d(TAG, "on pause");
         // stop connection with server
         connectionManager.stop();
         if (positionManager != null) {
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
             // we will be destroyed -> kill positionmanager
             positionManager.destroy();
         }
-        Log.d(TAG, "on destroy");
+        //Log.d(TAG, "on destroy");
         super.onDestroy();
     }
 
@@ -285,11 +285,11 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case "add-points":
                 if (result) {
-                    Log.d("POINTS", "saved successfully");
+                    //Log.d("POINTS", "saved successfully");
                     //Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
                     Toast.makeText(this, R.string.added_points, Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d("POINTS", "save failed");
+                    //Log.d("POINTS", "save failed");
                     Toast.makeText(this, getString(R.string.error_points), Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onConnectionLost(String reason) {
-        Log.d(TAG, "connection lost: " + reason);
+        //Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 
@@ -466,18 +466,18 @@ public class MainActivity extends AppCompatActivity
                 if (progressTracker.visible()) {
                     return;
                 }
-                Log.d(TAG, "camera changed");
+                //Log.d(TAG, "camera changed");
                 VisibleRegion reg = mMap.getProjection().getVisibleRegion();
                 LatLngBounds bounds = reg.latLngBounds;
                 float dist = 0;
                 if (lastCameraPos != null) {
                     Point p1 = mMap.getProjection().toScreenLocation(lastCameraPos);
                     dist = p1.x * p1.x + p1.y * p1.y;
-                    Log.d(TAG, "dist: " + dist);
+                    //Log.d(TAG, "dist: " + dist);
                 }
 
                 if (lastCameraPos == null || dist > 700 * 700) {
-                    Log.d(TAG, "getting street");
+                    //Log.d(TAG, "getting street");
                     connectionManager.getAllStreets(bounds);
                     lastCameraPos = bounds.northeast;
                 }
@@ -492,13 +492,13 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onMapLongClick(LatLng latLng) {
-        Log.d(TAG, "long-click on map");
+        //Log.d(TAG, "long-click on map");
         // lookup street and start streetRankActivity:
         if(progressTracker.visible()){
             return;
         }
         String street = Utils.lookupStreet(geocoder, latLng);
-        Log.d(TAG, "get street rank for " + street);
+        //Log.d(TAG, "get street rank for " + street);
         if (street != null) {
             Intent intent = new Intent(this, StreetRankActivity.class);
             intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
@@ -624,7 +624,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void checkLoginClick(View view) {
-        Log.d("PING", "Clicked");
+        //Log.d("PING", "Clicked");
         connectionManager.ping();
     }
 }

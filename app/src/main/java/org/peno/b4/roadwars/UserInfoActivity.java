@@ -96,7 +96,6 @@ public class UserInfoActivity extends AppCompatActivity
                         }
                         TextView totalnumberownedstreets = (TextView) findViewById(R.id.totalnumberownedstreets);
                         totalnumberownedstreets.setText(getString(R.string.integer, response.getInt("n-streets")));
-                        // TODO: Fix layout problem
 
                         View color = findViewById(R.id.user_color_value);
                         color.setBackgroundColor(response.getInt("color"));
@@ -221,7 +220,7 @@ public class UserInfoActivity extends AppCompatActivity
                             nRow.addView(pointsView);
                             table.addView(nRow);
 
-                            Log.d("TEST", street);
+                            //Log.d("TEST", street);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -271,7 +270,7 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
-        Log.d("CON", "connection lost: " + reason);
+        //Log.d("CON", "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 

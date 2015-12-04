@@ -100,11 +100,10 @@ public class PhotoGame extends Minigame {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
 
-            //TODO: stop
             //prevent multiple requests to server -> wait unitil response
             waitingForFinish = true;
 
-            Log.d("Mini", "photo location reached");
+            //Log.d("Mini", "photo location reached");
         }
     }
 

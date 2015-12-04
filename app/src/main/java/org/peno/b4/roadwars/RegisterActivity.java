@@ -68,10 +68,12 @@ public class RegisterActivity extends AppCompatActivity
 
         View color = findViewById(R.id.colorView);
         int colorCode = ((ColorDrawable)color.getBackground()).getColor();
-        // TODO: verify email, user and pass (min length, illegal chars)
+
         if (name.equals("")) {Toast.makeText(this, getString(R.string.fill_name), Toast.LENGTH_SHORT).show();}
         else if (pass.equals("")) {Toast.makeText(this, getString(R.string.fill_pass), Toast.LENGTH_SHORT).show();}
-        else if (email.equals("")) {Toast.makeText(this, getString(R.string.fill_email), Toast.LENGTH_SHORT).show();}
+        else if (email.equals("") || !email.matches("..*@..*\\...*")) {
+            Toast.makeText(this, getString(R.string.fill_email), Toast.LENGTH_SHORT).show();
+        }
         else if (colorCode == Color.rgb(0,0,0)) {Toast.makeText(this, getString(R.string.choose_color), Toast.LENGTH_SHORT).show();}
         else connectionManager.createUser(name, pass, email, colorCode);
               //create account with username, password, email and color
@@ -95,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner.setVisibility(View.VISIBLE);
-        Log.d("REG", "connection lost: " + reason);
+        //Log.d("REG", "connection lost: " + reason);
     }
 
     @Override
@@ -103,8 +105,8 @@ public class RegisterActivity extends AppCompatActivity
         int action = event.getAction();
         if (action == MotionEvent.ACTION_MOVE || action == MotionEvent.ACTION_DOWN){
             float width = imageView.getWidth();
-            Log.d("EV", "X: " + event.getX());
-            Log.d("EV", "width: " + width);
+            //Log.d("EV", "X: " + event.getX());
+            //Log.d("EV", "width: " + width);
             float hue = (event.getX() / width) * 360f;
             //Toast.makeText(this, String.valueOf(hue), Toast.LENGTH_SHORT).show();
             View colorView = findViewById(R.id.colorView);

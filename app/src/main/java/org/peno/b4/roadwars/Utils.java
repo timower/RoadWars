@@ -37,7 +37,7 @@ public class Utils {
                 if (!sub.matches("[0-9]+"))  {  
          */
         for (String sub : orig.split(" ")) {
-            if (!sub.matches("[0-9][0-9]*[a-zA-Z]?-?[0-9]*[a-zA-Z]?")) {
+            if (!sub.matches("[0-9][0-9]*[a-zA-Z]?(-[0-9]*[a-zA-Z])?")) {
                 street += sub + " ";
             }
         }
@@ -63,7 +63,7 @@ public class Utils {
                 e.printStackTrace();
             }
         } else {
-            Log.d("POS", "error, geocoder is null!");
+            //Log.d("POS", "error, geocoder is null!");
         }
         return null;
     }
@@ -79,7 +79,7 @@ public class Utils {
                 e.printStackTrace();
             }
         }else {
-            Log.d("POS", "error, geocoder is null!");
+            //Log.d("POS", "error, geocoder is null!");
         }
         return null;
     }
@@ -123,14 +123,12 @@ public class Utils {
                 switch (req) {
                     case "started-minigame":
                         // response.getString("minigame").equals("race") &&
-                        Log.d("IMP", "started-minigame");
+                        //Log.d("IMP", "started-minigame");
                         if (minigameInstance != null) {
                             //TODO: check result of startRaceGame
                             String street = response.getString("street");
                             minigameInstance.startGame(new StreetRaceGame(minigameInstance.context,
                                     street, response.getString("name")));
-                            //TODO: find better way:
-                            ProgressTracker.getInstance().invalidateOptionsMenu();
                         } else {
                             throw new RuntimeException("what????");
                         }
@@ -144,7 +142,7 @@ public class Utils {
                         minigameInstance.onStop();
                         break;
                     case "stop-minigame":
-                        Log.d("Mini", "successfully stopped minigame");
+                        //Log.d("Mini", "successfully stopped minigame");
                         break;
                 }
             }  catch (JSONException e) {

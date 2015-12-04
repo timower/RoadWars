@@ -74,7 +74,7 @@ public class StreetRaceGame extends Minigame{
             //prevent multiple requests to server -> wait unitil response
             waitingForFinish = true;
 
-            Log.d("Mini", "target reached");
+            //Log.d("Mini", "target reached");
         }
     }
 

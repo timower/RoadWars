@@ -21,7 +21,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="org.peno.b4.roadwars.MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

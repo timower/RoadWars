@@ -32,14 +32,19 @@ public class nfcReceiverActivity extends AppCompatActivity {
             NdefMessage message = (NdefMessage) rawMessages[0]; // only one message transferred
             String data = new String(message.getRecords()[0].getPayload());
             String delen[] = data.split(":");
+            if (delen.length > 1)
+                finish();
             switch (delen[0]) {
                 case Utils.FRIEND_NFC_INTENT:
+                    if (delen.length != 2)
+                        finish();
                     String naam = delen[1];
                     ConnectionManager.getInstance().nfcFriend(naam);
                     Toast.makeText(this, getString(R.string.nfc_friend), Toast.LENGTH_LONG).show();
                     break;
                 case Utils.MINIGAME_NFC_INTENT:
-                    //TODO: check delen length == 3
+                    if (delen.length != 3)
+                        finish();
                     MiniGameManager instance = MiniGameManager.getInstance();
                     instance.startGame(new StreetRaceGame(instance.context, delen[1], delen[2]));
                     break;

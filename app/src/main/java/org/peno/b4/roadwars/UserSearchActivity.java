@@ -104,7 +104,7 @@ public class UserSearchActivity extends AppCompatActivity
                     }
                 }
                 displayArray(filteredUsers);
-                Log.d(TAG, "text changed");
+                //Log.d(TAG, "text changed");
             }
 
             @Override
@@ -183,7 +183,7 @@ public class UserSearchActivity extends AppCompatActivity
                 || req.equals("get-friends") || req.equals("get-online-users")) {
             if (result) {
                 users.clear();
-                Log.d(TAG, response.toString());
+                //Log.d(TAG, response.toString());
                 try {
                     if (req.equals("get-all-users") || req.equals("get-unknown-users")
                             || req.equals("get-online-users")) {
@@ -305,7 +305,7 @@ public class UserSearchActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
-        Log.d("CON", "connection lost: " + reason);
+        //Log.d("CON", "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 

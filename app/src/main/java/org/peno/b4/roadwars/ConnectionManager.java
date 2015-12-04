@@ -125,14 +125,14 @@ public class ConnectionManager {
         socket = null;
         writer = null;
         reader = null;
-        Log.d(TAG, "paused, interrupted thread");
+        //Log.d(TAG, "paused, interrupted thread");
     }
 
     /**
      * start the communication thread.
      */
     public void start() {
-        Log.d("WRITE", "starting thread");
+        //Log.d("WRITE", "starting thread");
         // don't start if we are already running...
         if (commThread == null) {
             commThread = new Thread(new CommunicationClass(Utils.HOST, Utils.PORT));
@@ -273,7 +273,7 @@ public class ConnectionManager {
     }
 
     public void ping() {
-        Log.d("SEND", "PING");
+        //Log.d("SEND", "PING");
         sendRequest("req", "ping");
     }
 
@@ -299,7 +299,7 @@ public class ConnectionManager {
                 writer = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(socket.getOutputStream())));
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                Log.d(TAG, "started comm");
+                //Log.d(TAG, "started comm");
 
                 while(!Thread.currentThread().isInterrupted()) {
                     if (reader == null)
@@ -307,7 +307,7 @@ public class ConnectionManager {
 
                     String line = reader.readLine();
                     if (line != null) {
-                        Log.d("RES", line);
+                        //Log.d("RES", line);
                         try {
                             JSONObject resObj = new JSONObject(line);
                             String req = resObj.getString("req");
@@ -335,7 +335,7 @@ public class ConnectionManager {
             } finally {
                 // clear commthread so we can restart
                 commThread = null;
-                Log.d(TAG, "closing sockets");
+                //Log.d(TAG, "closing sockets");
                 if (socket != null && socket.isConnected()) {
                     try {
                         socket.close();
@@ -346,7 +346,7 @@ public class ConnectionManager {
                 reader = null;
                 writer = null;
                 socket = null;
-                Log.d(TAG, "closed sockets");
+                //Log.d(TAG, "closed sockets");
             }
         }
     }
@@ -376,32 +376,32 @@ public class ConnectionManager {
         private String message;
 
         public WriteClass(String message) {
-            Log.d("WRITE", "write message: " + message);
+            //Log.d("WRITE", "write message: " + message);
             this.message = message;
         }
 
         @Override
         public void run(){
-            Log.d("WRITE", "getting lock");
+            //Log.d("WRITE", "getting lock");
             writeLock.lock();
-            Log.d("WRITE", "got lock");
+            //Log.d("WRITE", "got lock");
             try {
 
                 int time = 100;
                 int tot_time = 0;
                 while (writer == null || socket == null || !socket.isConnected()) {
                     try {
-                        Log.d("WRITE", "starting thread:");
+                        //Log.d("WRITE", "starting thread:");
                         start();
                         Thread.sleep(time);
                         tot_time += time;
                         time *= 2;
-                        Log.d(TAG, "reconnect attempt");
+                        //Log.d(TAG, "reconnect attempt");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     if (tot_time > 2000) {
-                        Log.d(TAG, "connection failed");
+                        //Log.d(TAG, "connection failed");
                         return;
                     }
                 }
