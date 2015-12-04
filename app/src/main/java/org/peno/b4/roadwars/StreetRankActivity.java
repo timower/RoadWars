@@ -179,4 +179,8 @@ public class StreetRankActivity extends AppCompatActivity
         Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
+    }
 }

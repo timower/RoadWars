@@ -132,6 +132,7 @@ public class ConnectionManager {
      * start the communication thread.
      */
     public void start() {
+        Log.d("WRITE", "starting thread");
         // don't start if we are already running...
         if (commThread == null) {
             commThread = new Thread(new CommunicationClass(Utils.HOST, Utils.PORT));
@@ -271,6 +272,11 @@ public class ConnectionManager {
         sendRequest("req", "get-online-users", "key", key, "user", user);
     }
 
+    public void ping() {
+        Log.d("SEND", "PING");
+        sendRequest("req", "ping");
+    }
+
     /**
      * main communication class,
      *  the class starts a connection with the server and listens for responses
@@ -337,6 +343,9 @@ public class ConnectionManager {
                         e.printStackTrace();
                     }
                 }
+                reader = null;
+                writer = null;
+                socket = null;
                 Log.d(TAG, "closed sockets");
             }
         }
@@ -367,19 +376,22 @@ public class ConnectionManager {
         private String message;
 
         public WriteClass(String message) {
-
+            Log.d("WRITE", "write message: " + message);
             this.message = message;
         }
 
         @Override
         public void run(){
+            Log.d("WRITE", "getting lock");
             writeLock.lock();
+            Log.d("WRITE", "got lock");
             try {
 
                 int time = 100;
                 int tot_time = 0;
                 while (writer == null || socket == null || !socket.isConnected()) {
                     try {
+                        Log.d("WRITE", "starting thread:");
                         start();
                         Thread.sleep(time);
                         tot_time += time;
