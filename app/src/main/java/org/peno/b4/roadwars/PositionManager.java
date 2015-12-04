@@ -323,7 +323,11 @@ public class PositionManager implements LocationListener {
     }
 
     public void stop() {
+        if (!started)
+            return;
+
         started = false;
+        MiniGameManager.getInstance().stop();
         try {
             locationManager.removeUpdates(this);
         } catch (SecurityException e) {
@@ -363,8 +367,6 @@ public class PositionManager implements LocationListener {
             routeInfo.routeSpeeds.clear();
             progressTracker.hideProgressBar(ProgressTracker.REASON_GPS);
         }
-
-        MiniGameManager.getInstance().stop();
     }
 
     public void destroy() {

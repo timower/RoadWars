@@ -84,4 +84,8 @@ public class CameraActivity extends AppCompatActivity
         Log.d("CON", "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
+    }
 }

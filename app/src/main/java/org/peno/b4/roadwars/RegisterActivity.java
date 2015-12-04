@@ -32,9 +32,9 @@ public class RegisterActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        imageView = (ImageView)findViewById(R.id.imageView);
+        imageView = (ImageView) findViewById(R.id.imageView);
         imageView.setOnTouchListener(this);
-        connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
+        connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
     }
 
     @Override
@@ -115,5 +115,9 @@ public class RegisterActivity extends AppCompatActivity
             colorView.setBackgroundColor(Color.HSVToColor(HSV));
         }
         return true;
+    }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
     }
 }

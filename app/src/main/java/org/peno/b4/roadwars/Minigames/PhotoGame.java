@@ -79,6 +79,12 @@ public class PhotoGame extends Minigame {
         currentLocation = PhotoLocation.randomLocation();
     }
 
+
+    @Override
+    public boolean start() {
+        return true;
+    }
+
     @Override
     public void finish(boolean won) {
     }

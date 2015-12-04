@@ -57,9 +57,13 @@ public class MiniGameManager {
 
     public boolean startGame(Minigame minigame) {
         if (PositionManager.getInstance().start()) {
-            runningMiniGame = minigame;
-            drawUI();
-            return true;
+            if (minigame.start()) {
+                runningMiniGame = minigame;
+                drawUI();
+                return true;
+            } else {
+                PositionManager.getInstance().stop();
+            }
         }
         return false;
     }

@@ -315,4 +315,8 @@ public class UserSearchActivity extends AppCompatActivity
         NdefRecord ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());
         return new NdefMessage(ndefRecord);
     }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
+    }
 }

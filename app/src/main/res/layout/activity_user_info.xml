@@ -17,7 +17,9 @@
         android:visibility="gone"
         android:id="@+id/connectionLost"
         android:padding="8dp"
-        android:background="#777777" />
+        android:background="#777777"
+        android:clickable="true"
+        android:onClick="pingClick" />
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -106,7 +108,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/color"
+                            android:text="@string/color_profile"
                             android:textSize="25sp"
                             android:paddingRight="8dp"
                             android:paddingLeft="8dp"/>
