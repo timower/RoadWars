@@ -37,7 +37,7 @@ public class Utils {
                 if (!sub.matches("[0-9]+"))  {  
          */
         for (String sub : orig.split(" ")) {
-            if (!sub.matches("[0-9][0-9]*[a-zA-Z]?(-[0-9]*[a-zA-Z])?")) {
+            if (!sub.matches("[0-9][0-9]*[a-zA-Z]?(?:-[0-9][0-9]*[a-zA-Z]?)?")) {
                 street += sub + " ";
             }
         }
