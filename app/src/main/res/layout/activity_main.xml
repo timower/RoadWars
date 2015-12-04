@@ -17,7 +17,9 @@
         android:visibility="gone"
         android:id="@+id/connectionLost"
         android:padding="8dp"
-        android:background="#777777" />
+        android:background="#777777"
+        android:clickable="true"
+        android:onClick="checkLoginClick" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,12 +46,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="25sp"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:layout_marginRight="30dp"
             android:layout_marginEnd="30dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginTop="26dp"
             android:visibility="gone"/>
 
         <RelativeLayout

@@ -165,7 +165,11 @@ public class CameraActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
-        Log.d("CON", "connection lost: " + reason);
+        //Log.d("CON", "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
+    }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
     }
 }

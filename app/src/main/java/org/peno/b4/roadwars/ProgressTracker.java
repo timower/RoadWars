@@ -24,7 +24,7 @@ public class ProgressTracker {
         this.mainActivity = mainActivity;
     }
     public void invalidateOptionsMenu() {
-        mainActivity.invalidateOptionsMenu();;
+        mainActivity.invalidateOptionsMenu();
     }
 
     private static ProgressTracker instance = new ProgressTracker();
@@ -54,7 +54,7 @@ public class ProgressTracker {
     public void updateProgressBar() {
         if (progressBar == null)
             return;
-        Log.d("PROG", "reasons: " + reasons);
+        //Log.d("PROG", "reasons: " + reasons);
         if (reasons == 0)
             progressBar.setVisibility(View.GONE);
         else

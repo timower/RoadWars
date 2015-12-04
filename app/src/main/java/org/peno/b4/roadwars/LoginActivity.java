@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner.setVisibility(View.VISIBLE);
-        Log.d(TAG, "connection lost: " + reason);
+        //Log.d(TAG, "connection lost: " + reason);
     }
 
     @Override
@@ -79,5 +79,10 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
         intent.addCategory(Intent.CATEGORY_HOME);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    public void pingClick(View view) {
+        //Log.d("PING", "Clicked");
+        connectionManager.ping();
     }
 }

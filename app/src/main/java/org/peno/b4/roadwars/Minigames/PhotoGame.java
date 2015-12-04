@@ -13,11 +13,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Random;
-
 import org.peno.b4.roadwars.CameraActivity;
 import org.peno.b4.roadwars.MiniGameManager;
 import org.peno.b4.roadwars.R;
+
+import java.util.Random;
 
 /**
  *
@@ -28,7 +28,18 @@ import org.peno.b4.roadwars.R;
 public class PhotoGame extends Minigame {
     public enum PhotoLocation {
 
-        ARENBERG("Campus Arenberg", 50.865483, 4.679502, 400);
+        ARENBERG("Arenberg Kasteel", 50.863399, 4.678033, 20),
+        SCHOUWBURG("Stadsschouwburg", 50.8796686, 4.7048214, 10),
+        LADEUZE("Ladeuzeplein",50.87816,	4.7071588, 20),
+        KLEINBEGIJNENHOF("Klein Begijnenhof",50.8847899, 4.698877,15),
+        GROOTBEGIJNENHOF("Groot Begijnenhof", 50.8713473,4.696988, 15),
+        KRUIDTUIN("Kruidtuin",50.8778217,	4.6912699, 20),
+        MUSEUMM("Museum-M",50.8783342,4.7049935, 15),
+        SINTPIETERSKERK("Sint-Pieterskerk",50.8792963,4.7003878,25),
+        UNIVERSITEITSHALLEN("Universiteitshallen",50.877886,4.700564,10),
+        STADHUIS("Stadhuis van Leuven",50.8789, 4.7012,15);
+
+
 
 
         private String fullName;
@@ -69,6 +80,11 @@ public class PhotoGame extends Minigame {
     }
 
     @Override
+    public boolean start() {
+        return true;
+    }
+
+    @Override
     public void finish(boolean won) {
     }
 
@@ -94,11 +110,10 @@ public class PhotoGame extends Minigame {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
 
-            //TODO: stop
             //prevent multiple requests to server -> wait unitil response
             waitingForFinish = true;
 
-            Log.d("Mini", "photo location reached");
+            //Log.d("Mini", "photo location reached");
         }
     }
 

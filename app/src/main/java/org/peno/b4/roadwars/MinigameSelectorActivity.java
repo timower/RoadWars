@@ -1,6 +1,7 @@
 package org.peno.b4.roadwars;
 
 import android.content.Intent;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
 import org.peno.b4.roadwars.Minigames.PhotoGame;
@@ -41,6 +44,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
         TextView StreetName = (TextView) findViewById(R.id.street_name_value);
         StreetName.setText(street);
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
+
     }
 
     @Override
@@ -77,7 +81,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
-        Log.d(TAG, "connection lost: " + reason);
+        //Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 
@@ -94,12 +98,12 @@ public class MinigameSelectorActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UserSearchActivity.GET_USER_REQ) {
             if (resultCode == RESULT_OK) {
-                Log.d(TAG, "clicked user, starting minigame:");
+                //Log.d(TAG, "clicked user, starting minigame:");
                 //Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_SHORT).show();
                 opponent = data.getData().getHost();
                 connectionManager.startMinigame(opponent, street);
             } else {
-                Log.d(TAG, "user canceled");
+                //Log.d(TAG, "user canceled");
                 //Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
             }
         }
@@ -124,6 +128,10 @@ public class MinigameSelectorActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
     }
 }
 

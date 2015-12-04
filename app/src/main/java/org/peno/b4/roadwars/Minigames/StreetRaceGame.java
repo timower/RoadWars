@@ -39,6 +39,14 @@ public class StreetRaceGame extends Minigame{
     }
 
     @Override
+    public boolean start() {
+        if (target == null) {
+            target = Utils.getLatLng(geocoder, targetStreet);
+        }
+        return target != null;
+    }
+
+    @Override
     public void finish(boolean won) {
         if (won)
             connectionManager.addPoints(targetStreet, points);
@@ -66,7 +74,7 @@ public class StreetRaceGame extends Minigame{
             //prevent multiple requests to server -> wait unitil response
             waitingForFinish = true;
 
-            Log.d("Mini", "target reached");
+            //Log.d("Mini", "target reached");
         }
     }
 

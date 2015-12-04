@@ -34,7 +34,6 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        infoName = getIntent().getStringExtra(EXTRA_NAME);
         setContentView(R.layout.activity_user_info);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
@@ -43,6 +42,11 @@ public class UserInfoActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
+
+        infoName = getIntent().getStringExtra(EXTRA_NAME);
+        if (infoName == null) {
+            infoName = connectionManager.user;
+        }
 
         if (!infoName.equals(connectionManager.user)) {
             if (getSupportActionBar() != null)
@@ -60,6 +64,10 @@ public class UserInfoActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actions_user_info, menu);
+        MenuItem friends = menu.findItem(R.id.action_my_friends);
+        if (connectionManager.user.equals(infoName)) {
+            friends.setVisible(true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -96,7 +104,6 @@ public class UserInfoActivity extends AppCompatActivity
                         }
                         TextView totalnumberownedstreets = (TextView) findViewById(R.id.totalnumberownedstreets);
                         totalnumberownedstreets.setText(getString(R.string.integer, response.getInt("n-streets")));
-                        // TODO: Fix layout problem
 
                         View color = findViewById(R.id.user_color_value);
                         color.setBackgroundColor(response.getInt("color"));
@@ -221,7 +228,7 @@ public class UserInfoActivity extends AppCompatActivity
                             nRow.addView(pointsView);
                             table.addView(nRow);
 
-                            Log.d("TEST", street);
+                            //Log.d("TEST", street);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -271,7 +278,11 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     public void onConnectionLost(String reason) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
-        Log.d("CON", "connection lost: " + reason);
+        //Log.d("CON", "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
+    }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
     }
 }

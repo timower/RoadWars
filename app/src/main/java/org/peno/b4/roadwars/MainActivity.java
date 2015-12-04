@@ -2,8 +2,10 @@ package org.peno.b4.roadwars;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -104,8 +106,19 @@ public class MainActivity extends AppCompatActivity
         speedText = (TextView)findViewById(R.id.speed_text);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
 
+
         minigameText = (TextView)findViewById(R.id.minigame_text);
         minigameContainer = findViewById(R.id.minigame_container);
+
+        SharedPreferences prefs = getSharedPreferences("tutorial", Context.MODE_PRIVATE);
+        if (!prefs.getBoolean("shown-tut", false)) {
+            Intent intent = new Intent(this, TutorialActivity.class);
+            startActivity(intent);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("shown-tut", true);
+            editor.apply();
+        }
+
 
     }
 
@@ -140,7 +153,7 @@ public class MainActivity extends AppCompatActivity
             MiniGameManager.getInstance().setUIObjects(
                     new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
         } else {
-            Log.d(TAG, "wtf??? mMap not ready in resume");
+            //Log.d(TAG, "wtf??? mMap not ready in resume");
         }
     }
 
@@ -148,7 +161,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     protected void onPause() {
-        Log.d(TAG, "on pause");
+        //Log.d(TAG, "on pause");
         // stop connection with server
         connectionManager.stop();
         if (positionManager != null) {
@@ -185,7 +198,7 @@ public class MainActivity extends AppCompatActivity
             // we will be destroyed -> kill positionmanager
             positionManager.destroy();
         }
-        Log.d(TAG, "on destroy");
+        //Log.d(TAG, "on destroy");
         super.onDestroy();
     }
 
@@ -284,11 +297,11 @@ public class MainActivity extends AppCompatActivity
                 return true;
             case "add-points":
                 if (result) {
-                    Log.d("POINTS", "saved successfully");
+                    //Log.d("POINTS", "saved successfully");
                     //Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
                     Toast.makeText(this, R.string.added_points, Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.d("POINTS", "save failed");
+                    //Log.d("POINTS", "save failed");
                     Toast.makeText(this, getString(R.string.error_points), Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -316,7 +329,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onConnectionLost(String reason) {
-        Log.d(TAG, "connection lost: " + reason);
+        //Log.d(TAG, "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
 
@@ -376,6 +389,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_about:
                 Intent about = new Intent(this, AboutActivity.class);
                 startActivity(about);
+                return super.onOptionsItemSelected(item);
+            case R.id.action_tutorial:
+                Intent tutorial = new Intent(this,TutorialActivity.class);
+                startActivity(tutorial);
                 return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
                     if (!positionManager.started) {
@@ -461,18 +478,18 @@ public class MainActivity extends AppCompatActivity
                 if (progressTracker.visible()) {
                     return;
                 }
-                Log.d(TAG, "camera changed");
+                //Log.d(TAG, "camera changed");
                 VisibleRegion reg = mMap.getProjection().getVisibleRegion();
                 LatLngBounds bounds = reg.latLngBounds;
                 float dist = 0;
                 if (lastCameraPos != null) {
                     Point p1 = mMap.getProjection().toScreenLocation(lastCameraPos);
                     dist = p1.x * p1.x + p1.y * p1.y;
-                    Log.d(TAG, "dist: " + dist);
+                    //Log.d(TAG, "dist: " + dist);
                 }
 
                 if (lastCameraPos == null || dist > 700 * 700) {
-                    Log.d(TAG, "getting street");
+                    //Log.d(TAG, "getting street");
                     connectionManager.getAllStreets(bounds);
                     lastCameraPos = bounds.northeast;
                 }
@@ -487,13 +504,13 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onMapLongClick(LatLng latLng) {
-        Log.d(TAG, "long-click on map");
+        //Log.d(TAG, "long-click on map");
         // lookup street and start streetRankActivity:
         if(progressTracker.visible()){
             return;
         }
         String street = Utils.lookupStreet(geocoder, latLng);
-        Log.d(TAG, "get street rank for " + street);
+        //Log.d(TAG, "get street rank for " + street);
         if (street != null) {
             Intent intent = new Intent(this, StreetRankActivity.class);
             intent.putExtra(StreetRankActivity.EXTRA_STREET, street);
@@ -616,5 +633,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         finishAffinity();
+    }
+
+    public void checkLoginClick(View view) {
+        //Log.d("PING", "Clicked");
+        connectionManager.ping();
     }
 }

@@ -12,7 +12,7 @@ import org.peno.b4.roadwars.Minigames.Minigame;
 import org.peno.b4.roadwars.Minigames.UIGame;
 
 /**
- * TODO: what if connection is lost or something??
+ *
  */
 public class MiniGameManager {
 
@@ -57,9 +57,15 @@ public class MiniGameManager {
 
     public boolean startGame(Minigame minigame) {
         if (PositionManager.getInstance().start()) {
-            runningMiniGame = minigame;
-            drawUI();
-            return true;
+            if (minigame.start()) {
+                runningMiniGame = minigame;
+                drawUI();
+                //TODO: find better way:
+                ProgressTracker.getInstance().invalidateOptionsMenu();
+                return true;
+            } else {
+                PositionManager.getInstance().stop();
+            }
         }
         return false;
     }

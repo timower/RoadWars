@@ -17,7 +17,9 @@
         android:visibility="gone"
         android:id="@+id/connectionLost"
         android:padding="8dp"
-        android:background="#777777" />
+        android:background="#777777"
+        android:clickable="true"
+        android:onClick="pingClick" />
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -65,7 +67,7 @@
                         android:id="@+id/email_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -79,7 +81,11 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/user_email_value"
                             android:textSize="25sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:paddingRight="8dp"
+                            android:paddingEnd="8dp"
+                            android:paddingLeft="32dp"
+                            android:paddingStart="32dp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -106,7 +112,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/color"
+                            android:text="@string/color_profile"
                             android:textSize="25sp"
                             android:paddingRight="8dp"
                             android:paddingLeft="8dp"/>

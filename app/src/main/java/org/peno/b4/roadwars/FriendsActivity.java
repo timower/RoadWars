@@ -95,7 +95,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
             if (result) {
                 try {
                     JSONArray friends = response.getJSONArray("friends");
-                    Log.d("FRIENDS", friends.toString());
+                    //Log.d("FRIENDS", friends.toString());
                     int length = friends.length();
 
                     TableLayout table = (TableLayout)findViewById(R.id.friends_list);
@@ -105,7 +105,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         final String name = sub.getString(0);
                         final int userHSV = sub.getInt(1);
 
-                        Log.d("tag", "for-loop started" + name);
+                        //Log.d("tag", "for-loop started" + name);
 
                         TableRow nRow = new TableRow(this);
                         nRow.setLayoutParams(tableParams);
@@ -146,7 +146,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         nRow.addView(remove);
 
                         table.addView(nRow);
-                        Log.d("TABLE", "added row to table");
+                        //Log.d("TABLE", "added row to table");
                     }
                 }catch (JSONException e) {
                     e.printStackTrace();
@@ -246,5 +246,10 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
     public void onConnectionLost(String reason) {
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.VISIBLE);
+    }
+
+    public void pingClick(View view) {
+        //Log.d("PING", "Clicked");
+        connectionManager.ping();
     }
 }
