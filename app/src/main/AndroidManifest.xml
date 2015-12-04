@@ -29,9 +29,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:launchMode="singleTop"
+            android:name=".LoginActivity"
             android:label="@string/login"
-            android:name="org.peno.b4.roadwars.LoginActivity">
+            android:launchMode="singleTop" >
         </activity>
 
         <!--
@@ -47,45 +47,46 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="org.peno.b4.roadwars.UserInfoActivity"
-            android:label="@string/user_info">
+            android:name=".UserInfoActivity"
+            android:label="@string/user_info" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
         <activity
-            android:label="@string/create_user"
-            android:name="org.peno.b4.roadwars.RegisterActivity">
-
+            android:name=".RegisterActivity"
+            android:label="@string/create_user" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.LoginActivity" />
         </activity>
-        <activity
-            android:name="org.peno.b4.roadwars.StreetRankActivity">
-
+        <activity android:name=".StreetRankActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
         <activity
-            android:name="org.peno.b4.roadwars.MinigameSelectorActivity"
-            android:label="@string/minigame">
+            android:name=".MinigameSelectorActivity"
+            android:label="@string/minigame" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.StreetRankActivity" />
         </activity>
         <activity
-            android:label="@string/search"
-            android:name="org.peno.b4.roadwars.UserSearchActivity">
+            android:name=".UserSearchActivity"
+            android:label="@string/search" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MinigameSelectorActivity" />
         </activity>
         <activity
-            android:label="@string/friends"
-            android:name="org.peno.b4.roadwars.FriendsActivity" />
-        <activity android:name="org.peno.b4.roadwars.nfcReceiverActivity">
+            android:name=".FriendsActivity"
+            android:label="@string/friends">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value ="org.peno.b4.roadwars.UserInfoActivity" />
+        </activity>
+        <activity android:name=".nfcReceiverActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
@@ -94,13 +95,16 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name="org.peno.b4.roadwars.AboutActivity">
+        <activity android:name=".AboutActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
-        <activity android:name="org.peno.b4.roadwars.CameraActivity"/>
-
+        <activity android:name=".CameraActivity" />
+        <activity
+            android:name=".TutorialActivity"
+            android:label="@string/Tutorial" >
+        </activity>
     </application>
 
 </manifest>
