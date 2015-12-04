@@ -106,7 +106,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/color"
+                            android:text="@string/color_profile"
                             android:textSize="25sp"
                             android:paddingRight="8dp"
                             android:paddingLeft="8dp"/>
