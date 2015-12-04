@@ -1,6 +1,7 @@
 package org.peno.b4.roadwars;
 
 import android.content.Intent;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
 import org.peno.b4.roadwars.Minigames.PhotoGame;
@@ -41,6 +44,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
         TextView StreetName = (TextView) findViewById(R.id.street_name_value);
         StreetName.setText(street);
         connectionLostBanner = (TextView) findViewById(R.id.connectionLost);
+
     }
 
     @Override
@@ -124,6 +128,10 @@ public class MinigameSelectorActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
     }
 }
 

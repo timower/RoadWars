@@ -17,7 +17,9 @@
         android:visibility="gone"
         android:id="@+id/connectionLost"
         android:padding="8dp"
-        android:background="#777777" />
+        android:background="#777777"
+        android:clickable="true"
+        android:onClick="pingClick" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

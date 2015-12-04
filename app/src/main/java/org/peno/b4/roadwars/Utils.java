@@ -126,8 +126,9 @@ public class Utils {
                         Log.d("IMP", "started-minigame");
                         if (minigameInstance != null) {
                             //TODO: check result of startRaceGame
+                            String street = response.getString("street");
                             minigameInstance.startGame(new StreetRaceGame(minigameInstance.context,
-                                    response.getString("street"), response.getString("name")));
+                                    street, response.getString("name")));
                             //TODO: find better way:
                             ProgressTracker.getInstance().invalidateOptionsMenu();
                         } else {

@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity
         speedText = (TextView)findViewById(R.id.speed_text);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
 
+
         minigameText = (TextView)findViewById(R.id.minigame_text);
         minigameContainer = findViewById(R.id.minigame_container);
 
@@ -377,6 +378,10 @@ public class MainActivity extends AppCompatActivity
                 Intent about = new Intent(this, AboutActivity.class);
                 startActivity(about);
                 return super.onOptionsItemSelected(item);
+            case R.id.action_tutorial:
+                Intent tutorial = new Intent(this,TutorialActivity.class);
+                startActivity(tutorial);
+                return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
                     if (!positionManager.started) {
                         //we have to control each time that the button is clicked if gps is activated
@@ -620,5 +625,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         finishAffinity();
+    }
+
+    public void checkLoginClick(View view) {
+        Log.d("PING", "Clicked");
+        connectionManager.ping();
     }
 }

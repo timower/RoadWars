@@ -1,12 +1,15 @@
 package org.peno.b4.roadwars;
 
 import android.content.Intent;
+import android.location.Geocoder;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.peno.b4.roadwars.Minigames.StreetRaceGame;
 

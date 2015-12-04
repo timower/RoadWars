@@ -282,4 +282,8 @@ public class UserInfoActivity extends AppCompatActivity
         Log.d("CON", "connection lost: " + reason);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
+
+    public void pingClick(View view) {
+        connectionManager.ping();
+    }
 }

@@ -13,14 +13,17 @@
         android:title="@string/userlist"
         android:icon="@drawable/ic_group_white_24dp"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_picture"
+        android:title="@string/take_picture"
+        android:icon="@drawable/ic_group_white_24dp"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_tutorial"
+        android:title="@string/Tutorial"
+        app:showAsAction="never" />
     <item android:id="@+id/action_about"
         android:title="@string/about"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/action_logout"
         android:title="@string/logout"
         app:showAsAction="never" />
-    <item android:id="@+id/action_picture"
-        android:title="@string/take_picture"
-        android:icon="@drawable/ic_group_white_24dp"
-        app:showAsAction="ifRoom" />
 </menu>
