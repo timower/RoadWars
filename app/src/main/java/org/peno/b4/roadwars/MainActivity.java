@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity
         speedText = (TextView)findViewById(R.id.speed_text);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
 
+
         minigameText = (TextView)findViewById(R.id.minigame_text);
         minigameContainer = findViewById(R.id.minigame_container);
 
@@ -620,5 +621,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         finishAffinity();
+    }
+
+    public void checkLoginClick(View view) {
+        Log.d("PING", "Clicked");
+        connectionManager.ping();
     }
 }

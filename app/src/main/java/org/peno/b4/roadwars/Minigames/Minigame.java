@@ -21,6 +21,8 @@ public abstract class Minigame {
     protected ConnectionManager connectionManager;
 
     public Minigame(Context context, String name, int points) {
+        this.fullName = name;
+        this.points = points;
         this.context = context.getApplicationContext();
         geocoder = new Geocoder(this.context);
         this.connectionManager = ConnectionManager.getInstance();
@@ -34,6 +36,7 @@ public abstract class Minigame {
         return points;
     }
 
+    public abstract boolean start();
     public abstract void finish(boolean won);
     public abstract void stop();
     public abstract void onStop();

@@ -39,6 +39,14 @@ public class StreetRaceGame extends Minigame{
     }
 
     @Override
+    public boolean start() {
+        if (target == null) {
+            target = Utils.getLatLng(geocoder, targetStreet);
+        }
+        return target != null;
+    }
+
+    @Override
     public void finish(boolean won) {
         if (won)
             connectionManager.addPoints(targetStreet, points);

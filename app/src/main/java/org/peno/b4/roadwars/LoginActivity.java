@@ -80,4 +80,9 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
+
+    public void pingClick(View view) {
+        Log.d("PING", "Clicked");
+        connectionManager.ping();
+    }
 }

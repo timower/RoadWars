@@ -247,4 +247,9 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
         connectionLostBanner.setVisibility(View.VISIBLE);
     }
+
+    public void pingClick(View view) {
+        Log.d("PING", "Clicked");
+        connectionManager.ping();
+    }
 }
