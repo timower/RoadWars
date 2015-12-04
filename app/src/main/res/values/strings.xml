@@ -132,5 +132,6 @@
     <string name="ranking_tutorial_extra">A short click on a claimed road will give you the owners name. A long click will give you the full rank. You can touch the user and go directly to his profil page. And maybe become friends?</string>
     <string name="minigames_tutorial">Play Minigames!</string>
     <string name="minigames_tutorial_extra">On the long click on a street, you will get in the right corner the opportunity to play some awesome minigames to earn some more points, alone or with friends. The competition awaits!</string>
+    <string name="tutorial_button">Join the war!</string>
 
 </resources>
