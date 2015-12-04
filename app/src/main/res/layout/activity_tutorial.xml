@@ -47,7 +47,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="100dp"
-                    android:src="@mipmap/ic_launchergroot"
+                    android:src="@drawable/icon_large"
                     android:scaleType="fitXY"
                     android:adjustViewBounds="true"
                     android:layout_marginTop="10dp"

@@ -81,7 +81,7 @@
     <string name="test_add_points">Voeg 5 punten toe</string>
     <string name="title_activity_maps">Kaart</string>
     <string name="title_activity_minigame">Minigame</string>
-    <string name="totalnumberownedstreets">Aantal veroverde straten:</string>
+    <string name="totalnumberownedstreets"># veroverde straten:</string>
     <string name="user_info">Gebruikersinformatie</string>
     <string name="user_name">Gebruikersnaam:</string>
     <string name="userlist">Zoek gebruikers</string>
