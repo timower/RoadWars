@@ -62,7 +62,7 @@
     <string name="points">Points</string>
     <string name="test_add_points">Add 5 Points</string>
     <string name="rank_number">Rank</string>
-    <string name="totalnumberownedstreets">Number owned streets: </string>
+    <string name="totalnumberownedstreets"># streets owned: </string>
     <string name="error_info">Error getting info</string>
 
     <!-- MinigameSelectorActivity -->

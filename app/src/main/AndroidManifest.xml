@@ -84,7 +84,11 @@
         </activity>
         <activity
             android:label="@string/friends"
-            android:name="org.peno.b4.roadwars.FriendsActivity" />
+            android:name="org.peno.b4.roadwars.FriendsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value ="org.peno.b4.roadwars.UserInfoActivity" />
+        </activity>
         <activity android:name="org.peno.b4.roadwars.nfcReceiverActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />

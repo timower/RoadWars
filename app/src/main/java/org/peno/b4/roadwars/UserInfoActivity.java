@@ -34,7 +34,6 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        infoName = getIntent().getStringExtra(EXTRA_NAME);
         setContentView(R.layout.activity_user_info);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
     }
@@ -43,6 +42,11 @@ public class UserInfoActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
+
+        infoName = getIntent().getStringExtra(EXTRA_NAME);
+        if (infoName == null) {
+            infoName = connectionManager.user;
+        }
 
         if (!infoName.equals(connectionManager.user)) {
             if (getSupportActionBar() != null)
@@ -60,6 +64,10 @@ public class UserInfoActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actions_user_info, menu);
+        MenuItem friends = menu.findItem(R.id.action_my_friends);
+        if (connectionManager.user.equals(infoName)) {
+            friends.setVisible(true);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
