@@ -1,7 +1,13 @@
 package org.peno.b4.roadwars;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,49 +16,78 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.json.JSONObject;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class CameraActivity extends AppCompatActivity
-        implements ConnectionManager.ResponseListener {
+        implements ConnectionManager.ResponseListener, SensorEventListener {
+
+    public static final String EXTRA_TARGETLAT  = "org.peno.b4.roadwars.targetlat";
+    public static final String EXTRA_TARGETLONG  = "org.peno.b4.roadwars.targetlong";
 
     private ConnectionManager connectionManager;
     private TextView connectionLostBanner;
 
-    Button b1;
-    ImageView iv;
+    private SensorManager sensorManager;
+    private Sensor orientation;
+
+    private LatLng target;
+
+    Button cameraButton;
+    ImageView CapturedImage;
+
+    private TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        Intent intent = getIntent();
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
 
-        b1 = (Button) findViewById(R.id.camerabutton);
-        iv = (ImageView) findViewById(R.id.imageView);
+        cameraButton = (Button) findViewById(R.id.camerabutton);
+        CapturedImage = (ImageView) findViewById(R.id.imageView);
 
-        b1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 0);
-            }
-        });
+        target = new LatLng(intent.getDoubleExtra(EXTRA_TARGETLAT, 0),
+                intent.getDoubleExtra(EXTRA_TARGETLONG, 0));
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        orientation = sensorManager.getDefaultSensor(orientation.TYPE_ORIENTATION);
+
+        tv = (TextView) findViewById(R.id.textView3);
+
+
+            cameraButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, 0);
+                }
+            });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
+        sensorManager.registerListener(this, orientation, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-        iv.setImageBitmap(bitmap);
+        CapturedImage.setImageBitmap(bitmap);
         FileOutputStream out = null;
         //TODO: just send tumbnail -> less storage and bandwidth
         // compress bitmap to byteArray -> encode in base64 -> send to server
@@ -73,6 +108,55 @@ public class CameraActivity extends AppCompatActivity
             }
         }
     }
+
+    @Override
+    public final void onAccuracyChanged(Sensor orientation, int accuracy) {
+    }
+
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        LatLng position = PositionManager.getInstance().getLastPosition();
+        if (position == null)
+            return;
+
+        double latPosition = position.latitude;
+        double longPosition = position.longitude;
+        double latTarget = target.latitude;
+        double longTarget = target.longitude;
+
+        float result[] = new float[2];
+
+        Location.distanceBetween(latPosition, longPosition, latTarget, longTarget, result);
+        double target_angle = result[1] + 180;
+        double position_angle = event.values[0];
+        double angle_difference = Math.abs(target_angle - position_angle);
+        angle_difference = (angle_difference + 180) % 360 - 180;
+        tv.setText(target_angle + "\n" + position_angle +"\n" + angle_difference );
+
+        if (Math.abs(angle_difference) < 30) {
+            cameraButton.setVisibility(View.VISIBLE);
+        } else {
+            cameraButton.setVisibility(View.GONE);
+        }
+    }
+
+//    private double angleFromCoordinate(double lat1, double long1, double lat2,
+//                                       double long2) {
+//
+//        double dLon = (long2 - long1);
+//
+//        double y = Math.sin(dLon) * Math.cos(lat2);
+//        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
+//                * Math.cos(lat2) * Math.cos(dLon);
+//
+//        double brng = Math.atan2(y, x);
+//
+//        brng = Math.toDegrees(brng);
+//        brng = (brng + 360) % 360;
+//        brng = 360 - brng;
+//
+//        return brng;
+//    }
 
     public boolean onResponse(String req, Boolean result, JSONObject response) {
         return false;

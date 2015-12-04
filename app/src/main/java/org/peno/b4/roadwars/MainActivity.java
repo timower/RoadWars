@@ -408,10 +408,6 @@ public class MainActivity extends AppCompatActivity
                 userList.putExtra(UserSearchActivity.EXTRA_ALL_USERS, true);
                 startActivityForResult(userList, UserSearchActivity.GET_USER_REQ);
                 return super.onOptionsItemSelected(item);
-            case R.id.action_picture:
-                Intent takePicture = new Intent(this, CameraActivity.class);
-                startActivity(takePicture);
-                return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
         }

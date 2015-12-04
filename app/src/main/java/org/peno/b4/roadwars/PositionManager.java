@@ -111,6 +111,8 @@ public class PositionManager implements LocationListener {
     private boolean gotFirstLocation = false;
     private boolean canStart = true;
 
+    private LatLng lastPosition;
+
     private class SnapToRoadTask extends AsyncTask<Void, Void, PolylineOptions> {
         @Override
         protected PolylineOptions doInBackground(Void... params) {
@@ -388,6 +390,10 @@ public class PositionManager implements LocationListener {
         this.connectionManager = null;
     }
 
+    public LatLng getLastPosition() {
+        return lastPosition;
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         Log.d("LOC", "accuracy: " + location.getAccuracy() + " gotFirstLocation: " + gotFirstLocation);
@@ -398,6 +404,8 @@ public class PositionManager implements LocationListener {
         if (!gotFirstLocation){
             return;
         }
+
+        lastPosition = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (minigameManager != null)
             minigameManager.onLocationChanged(location);

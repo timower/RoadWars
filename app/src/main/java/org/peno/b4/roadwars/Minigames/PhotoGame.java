@@ -28,7 +28,7 @@ import org.peno.b4.roadwars.R;
 public class PhotoGame extends Minigame {
     public enum PhotoLocation {
 
-        ARENBERG("Campus Arenberg", 50.863399, 4.678033, 20);
+        ARENBERG("Campus Arenberg", 50.865483, 4.679502, 400);
 
 
         private String fullName;

@@ -54,7 +54,8 @@
             android:layout_alignRight="@+id/takePicture"
             android:layout_alignEnd="@+id/takePicture"
             android:layout_marginTop="20dp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary"
+            android:visibility="gone" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -66,6 +67,14 @@
             android:layout_below="@+id/camerabutton"
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/icon" />
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3"
+            android:layout_below="@id/imageView"
+            android:layout_centerHorizontal="true"
+            android:textColor="#ff7aff24"
+            android:textSize="35sp" />
 
     </RelativeLayout>
 </LinearLayout>
