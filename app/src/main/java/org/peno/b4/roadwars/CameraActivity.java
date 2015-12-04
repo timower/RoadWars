@@ -8,7 +8,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,14 +23,19 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CameraActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, SensorEventListener {
 
     public static final String EXTRA_TARGETLAT  = "org.peno.b4.roadwars.targetlat";
     public static final String EXTRA_TARGETLONG  = "org.peno.b4.roadwars.targetlong";
+
+    public static final int REQUEST_PICTURE = 1;
 
     private ConnectionManager connectionManager;
     private TextView connectionLostBanner;
@@ -41,6 +49,25 @@ public class CameraActivity extends AppCompatActivity
     ImageView CapturedImage;
 
     private TextView tv;
+
+    String mCurrentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_RoadWars_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,18 +83,35 @@ public class CameraActivity extends AppCompatActivity
                 intent.getDoubleExtra(EXTRA_TARGETLONG, 0));
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        orientation = sensorManager.getDefaultSensor(orientation.TYPE_ORIENTATION);
+        orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
         tv = (TextView) findViewById(R.id.textView3);
 
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MiniGameManager.getInstance().finish(true);
 
-            cameraButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, 0);
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                        throw new RuntimeException("error saving file");
+                    }
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                                Uri.fromFile(photoFile));
+                        startActivityForResult(takePictureIntent, REQUEST_PICTURE);
+                    }
                 }
-            });
+            }
+        });
     }
 
     @Override
@@ -85,6 +129,7 @@ public class CameraActivity extends AppCompatActivity
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
 
         Bitmap bitmap = (Bitmap) data.getExtras().get("data");
         CapturedImage.setImageBitmap(bitmap);
@@ -171,5 +216,11 @@ public class CameraActivity extends AppCompatActivity
 
     public void pingClick(View view) {
         connectionManager.ping();
+    }
+
+    @Override
+    public void onBackPressed() {
+        MiniGameManager.getInstance().finish(false);
+        super.onBackPressed();
     }
 }
