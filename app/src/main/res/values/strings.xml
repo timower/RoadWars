@@ -12,8 +12,9 @@
     <!-- RegisterActivity -->
     <string name="register">Register</string>
     <string name="user_name">Username:</string>
-    <string name="email">e-mail:</string>
+    <string name="email">E-mail:</string>
     <string name="color">Color</string>
+    <string name="color_profile">Color:</string>
     <string name="username">Username</string>
     <string name="email_address">Email address</string>
     <string name="choose_a_color">Choose a color: </string>
