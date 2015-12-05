@@ -126,13 +126,13 @@
     <string name="welcome_tutorial">Welcome to RoadWars!</string>
     <string name="welcome_tutorial_extra">This quick tutorial will guide you through the main features of this app.</string>
     <string name="start_tutorial">Start your first game!</string>
-    <string name="start_tutorial_extra">Push the start button. Ride the bike. You will get points dependend of your speed and time spend in the street. Be sure your speed is between 5km/h and 45 km/h. Collect your points afterward by pressing the stop button.</string>
+    <string name="start_tutorial_extra">Push the start button. Ride the bike. You will get points depending on your speed and time spent in the street. Be sure your speed is between 10km/h and 45 km/h. Collect your points afterwards by pressing the stop button.</string>
     <string name="friends_tutorial">Make Friends!</string>
-    <string name="friends_tutorial_extra">Open your profil information. Then hit the friends button in the right corner. There you will see your friends! Make new ones by hitting the add friend buton. You can do it directly by NFC or just send a request!</string>
+    <string name="friends_tutorial_extra">Open your profile information. Then hit the friends button in the right corner. There you will see your friends! Make new ones by hitting the add friend button. You can do it directly by NFC or just send a request!</string>
     <string name="ranking_tutorial">See your ranking!</string>
-    <string name="ranking_tutorial_extra">A short click on a claimed road will give you the owners name. A long click will give you the full rank. You can touch the user and go directly to his profil page. And maybe become friends?</string>
+    <string name="ranking_tutorial_extra">A short click on a claimed road will give you the owners name. A long click will give you the full rank. You can touch the user and go directly to his profile page. And maybe become friends?</string>
     <string name="minigames_tutorial">Play Minigames!</string>
-    <string name="minigames_tutorial_extra">On the long click on a street, you will get in the right corner the opportunity to play some awesome minigames to earn some more points, alone or with friends. The competition awaits!</string>
+    <string name="minigames_tutorial_extra">At the ranking page of a street, you will get in the right corner the opportunity to play some awesome minigames to earn more points, alone or with friends. The competition awaits!</string>
     <string name="tutorial_button">Join the war!</string>
 
 </resources>
