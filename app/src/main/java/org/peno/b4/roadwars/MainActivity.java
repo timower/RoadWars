@@ -637,6 +637,6 @@ public class MainActivity extends AppCompatActivity
 
     public void checkLoginClick(View view) {
         //Log.d("PING", "Clicked");
-        connectionManager.ping();
+        connectionManager.checkLogin();
     }
 }
