@@ -2,7 +2,6 @@ package org.peno.b4.roadwars;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -11,11 +10,10 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +22,10 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, SensorEventListener {
@@ -45,17 +43,14 @@ public class CameraActivity extends AppCompatActivity
 
     private LatLng target;
 
-    Button cameraButton;
-    ImageView CapturedImage;
-
-    private TextView tv;
+    ImageView capturedImage;
 
     String mCurrentPhotoPath;
 
     private File createImageFile() throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_RoadWars_" + timeStamp + "_";
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "RoadWars_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -76,8 +71,8 @@ public class CameraActivity extends AppCompatActivity
         Intent intent = getIntent();
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
 
-        cameraButton = (Button) findViewById(R.id.camerabutton);
-        CapturedImage = (ImageView) findViewById(R.id.imageView);
+        //cameraButton = (Button) findViewById(R.id.camerabutton);
+        capturedImage = (ImageView) findViewById(R.id.imageView);
 
         target = new LatLng(intent.getDoubleExtra(EXTRA_TARGETLAT, 0),
                 intent.getDoubleExtra(EXTRA_TARGETLONG, 0));
@@ -85,18 +80,15 @@ public class CameraActivity extends AppCompatActivity
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
-        tv = (TextView) findViewById(R.id.textView3);
-
-        cameraButton.setOnClickListener(new View.OnClickListener() {
+        capturedImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MiniGameManager.getInstance().finish(true);
 
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 // Ensure that there's a camera activity to handle the intent
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     // Create the File where the photo should go
-                    File photoFile = null;
+                    File photoFile;
                     try {
                         photoFile = createImageFile();
                     } catch (IOException ex) {
@@ -112,6 +104,9 @@ public class CameraActivity extends AppCompatActivity
                 }
             }
         });
+
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(500);
     }
 
     @Override
@@ -129,29 +124,12 @@ public class CameraActivity extends AppCompatActivity
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
-        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-        CapturedImage.setImageBitmap(bitmap);
-        FileOutputStream out = null;
-        //TODO: just send tumbnail -> less storage and bandwidth
-        // compress bitmap to byteArray -> encode in base64 -> send to server
-        try {
-            out = new FileOutputStream("RoadWarsPicture");
-            if (bitmap != null  )
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (resultCode == RESULT_OK) {
+            MiniGameManager.getInstance().finish(true);
+        } else {
+            MiniGameManager.getInstance().finish(false);
         }
+        finish();
     }
 
     @Override
@@ -171,17 +149,16 @@ public class CameraActivity extends AppCompatActivity
 
         float result[] = new float[2];
 
-        Location.distanceBetween(latPosition, longPosition, latTarget, longTarget, result);
+        Location.distanceBetween(latTarget, longTarget, latPosition, longPosition, result);
         double target_angle = result[1] + 180;
         double position_angle = event.values[0];
         double angle_difference = Math.abs(target_angle - position_angle);
         angle_difference = (angle_difference + 180) % 360 - 180;
-        tv.setText(target_angle + "\n" + position_angle +"\n" + angle_difference );
 
-        if (Math.abs(angle_difference) < 30) {
-            cameraButton.setVisibility(View.VISIBLE);
+        if (Math.abs(angle_difference) < Utils.PICTURE_RADIUS) {
+            capturedImage.setVisibility(View.VISIBLE);
         } else {
-            cameraButton.setVisibility(View.GONE);
+            capturedImage.setVisibility(View.GONE);
         }
     }
 

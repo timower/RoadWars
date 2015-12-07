@@ -3,6 +3,7 @@ package org.peno.b4.roadwars.Minigames;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 
@@ -50,6 +51,7 @@ public class StreetRaceGame extends Minigame{
     public void finish(boolean won) {
         if (won)
             connectionManager.addPoints(targetStreet, points);
+        clearUI();
     }
 
     @Override
@@ -66,9 +68,10 @@ public class StreetRaceGame extends Minigame{
     @Override
     public void onLocationChanged(Location location) {
         float[] distance = new float[3];
-        Location.distanceBetween(location.getLatitude(),location.getLongitude(),
-                this.target.latitude, this.target.longitude,distance);
+        Location.distanceBetween(location.getLatitude(), location.getLongitude(),
+                this.target.latitude, this.target.longitude, distance);
         if (distance[0] < 10 && !waitingForFinish){
+            vibrate();
             connectionManager.finishMinigame(this.opponent, targetStreet);
 
             //prevent multiple requests to server -> wait unitil response
@@ -76,6 +79,11 @@ public class StreetRaceGame extends Minigame{
 
             //Log.d("Mini", "target reached");
         }
+    }
+
+    private void vibrate() {
+        Vibrator vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(500);
     }
 
     @Override

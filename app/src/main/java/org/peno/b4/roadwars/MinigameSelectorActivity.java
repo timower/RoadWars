@@ -112,7 +112,7 @@ public class MinigameSelectorActivity extends AppCompatActivity
     public void FotorondeClicked(View view) {
         // start photo ronde:
         //TODO: check result of startPhotoRound()
-        MiniGameManager.getInstance().startGame(new PhotoGame(this));
+        MiniGameManager.getInstance().startGame(new PhotoGame(this, street));
         Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

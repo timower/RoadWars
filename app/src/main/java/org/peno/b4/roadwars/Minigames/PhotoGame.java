@@ -28,7 +28,7 @@ import java.util.Random;
 public class PhotoGame extends Minigame {
     public enum PhotoLocation {
 
-        ARENBERG("Arenberg Kasteel", 50.863399, 4.678033, 20),
+        ARENBERG("Arenberg Kasteel", 50.863144, 4.683389, 20),
         SCHOUWBURG("Stadsschouwburg", 50.8796686, 4.7048214, 10),
         LADEUZE("Ladeuzeplein",50.87816,	4.7071588, 20),
         KLEINBEGIJNENHOF("Klein Begijnenhof",50.8847899, 4.698877,15),
@@ -70,12 +70,14 @@ public class PhotoGame extends Minigame {
     private Marker marker;
     private Circle circle;
 
+    private String street;
+
     private PhotoLocation currentLocation;
     private boolean waitingForFinish = false;
 
-    public PhotoGame(Context context) {
+    public PhotoGame(Context context, String street) {
         super(context, "In the picture", 1000);
-
+        this.street = street;
         currentLocation = PhotoLocation.randomLocation();
     }
 
@@ -86,6 +88,9 @@ public class PhotoGame extends Minigame {
 
     @Override
     public void finish(boolean won) {
+        if (won)
+            connectionManager.addPoints(street, points);
+        clearUI();
     }
 
     @Override
@@ -107,6 +112,8 @@ public class PhotoGame extends Minigame {
         if (distanceToStart[0] < this.currentLocation.distance && !waitingForFinish){
 
             Intent intent = new Intent(context, CameraActivity.class);
+            intent.putExtra(CameraActivity.EXTRA_TARGETLAT, currentLocation.getLatitude());
+            intent.putExtra(CameraActivity.EXTRA_TARGETLONG, currentLocation.getLongitude());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
 

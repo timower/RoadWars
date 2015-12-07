@@ -29,6 +29,7 @@ public class Utils {
 
     public static final String FRIEND_NFC_INTENT = "add_friend";
     public static final String MINIGAME_NFC_INTENT = "join_minigame";
+    public static final double PICTURE_RADIUS = 15.0;
 
     public static String removeNumbers(String orig) {
         String street = "";
