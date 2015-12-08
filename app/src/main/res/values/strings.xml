@@ -107,7 +107,7 @@
 
     <!-- AboutActivity -->
     <string name="creators">Creators:</string>
-    <string name="creator_names">Jan Vermaelen \n Jef Versyck \n Laura Vranken \n Thomas Vranken \n Timothy Werquin \n Holger Willems</string>
+    <string name="creator_names" translatable="false">Jan Vermaelen \nJef Versyck\nLaura Vranken\nThomas Vranken\nTimothy Werquin\nHolger Willems</string>
     <string name="icon">Icon</string>
     <string name="version_str">Version: %s</string>
     <string name="about">About</string>
