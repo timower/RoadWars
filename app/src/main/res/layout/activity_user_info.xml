@@ -48,7 +48,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -61,7 +61,11 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/user_name_value"
                             android:textSize="25sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:paddingRight="8dp"
+                            android:paddingEnd="8dp"
+                            android:paddingLeft="32dp"
+                            android:paddingStart="32dp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/email_container"
@@ -90,7 +94,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -103,7 +107,11 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/totalnumberownedstreets"
                             android:textSize="25sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:paddingRight="8dp"
+                            android:paddingEnd="8dp"
+                            android:paddingLeft="32dp"
+                            android:paddingStart="32dp"/>
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
