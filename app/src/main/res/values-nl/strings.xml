@@ -71,7 +71,7 @@
     <string name="remove">Verwijder</string>
     <string name="remove_friend">Verwijder vriend</string>
     <string name="search">Zoek</string>
-    <string name="search_for_user">Zoek naar gebruikers</string>
+    <string name="search_for_user">Wereldranglijst</string>
     <string name="search_new_friends">Zoek nieuwe vrienden!</string>
     <string name="speed_info">%.2f km/h</string>
     <string name="start">Start</string>
@@ -93,14 +93,16 @@
     <string name="color_profile">Kleur:</string>
     <string name="Tutorial">Tutorial</string>
     <string name="friends_tutorial">Maak vrienden!</string>
-    <string name="friends_tutorial_extra">Open jouw profiel. Klik op de knop vrienden in de rechterbovenhoek. Daar kan jij je vrienden zien! Maak nieuwe door op de knop vrienden toevoegen te klikken. Je kan direct vrienden worden via NFC of een verzoek sturen!</string>
+    <string name="friends_tutorial_extra">Open jouw profiel, klik op de knop in de rechterbovenhoek. Daar kan jij je vrienden zien! Maak nieuwe vrienden door op de knop vrienden toevoegen te klikken. Je kan ze een verzoek sturen of direct vrienden worden via NFC!</string>
     <string name="minigames_tutorial">Speel minigames!</string>
     <string name="minigames_tutorial_extra">Op de ranking pagina van een straat, krijg je in de rechterbovenhoek de kans om geniale minigames te spelen om meer punten te verdienen. Speel alleen of met vrienden! De competitie wacht op jou!</string>
     <string name="ranking_tutorial">Bekijk jouw ranking!</string>
-    <string name="ranking_tutorial_extra">Met een korte klik op een veroverde straat zal de naam van de eigenaar verschijnen. Een lange klik zal jou de volledige ranking geven. Je kan andere gebruikers aanklikken en hun profielpagina bezichtigen. Misschien worden jullie wel vrienden?</string>
+    <string name="ranking_tutorial_extra">Met een korte klik op een veroverde straat zal de naam van de eigenaar verschijnen. Een lange klik zal jou de volledige ranking geven. Je kan andere gebruikers aanklikken en hun profielpagina bezichtigen. Misschien worden jullie wel vrienden?!</string>
     <string name="start_tutorial">Start jouw eerste spel!</string>
     <string name="start_tutorial_extra">Druk op de start knop en neem de fiets. Je zal punten ontvangen, afhankelijk van jouw snelheid en tijd gespendeerd in een straat. Zorg dat je snelheid tussen 10km/h en 45km/h ligt. Ontvang je punten nadien door op de stop knop te duwen.</string>
     <string name="tutorial_button">Begin nu te veroveren!</string>
     <string name="welcome_tutorial">Welkom bij RoadWars!</string>
     <string name="welcome_tutorial_extra">Deze korte tutorial zal je leiden door de belangrijkste mogelijkheden van deze app.</string>
+    <string name="X">X</string>
+    <string name="streets">straten</string>
 </resources>

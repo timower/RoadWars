@@ -276,6 +276,10 @@ public class ConnectionManager {
         sendRequest("req", "ping");
     }
 
+    public void getWorldRank() {
+        sendRequest("req", "get-world-ranking", "key", key, "user", user);
+    }
+
     /**
      * main communication class,
      *  the class starts a connection with the server and listens for responses

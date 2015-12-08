@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private Bitmap originalBitmap;
 
     private TableLayout pointsTable;
+    private View pointsTable_container;
     private TextView speedText;
     private ProgressTracker progressTracker;
 
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         // find textviews for street and speed
         pointsTable = (TableLayout)findViewById(R.id.streets_table);
+        pointsTable_container = findViewById(R.id.streets_table_container);
         speedText = (TextView)findViewById(R.id.speed_text);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
 
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity
 
         if (mMap != null) {
             PositionManager.getInstance(this, new PositionManager.UIObjects(mMap, speedText,
-                    pointsTable, connectionLostBanner));
+                    pointsTable_container, pointsTable, connectionLostBanner));
             MiniGameManager.getInstance().setUIObjects(
                     new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
         } /*else {
@@ -406,9 +408,8 @@ public class MainActivity extends AppCompatActivity
                     }
                     return super.onOptionsItemSelected(item);
             case R.id.action_userlist:
-                Intent userList = new Intent(this, UserSearchActivity.class);
-                userList.putExtra(UserSearchActivity.EXTRA_ALL_USERS, true);
-                startActivityForResult(userList, UserSearchActivity.GET_USER_REQ);
+                Intent userList = new Intent(this, WorldRankActivity.class);
+                startActivity(userList);
                 return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
@@ -428,7 +429,7 @@ public class MainActivity extends AppCompatActivity
         geocoder = new Geocoder(this);
 
         positionManager = PositionManager.getInstance(this,
-                new PositionManager.UIObjects(mMap, speedText, pointsTable, connectionLostBanner));
+                new PositionManager.UIObjects(mMap, speedText, pointsTable_container, pointsTable, connectionLostBanner));
 
         MiniGameManager.getInstance().setUIObjects(
                 new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
@@ -512,7 +513,7 @@ public class MainActivity extends AppCompatActivity
         if(progressTracker.visible()){
             return;
         }
-        pointsTable.setVisibility(View.GONE);
+        pointsTable_container.setVisibility(View.GONE);
         // lookup street & show toast (in onLoginResult)
         String street = Utils.lookupStreet(geocoder, latLng);
         if (street != null)
@@ -618,7 +619,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        finishAffinity();
+        if (pointsTable.getVisibility() == View.VISIBLE) {
+            pointsTable_container.setVisibility(View.GONE);
+        }
+        else {
+            finishAffinity();
+        }
     }
 
     public void checkLoginClick(View view) {
@@ -628,7 +634,7 @@ public class MainActivity extends AppCompatActivity
 
     public void startPositionManager() {
         if (positionManager.start()) {
-            pointsTable.setVisibility(View.GONE);
+            pointsTable_container.setVisibility(View.GONE);
             showStartedNotification();
             showInfoText();
             connectionManager.getUserInfo(connectionManager.user);

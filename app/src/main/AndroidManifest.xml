@@ -13,8 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="org.peno.b4.roadwars.MainActivity"
+            android:name=".MainActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,8 +33,7 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/login"
-            android:launchMode="singleTop" >
-        </activity>
+            android:launchMode="singleTop"></activity>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -51,33 +49,33 @@
 
         <activity
             android:name=".UserInfoActivity"
-            android:label="@string/user_info" >
+            android:label="@string/user_info">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
         <activity
             android:name=".RegisterActivity"
-            android:label="@string/create_user" >
+            android:label="@string/create_user">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.LoginActivity" />
         </activity>
-        <activity android:name=".StreetRankActivity" >
+        <activity android:name=".StreetRankActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
         <activity
             android:name=".MinigameSelectorActivity"
-            android:label="@string/minigame" >
+            android:label="@string/minigame">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.StreetRankActivity" />
         </activity>
         <activity
             android:name=".UserSearchActivity"
-            android:label="@string/search" >
+            android:label="@string/search">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MinigameSelectorActivity" />
@@ -87,7 +85,7 @@
             android:label="@string/friends">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value ="org.peno.b4.roadwars.UserInfoActivity" />
+                android:value="org.peno.b4.roadwars.UserInfoActivity" />
         </activity>
         <activity android:name=".nfcReceiverActivity">
             <intent-filter>
@@ -98,7 +96,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutActivity" >
+        <activity android:name=".AboutActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MainActivity" />
@@ -106,8 +104,8 @@
         <activity android:name=".CameraActivity" />
         <activity
             android:name=".TutorialActivity"
-            android:label="@string/Tutorial" >
-        </activity>
+            android:label="@string/Tutorial"></activity>
+        <activity android:name=".WorldRankActivity"></activity>
     </application>
 
 </manifest>
