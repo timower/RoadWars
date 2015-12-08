@@ -27,7 +27,6 @@ public class UserInfoActivity extends AppCompatActivity
 
     private ConnectionManager connectionManager;
     private String infoName;
-    private String showStreet;
 
     private TextView connectionLostBanner;
 
@@ -249,6 +248,7 @@ public class UserInfoActivity extends AppCompatActivity
                             pointsView.setLayoutParams(rowParams);
                             pointsView.setGravity(Gravity.CENTER);
 
+                            String showStreet;
                             if (street.length() > 30) {
                                showStreet = street.substring(0, 27) + "...";
                             }

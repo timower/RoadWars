@@ -44,13 +44,15 @@ public class PositionManager implements LocationListener {
     public static class UIObjects {
         public GoogleMap mMap;
         public TextView speedText;
+        public View table_container;
         public TableLayout table;
         public TextView connectionLostBanner;
 
-        public UIObjects(GoogleMap mMap, TextView spt, TableLayout table, TextView connectionLostBanner) {
+        public UIObjects(GoogleMap mMap, TextView spt, View container, TableLayout table, TextView connectionLostBanner) {
             this.mMap = mMap;
             this.speedText = spt;
             this.table = table;
+            this.table_container = container;
             this.connectionLostBanner = connectionLostBanner;
         }
     }
@@ -232,7 +234,7 @@ public class PositionManager implements LocationListener {
             nRow.addView(streetView);
             nRow.addView(pointsView);
             UIobjects.table.addView(nRow);
-            UIobjects.table.setVisibility(View.VISIBLE);
+            UIobjects.table_container.setVisibility(View.VISIBLE);
         }
 
         @Override
