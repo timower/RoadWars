@@ -43,40 +43,17 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/camera"
-            android:id="@+id/camerabutton"
-            android:textColor="@color/whiteText"
-            android:layout_below="@+id/takePicture"
-            android:layout_centerHorizontal="true"
-            android:layout_alignLeft="@+id/takePicture"
-            android:layout_alignStart="@+id/takePicture"
-            android:layout_alignRight="@+id/takePicture"
-            android:layout_alignEnd="@+id/takePicture"
-            android:layout_marginTop="20dp"
-            android:background="@color/colorPrimary"
-            android:visibility="gone" />
-
         <ImageView
+            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageView"
             android:src="@drawable/cameraicon"
             android:layout_marginTop="100dp"
             android:scaleType="fitXY"
-            android:layout_below="@+id/camerabutton"
+            android:layout_below="@+id/takePicture"
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/icon" />
-
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView3"
-            android:layout_below="@id/imageView"
-            android:layout_centerHorizontal="true"
-            android:textColor="#ff7aff24"
-            android:textSize="35sp" />
 
     </RelativeLayout>
 </LinearLayout>

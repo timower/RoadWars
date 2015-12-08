@@ -3,7 +3,6 @@ package org.peno.b4.roadwars;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,13 +40,28 @@ public class UserInfoActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        connectionManager = ConnectionManager.getInstance(this, this);
 
         infoName = getIntent().getStringExtra(EXTRA_NAME);
         if (infoName == null) {
             infoName = connectionManager.user;
         }
 
+        connectionManager = ConnectionManager.getInstance(this, this);
+
+        //TODO: if more crashes when app was killed -> add everywhere:
+        if (connectionManager.user == null) {
+            if (connectionManager.loadFromSharedPrefs()) {
+                connectionManager.checkLogin();
+            } else {
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
+            }
+        } else {
+            getUserInfo();
+        }
+    }
+
+    private void getUserInfo() {
         if (!infoName.equals(connectionManager.user)) {
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(getString(R.string.user_info));
@@ -58,6 +72,19 @@ public class UserInfoActivity extends AppCompatActivity
         // clear ui:
         setContentView(R.layout.activity_user_info);
         connectionManager.getUserInfo(infoName);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == LoginActivity.REQUEST_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                getUserInfo();
+            } else {
+                // somehow user got back here without logging in -> restart login activity
+                Intent loginIntent = new Intent(this, LoginActivity.class);
+                startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
+            }
+        }
     }
 
     @Override
@@ -269,6 +296,14 @@ public class UserInfoActivity extends AppCompatActivity
                     connectionManager.getUserInfo(infoName);
                 } else {
                     Toast.makeText(this, getString(R.string.error_accept_friend_req), Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case "check-login":
+                if (result) {
+                    getUserInfo();
+                } else {
+                    Intent loginIntent = new Intent(this, LoginActivity.class);
+                    startActivityForResult(loginIntent, LoginActivity.REQUEST_LOGIN);
                 }
                 return true;
         }

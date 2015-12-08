@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,6 +40,13 @@ public class RegisterActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
+        connectionManager.start();
+    }
+
+    @Override
+    protected void onPause() {
+        connectionManager.stop();
+        super.onPause();
     }
 
     @Override

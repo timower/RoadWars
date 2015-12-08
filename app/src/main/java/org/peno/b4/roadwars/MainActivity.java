@@ -3,7 +3,6 @@ package org.peno.b4.roadwars;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,12 +10,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.location.Geocoder;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -48,7 +44,7 @@ public class MainActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, OnMapReadyCallback,
         GoogleMap.OnMapLongClickListener, GoogleMap.OnMapClickListener {
 
-    private static final String TAG = "MainActivity";
+    //private static final String TAG = "MainActivity";
     private static final int notId = 14;
 
     private LatLng lastCameraPos;
@@ -152,9 +148,9 @@ public class MainActivity extends AppCompatActivity
                     pointsTable, connectionLostBanner));
             MiniGameManager.getInstance().setUIObjects(
                     new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
-        } else {
+        } /*else {
             //Log.d(TAG, "wtf??? mMap not ready in resume");
-        }
+        }*/
     }
 
     /** Pauses the activity.
@@ -396,29 +392,18 @@ public class MainActivity extends AppCompatActivity
                 return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
                     if (!positionManager.started) {
-                        //we have to control each time that the button is clicked if gps is activated
-                        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-                            showGPSDisabledAlertToUser();
-                        }else {
-                            //Toast.makeText(this, "GPS is Enabled", Toast.LENGTH_SHORT).show();
-                            if (progressTracker.visible()) {
-                                return super.onOptionsItemSelected(item);
-                            }
-                            if (positionManager.start()) {
-                                pointsTable.setVisibility(View.GONE);
-                                showStartedNotification();
-                                showInfoText();
-                                connectionManager.getUserInfo(connectionManager.user);
-                            }
+                        //Toast.makeText(this, "GPS is Enabled", Toast.LENGTH_SHORT).show();
+                        if (progressTracker.visible()) {
+                            return super.onOptionsItemSelected(item);
                         }
+                        startPositionManager();
                     } else {
                         hideStartedNotification();
                         hideInfoText();
                         positionManager.stop();
+                        // redraw options menu:
+                        invalidateOptionsMenu();
                     }
-                    // redraw options menu:
-                    invalidateOptionsMenu();
                     return super.onOptionsItemSelected(item);
             case R.id.action_userlist:
                 Intent userList = new Intent(this, UserSearchActivity.class);
@@ -604,7 +589,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * Guides the user to activation of the GPS
      */
-
+    /*
     private void showGPSDisabledAlertToUser(){
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
@@ -625,6 +610,7 @@ public class MainActivity extends AppCompatActivity
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
+    */
 
     public void onMinigameStopClicked(View view) {
         MiniGameManager.getInstance().stop();
@@ -638,5 +624,17 @@ public class MainActivity extends AppCompatActivity
     public void checkLoginClick(View view) {
         //Log.d("PING", "Clicked");
         connectionManager.checkLogin();
+    }
+
+    public void startPositionManager() {
+        if (positionManager.start()) {
+            pointsTable.setVisibility(View.GONE);
+            showStartedNotification();
+            showInfoText();
+            connectionManager.getUserInfo(connectionManager.user);
+        } else {
+            //TODO: show gps dialog if gps is disabled?
+        }
+        invalidateOptionsMenu();
     }
 }

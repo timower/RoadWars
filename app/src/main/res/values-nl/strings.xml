@@ -40,7 +40,7 @@
     <string name="friend_request_declined">Verzoek van %s geweigerd!</string>
     <string name="friends">Vrienden</string>
     <string name="go">Ga!</string>
-    <string name="gps_service_not_available">GPS service niet beschikbaar</string>
+    <string name="gps_service_not_available">schakel uw GPS aan</string>
     <string name="hue">Hue</string>
     <string name="icon">Icoon</string>
     <string name="integer">%d</string>

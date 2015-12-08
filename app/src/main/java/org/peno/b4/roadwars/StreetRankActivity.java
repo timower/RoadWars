@@ -3,7 +3,6 @@ package org.peno.b4.roadwars;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +23,7 @@ public class StreetRankActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
     public static final String EXTRA_STREET = "org.peno.b4.roadwars.STREET";
 
-    public static final String TAG = "StreetRankActivity";
+    //public static final String TAG = "StreetRankActivity";
 
     private ConnectionManager connectionManager;
     private String street;

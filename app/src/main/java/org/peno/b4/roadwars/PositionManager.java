@@ -10,7 +10,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TableLayout;
@@ -307,8 +306,15 @@ public class PositionManager implements LocationListener {
     public boolean start() {
         if (started)
             return true;
+
         if (!canStart)
             return false;
+
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            Toast.makeText(context, R.string.gps_service_not_available, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         if (userRoute != null)
             userRoute.remove();
         started = true;

@@ -56,7 +56,7 @@
     <string name="integer">%d</string>
 
     <string name="connection_lost">Connection lost!</string>
-    <string name="gps_service_not_available">GPS service not available</string>
+    <string name="gps_service_not_available">Please enable GPS service</string>
 
     <!-- StreetRankActivity -->
     <string name="street">Street</string>
@@ -134,5 +134,6 @@
     <string name="minigames_tutorial">Play Minigames!</string>
     <string name="minigames_tutorial_extra">At the ranking page of a street, you will get in the right corner the opportunity to play some awesome minigames to earn more points, alone or with friends. The competition awaits!</string>
     <string name="tutorial_button">Join the war!</string>
+    <string name="X">X</string>
 
 </resources>
