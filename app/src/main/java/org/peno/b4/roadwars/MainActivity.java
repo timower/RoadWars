@@ -297,7 +297,7 @@ public class MainActivity extends AppCompatActivity
                 if (result) {
                     //Log.d("POINTS", "saved successfully");
                     //Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(this, R.string.added_points, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, R.string.added_points, Toast.LENGTH_SHORT).show();
                 } else {
                     //Log.d("POINTS", "save failed");
                     Toast.makeText(this, getString(R.string.error_points), Toast.LENGTH_SHORT).show();

@@ -5,7 +5,7 @@
     <string name="accept">Accepteer</string>
     <string name="accept_request">accepteer verzoek</string>
     <string name="add_friend">voeg vriend toe</string>
-    <string name="added_points">Toegevoegde punten aan deze straat</string>
+    <string name="added_points">Punten toegevoegd aan de straat!</string>
     <string name="camera">Camera</string>
     <string name="capture">Leg vast</string>
     <string name="choose_a_color">Kies een kleur:</string>
@@ -14,7 +14,6 @@
     <string name="color">Kleur</string>
     <string name="connection_lost">Geen verbinding!</string>
     <string name="create_user">Maak een nieuwe gebruiker aan</string>
-    <string name="creator_names">Jan Vermaelen \n Jef Versyck \n Laura Vranken \n Thomas Vranken \n Timothy Werquin \n Holger Willems</string>
     <string name="creators">Ontwikkelaars:</string>
     <string name="decline">Weiger</string>
     <string name="decline_req">weiger verzoek</string>
@@ -105,4 +104,6 @@
     <string name="welcome_tutorial_extra">Deze korte tutorial zal je leiden door de belangrijkste mogelijkheden van deze app.</string>
     <string name="X">X</string>
     <string name="streets">straten</string>
+    <string name="aim_tutorial">Het doel!</string>
+    <string name="aim_tutorial_extra">Verover straten en word eigenaar door het hoogste aantal punten te verdienen. Vul de kaart met jouw eigen specifieke kleur!</string>
 </resources>

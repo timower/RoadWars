@@ -42,14 +42,12 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/creator_names"
             android:id="@+id/aboutTextNames"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/aboutImage"
-            android:paddingLeft="85dp"
-            android:paddingStart="85dp"
-            android:paddingRight="5dp"
-            android:paddingEnd="5dp"
-            android:paddingBottom="5dp" />
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_alignBaseline="@+id/aboutTextCreators"
+            android:layout_alignBottom="@+id/aboutTextCreators"
+            android:layout_toRightOf="@+id/aboutTextCreators"
+            android:layout_toEndOf="@+id/aboutTextCreators" />
 
 
         <TextView
