@@ -35,13 +35,12 @@ public class UserInfoActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
+        infoName = getIntent().getStringExtra(EXTRA_NAME);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        infoName = getIntent().getStringExtra(EXTRA_NAME);
 
         connectionManager = ConnectionManager.getInstance(this, this);
 
