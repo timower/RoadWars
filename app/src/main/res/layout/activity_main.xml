@@ -86,13 +86,15 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_alignParentBottom="true">
+            android:background="#707070"
+            android:visibility="gone"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/streets_table_container">
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:stretchColumns="1"
                 android:padding="8dp"
-                android:visibility="gone"
                 android:background="#707070"
                 android:id="@+id/streets_table">
                 <TableRow tools:ignore="UselessParent">
