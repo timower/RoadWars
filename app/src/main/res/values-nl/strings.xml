@@ -105,4 +105,6 @@
     <string name="welcome_tutorial_extra">Deze korte tutorial zal je leiden door de belangrijkste mogelijkheden van deze app.</string>
     <string name="X">X</string>
     <string name="streets">straten</string>
+    <string name="aim_tutorial">Het doel!</string>
+    <string name="aim_tutorial_extra">Verover straten en word eigenaar door het hoogste aantal punten te verdienen. Vul de kaart met jouw eigen specifieke kleur!</string>
 </resources>

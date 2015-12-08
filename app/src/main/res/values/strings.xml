@@ -125,6 +125,8 @@
     <string name="Tutorial">Tutorial</string>
     <string name="welcome_tutorial">Welcome to RoadWars!</string>
     <string name="welcome_tutorial_extra">This quick tutorial will guide you through the main features of this app.</string>
+    <string name="aim_tutorial">The aim!</string>
+    <string name="aim_tutorial_extra">Conquer streets and become owner by earning the highest amount of points. Fill the map with your own specific color!</string>
     <string name="start_tutorial">Start your first game!</string>
     <string name="start_tutorial_extra">Push the start button. Ride the bike. You will get points depending on your speed and time spent in the street. Be sure your speed is between 10km/h and 45 km/h. Collect your points afterwards by pressing the stop button.</string>
     <string name="friends_tutorial">Make Friends!</string>
@@ -134,6 +136,8 @@
     <string name="minigames_tutorial">Play Minigames!</string>
     <string name="minigames_tutorial_extra">At the ranking page of a street, you will get in the right corner the opportunity to play some awesome minigames to earn more points, alone or with friends. The competition awaits!</string>
     <string name="tutorial_button">Join the war!</string>
+
+
     <string name="X">X</string>
     <string name="streets">Streets</string>
 
