@@ -618,7 +618,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        finishAffinity();
+        if (pointsTable.getVisibility() == View.VISIBLE) {
+            pointsTable.setVisibility(View.GONE);
+        }
+        else {
+            finishAffinity();
+        }
     }
 
     public void checkLoginClick(View view) {

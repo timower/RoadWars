@@ -83,30 +83,34 @@
         </RelativeLayout>
 
 
-        <TableLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:stretchColumns="1"
-            android:padding="8dp"
-            android:visibility="gone"
-            android:background="#707070"
-            android:id="@+id/streets_table">
-            <TableRow tools:ignore="UselessParent">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/street"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="@string/points"
-                    android:gravity="center"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-            </TableRow>
-        </TableLayout>
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true">
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1"
+                android:padding="8dp"
+                android:visibility="gone"
+                android:background="#707070"
+                android:id="@+id/streets_table">
+                <TableRow tools:ignore="UselessParent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/street"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="@string/points"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
     </RelativeLayout>
 </LinearLayout>
