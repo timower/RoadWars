@@ -56,6 +56,9 @@ public class Utils {
                     if (loc.getMaxAddressLineIndex() >= 2) {
                         String street = Utils.removeNumbers(loc.getAddressLine(0));
                         String city = removeNumbers(loc.getAddressLine(1));
+                        if (street == null || street.equals("") || city == null || city.equals("")) {
+                            return null;
+                        }
                         return street + ", " + city;
                     }
 

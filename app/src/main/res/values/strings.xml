@@ -33,14 +33,14 @@
     <string name="user_info">User Info</string>
     <string name="my_profile">My Profile</string>
     <string name="start">Start</string>
-    <string name="userlist">Search users</string>
+    <string name="userlist">World Ranking</string>
     <string name="owner_toast">Owner of %1$s: %2$s</string>
     <string name="error_points">Error saving points</string>
     <string name="nfc_friend">OK, you\'re friends!</string>
     <string name="finished_points">Finished saving points!</string>
     <string name="enable_location_access">Please allow RoadWars access to location</string>
     <string name="speed_info">%.2f km/h</string>
-    
+
     <string name="added_points">Added points to this street</string>
     <string name="race_to">Race to: %s</string>
     <string name="opponent_quit">Opponent has quit</string>
@@ -135,5 +135,6 @@
     <string name="minigames_tutorial_extra">At the ranking page of a street, you will get in the right corner the opportunity to play some awesome minigames to earn more points, alone or with friends. The competition awaits!</string>
     <string name="tutorial_button">Join the war!</string>
     <string name="X">X</string>
+    <string name="streets">Streets</string>
 
 </resources>
