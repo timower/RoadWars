@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.model.Circle;

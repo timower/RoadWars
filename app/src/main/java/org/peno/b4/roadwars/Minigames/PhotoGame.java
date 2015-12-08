@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.model.Circle;
@@ -28,16 +27,16 @@ import java.util.Random;
 public class PhotoGame extends Minigame {
     public enum PhotoLocation {
 
-        ARENBERG("Arenberg Kasteel", 50.863144, 4.683389, 20),
-        SCHOUWBURG("Stadsschouwburg", 50.8796686, 4.7048214, 10),
-        LADEUZE("Ladeuzeplein",50.87816,	4.7071588, 20),
-        KLEINBEGIJNENHOF("Klein Begijnenhof",50.8847899, 4.698877,15),
-        GROOTBEGIJNENHOF("Groot Begijnenhof", 50.8713473,4.696988, 15),
-        KRUIDTUIN("Kruidtuin",50.8778217,	4.6912699, 20),
-        MUSEUMM("Museum-M",50.8783342,4.7049935, 15),
-        SINTPIETERSKERK("Sint-Pieterskerk",50.8792963,4.7003878,25),
-        UNIVERSITEITSHALLEN("Universiteitshallen",50.877886,4.700564,10),
-        STADHUIS("Stadhuis van Leuven",50.8789, 4.7012,15);
+        ARENBERG("Arenberg Kasteel", 50.863144, 4.683389, 100),
+        SCHOUWBURG("Stadsschouwburg", 50.8796686, 4.7048214, 50),
+        LADEUZE("Ladeuzeplein", 50.87816, 4.7071588, 50),
+        KLEINBEGIJNENHOF("Klein Begijnenhof", 50.8847899, 4.698877, 100),
+        GROOTBEGIJNENHOF("Groot Begijnenhof", 50.8713473, 4.696988, 100),
+        KRUIDTUIN("Kruidtuin", 50.8778217, 4.6912699, 100),
+        MUSEUMM("Museum-M", 50.8783342, 4.7049935, 50),
+        SINTPIETERSKERK("Sint-Pieterskerk", 50.8792963, 4.7003878, 50),
+        UNIVERSITEITSHALLEN("Universiteitshallen", 50.877886, 4.700564, 50),
+        STADHUIS("Stadhuis van Leuven", 50.8789, 4.7012, 50);
 
 
 

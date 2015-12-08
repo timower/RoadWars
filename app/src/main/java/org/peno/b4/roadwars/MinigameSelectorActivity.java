@@ -1,16 +1,12 @@
 package org.peno.b4.roadwars;
 
 import android.content.Intent;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
 import org.peno.b4.roadwars.Minigames.PhotoGame;
@@ -21,13 +17,13 @@ import org.peno.b4.roadwars.Minigames.StreetRaceGame;
 
 public class MinigameSelectorActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener {
-
+    //public static final String TAG = "MinigameSelActivity";
 
     public static final String EXTRA_STREET = "org.peno.b4.roadwars.STREET";
 
     private ConnectionManager connectionManager;
     private String street;
-    public static final String TAG = "MinigameSelActivity";
+
 
 
     private TextView connectionLostBanner;
@@ -102,21 +98,23 @@ public class MinigameSelectorActivity extends AppCompatActivity
                 //Toast.makeText(this, "user selected: " + data.getData().getHost(), Toast.LENGTH_SHORT).show();
                 opponent = data.getData().getHost();
                 connectionManager.startMinigame(opponent, street);
-            } else {
+            } /* else {
                 //Log.d(TAG, "user canceled");
                 //Toast.makeText(this, "canceled", Toast.LENGTH_LONG).show();
-            }
+            } */
         }
     }
 
     public void FotorondeClicked(View view) {
         // start photo ronde:
-        //TODO: check result of startPhotoRound()
-        MiniGameManager.getInstance().startGame(new PhotoGame(this, street));
-        Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        if (MiniGameManager.getInstance().startGame(new PhotoGame(this, street))) {
+            Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(this, R.string.error_start_minigame, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.peno.b4.roadwars;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 

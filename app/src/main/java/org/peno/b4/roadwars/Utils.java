@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -63,9 +63,9 @@ public class Utils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
+        } /* else {
             //Log.d("POS", "error, geocoder is null!");
-        }
+        } */
         return null;
     }
 
@@ -79,9 +79,9 @@ public class Utils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else {
+        } /* else {
             //Log.d("POS", "error, geocoder is null!");
-        }
+        } */
         return null;
     }
 
@@ -126,17 +126,18 @@ public class Utils {
                         // response.getString("minigame").equals("race") &&
                         //Log.d("IMP", "started-minigame");
                         if (minigameInstance != null) {
-                            //TODO: check result of startRaceGame
                             String street = response.getString("street");
-                            minigameInstance.startGame(new StreetRaceGame(minigameInstance.context,
-                                    street, response.getString("name")));
-                        } else {
-                            throw new RuntimeException("what????");
-                        }
+                            if (!minigameInstance.startGame(new StreetRaceGame(minigameInstance.context,
+                                    street, response.getString("name")))) {
+                                Toast.makeText(minigameInstance.context, R.string.error_start_minigame, Toast.LENGTH_SHORT).show();
+                            }
+                        }/*  else {
+                            //throw new RuntimeException("what????");
+                        } */
                         break;
                     case "finish-minigame":
                         //you won
-                        String street = response.getString("street");
+                        //String street = response.getString("street");
                         minigameInstance.finish(true);
                         break;
                     case "stopped-minigame":

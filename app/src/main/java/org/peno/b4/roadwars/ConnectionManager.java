@@ -3,7 +3,6 @@ package org.peno.b4.roadwars;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -27,7 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * When the server responds the Response listener gets called.
  */
 public class ConnectionManager {
-    private static final String TAG = "LoginManager";
+    //private static final String TAG = "LoginManager";
 
 
     public interface ResponseListener {

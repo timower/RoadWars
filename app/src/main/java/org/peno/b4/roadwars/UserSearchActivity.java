@@ -12,7 +12,6 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
@@ -34,6 +33,7 @@ import java.util.List;
 
 public class UserSearchActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, NfcAdapter.CreateNdefMessageCallback {
+    // public static final String TAG = "UserSearchActivity";
 
     private ConnectionManager connectionManager;
     private TextView connectionLostBanner;
@@ -47,7 +47,6 @@ public class UserSearchActivity extends AppCompatActivity
 
     public static final String EXTRA_NFC_INTENT = "roadwars.nfc_intent";
 
-    public static final String TAG = "UserSearchActivity";
 
     private boolean allowNFC;
     private boolean allUsers; // if false -> only friends

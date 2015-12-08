@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,7 +13,7 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity implements ConnectionManager.ResponseListener {
     public static final int REQUEST_LOGIN = 5;
-    private static final String TAG = "LoginActivity";
+    //private static final String TAG = "LoginActivity";
     private ConnectionManager connectionManager;
 
     private String username;
@@ -34,11 +33,18 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
+        connectionManager.start();
+    }
+
+    @Override
+    protected void onPause() {
+        connectionManager.stop();
+        super.onPause();
     }
 
     //register button
     public void regClick(View view) {
-        Intent registerIntent = new Intent(getApplicationContext(), RegisterActivity.class);
+        Intent registerIntent = new Intent(this, RegisterActivity.class);
         startActivity(registerIntent);
     }
 
@@ -48,6 +54,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
         EditText passWordView = (EditText) findViewById(R.id.pass_word);
         username = userNameView.getText().toString();
         String password = passWordView.getText().toString();
+
         connectionManager.login(username, password);
     }
 

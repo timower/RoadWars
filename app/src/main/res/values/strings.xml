@@ -56,7 +56,7 @@
     <string name="integer">%d</string>
 
     <string name="connection_lost">Connection lost!</string>
-    <string name="gps_service_not_available">GPS service not available</string>
+    <string name="gps_service_not_available">Please enable GPS service</string>
 
     <!-- StreetRankActivity -->
     <string name="street">Street</string>

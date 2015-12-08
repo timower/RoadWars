@@ -47,23 +47,6 @@ public class CameraActivity extends AppCompatActivity
 
     String mCurrentPhotoPath;
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "RoadWars_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +61,7 @@ public class CameraActivity extends AppCompatActivity
                 intent.getDoubleExtra(EXTRA_TARGETLONG, 0));
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        //TODO: (minor) use: https://stackoverflow.com/questions/10291322/what-is-the-alternative-to-android-orientation-sensor
         orientation = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
         capturedImage.setOnClickListener(new View.OnClickListener() {
@@ -162,24 +146,6 @@ public class CameraActivity extends AppCompatActivity
         }
     }
 
-//    private double angleFromCoordinate(double lat1, double long1, double lat2,
-//                                       double long2) {
-//
-//        double dLon = (long2 - long1);
-//
-//        double y = Math.sin(dLon) * Math.cos(lat2);
-//        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
-//                * Math.cos(lat2) * Math.cos(dLon);
-//
-//        double brng = Math.atan2(y, x);
-//
-//        brng = Math.toDegrees(brng);
-//        brng = (brng + 360) % 360;
-//        brng = 360 - brng;
-//
-//        return brng;
-//    }
-
     public boolean onResponse(String req, Boolean result, JSONObject response) {
         return false;
     }
@@ -199,5 +165,22 @@ public class CameraActivity extends AppCompatActivity
     public void onBackPressed() {
         MiniGameManager.getInstance().finish(false);
         super.onBackPressed();
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "RoadWars_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 }
