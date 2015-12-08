@@ -71,7 +71,7 @@
     <string name="remove">Verwijder</string>
     <string name="remove_friend">Verwijder vriend</string>
     <string name="search">Zoek</string>
-    <string name="search_for_user">Zoek naar gebruikers</string>
+    <string name="search_for_user">Wereldranglijst</string>
     <string name="search_new_friends">Zoek nieuwe vrienden!</string>
     <string name="speed_info">%.2f km/h</string>
     <string name="start">Start</string>
@@ -103,4 +103,6 @@
     <string name="tutorial_button">Begin nu te veroveren!</string>
     <string name="welcome_tutorial">Welkom bij RoadWars!</string>
     <string name="welcome_tutorial_extra">Deze korte tutorial zal je leiden door de belangrijkste mogelijkheden van deze app.</string>
+    <string name="X">X</string>
+    <string name="streets">straten</string>
 </resources>
