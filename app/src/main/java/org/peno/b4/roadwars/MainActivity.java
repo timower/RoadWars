@@ -406,9 +406,8 @@ public class MainActivity extends AppCompatActivity
                     }
                     return super.onOptionsItemSelected(item);
             case R.id.action_userlist:
-                Intent userList = new Intent(this, UserSearchActivity.class);
-                userList.putExtra(UserSearchActivity.EXTRA_ALL_USERS, true);
-                startActivityForResult(userList, UserSearchActivity.GET_USER_REQ);
+                Intent userList = new Intent(this, WorldRankActivity.class);
+                startActivity(userList);
                 return super.onOptionsItemSelected(item);
             default:
                 return super.onOptionsItemSelected(item);
