@@ -27,7 +27,6 @@ public class UserInfoActivity extends AppCompatActivity
 
     private ConnectionManager connectionManager;
     private String infoName;
-    private String showStreet;
 
     private TextView connectionLostBanner;
 
@@ -36,6 +35,7 @@ public class UserInfoActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
+        infoName = getIntent().getStringExtra(EXTRA_NAME);
     }
 
     @Override
@@ -43,6 +43,9 @@ public class UserInfoActivity extends AppCompatActivity
         super.onResume();
 
         infoName = getIntent().getStringExtra(EXTRA_NAME);
+        if (infoName == null) {
+            infoName = connectionManager.user;
+        }
 
         connectionManager = ConnectionManager.getInstance(this, this);
 
@@ -254,6 +257,7 @@ public class UserInfoActivity extends AppCompatActivity
                             pointsView.setLayoutParams(rowParams);
                             pointsView.setGravity(Gravity.CENTER);
 
+                            String showStreet;
                             if (street.length() > 30) {
                                showStreet = street.substring(0, 27) + "...";
                             }

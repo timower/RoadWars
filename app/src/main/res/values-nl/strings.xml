@@ -5,7 +5,7 @@
     <string name="accept">Accepteer</string>
     <string name="accept_request">accepteer verzoek</string>
     <string name="add_friend">voeg vriend toe</string>
-    <string name="added_points">Toegevoegde punten aan deze straat</string>
+    <string name="added_points">Punten toegevoegd aan de straat!</string>
     <string name="camera">Camera</string>
     <string name="capture">Leg vast</string>
     <string name="choose_a_color">Kies een kleur:</string>
@@ -13,8 +13,7 @@
     <string name="choose_color">Kies een kleur, aub!</string>
     <string name="color">Kleur</string>
     <string name="connection_lost">Geen verbinding!</string>
-    <string name="create_user">Maak een nieuwe gebruiker aan</string>
-    <string name="creator_names">Jan Vermaelen \n Jef Versyck \n Laura Vranken \n Thomas Vranken \n Timothy Werquin \n Holger Willems</string>
+    <string name="create_user">Maak nieuwe gebruiker aan</string>
     <string name="creators">Ontwikkelaars:</string>
     <string name="decline">Weiger</string>
     <string name="decline_req">weiger verzoek</string>
@@ -71,7 +70,7 @@
     <string name="remove">Verwijder</string>
     <string name="remove_friend">Verwijder vriend</string>
     <string name="search">Zoek</string>
-    <string name="search_for_user">Wereldranglijst</string>
+    <string name="search_for_user">Zoek gebruikers</string>
     <string name="search_new_friends">Zoek nieuwe vrienden!</string>
     <string name="speed_info">%.2f km/h</string>
     <string name="start">Start</string>
@@ -84,7 +83,7 @@
     <string name="totalnumberownedstreets"># veroverde straten:</string>
     <string name="user_info">Gebruikersinformatie</string>
     <string name="user_name">Gebruikersnaam:</string>
-    <string name="userlist">Zoek gebruikers</string>
+    <string name="userlist">Wereldranking</string>
     <string name="username">Naam</string>
     <string name="version_str">Versie: %s</string>
     <string name="welcome_message">Welkom %s!</string>
@@ -104,5 +103,14 @@
     <string name="welcome_tutorial">Welkom bij RoadWars!</string>
     <string name="welcome_tutorial_extra">Deze korte tutorial zal je leiden door de belangrijkste mogelijkheden van deze app.</string>
     <string name="X">X</string>
-    <string name="streets">straten</string>
+    <string name="streets">Straten</string>
+    <string name="aim_tutorial">Het doel!</string>
+    <string name="aim_tutorial_extra">Verover straten en word eigenaar door het hoogste aantal punten te verdienen. Vul de kaart met jouw eigen specifieke kleur!</string>
+    <string name="hold_phones_together">Houd de smartphones tegen elkaar aub</string>
+    <string name="no_nfc">Deze smartphone ondersteunt geen NFC</string>
+    <string name="enable_beam">Zet Android Beam aan aub</string>
+    <string name="enable_nfc">Zet NFC aan aub</string>
+    <string name="WorldRank">Wereldranglijst</string>
+
+
 </resources>

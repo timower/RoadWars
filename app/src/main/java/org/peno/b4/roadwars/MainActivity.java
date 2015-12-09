@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private Bitmap originalBitmap;
 
     private TableLayout pointsTable;
+    private View pointsTable_container;
     private TextView speedText;
     private ProgressTracker progressTracker;
 
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity
 
         // find textviews for street and speed
         pointsTable = (TableLayout)findViewById(R.id.streets_table);
+        pointsTable_container = findViewById(R.id.streets_table_container);
         speedText = (TextView)findViewById(R.id.speed_text);
         connectionLostBanner = (TextView)findViewById(R.id.connectionLost);
 
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity
 
         if (mMap != null) {
             PositionManager.getInstance(this, new PositionManager.UIObjects(mMap, speedText,
-                    pointsTable, connectionLostBanner));
+                    pointsTable_container, pointsTable, connectionLostBanner));
             MiniGameManager.getInstance().setUIObjects(
                     new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
         } /*else {
@@ -295,7 +297,7 @@ public class MainActivity extends AppCompatActivity
                 if (result) {
                     //Log.d("POINTS", "saved successfully");
                     //Toast.makeText(this, "saved points", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(this, R.string.added_points, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(this, R.string.added_points, Toast.LENGTH_SHORT).show();
                 } else {
                     //Log.d("POINTS", "save failed");
                     Toast.makeText(this, getString(R.string.error_points), Toast.LENGTH_SHORT).show();
@@ -390,6 +392,10 @@ public class MainActivity extends AppCompatActivity
                 Intent tutorial = new Intent(this,TutorialActivity.class);
                 startActivity(tutorial);
                 return super.onOptionsItemSelected(item);
+            case R.id.action_friends:
+                Intent friends = new Intent(this,FriendsActivity.class);
+                startActivity(friends);
+                return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
                     if (!positionManager.started) {
                         //Toast.makeText(this, "GPS is Enabled", Toast.LENGTH_SHORT).show();
@@ -427,7 +433,7 @@ public class MainActivity extends AppCompatActivity
         geocoder = new Geocoder(this);
 
         positionManager = PositionManager.getInstance(this,
-                new PositionManager.UIObjects(mMap, speedText, pointsTable, connectionLostBanner));
+                new PositionManager.UIObjects(mMap, speedText, pointsTable_container, pointsTable, connectionLostBanner));
 
         MiniGameManager.getInstance().setUIObjects(
                 new MiniGameManager.UIObjects(mMap, minigameText, minigameContainer));
@@ -511,7 +517,7 @@ public class MainActivity extends AppCompatActivity
         if(progressTracker.visible()){
             return;
         }
-        pointsTable.setVisibility(View.GONE);
+        pointsTable_container.setVisibility(View.GONE);
         // lookup street & show toast (in onLoginResult)
         String street = Utils.lookupStreet(geocoder, latLng);
         if (street != null)
@@ -618,7 +624,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         if (pointsTable.getVisibility() == View.VISIBLE) {
-            pointsTable.setVisibility(View.GONE);
+            pointsTable_container.setVisibility(View.GONE);
         }
         else {
             finishAffinity();
@@ -632,7 +638,7 @@ public class MainActivity extends AppCompatActivity
 
     public void startPositionManager() {
         if (positionManager.start()) {
-            pointsTable.setVisibility(View.GONE);
+            pointsTable_container.setVisibility(View.GONE);
             showStartedNotification();
             showInfoText();
             connectionManager.getUserInfo(connectionManager.user);

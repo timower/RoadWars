@@ -9,10 +9,13 @@
         android:title="@string/my_profile"
         android:icon="@drawable/ic_person_white_24dp"
         app:showAsAction="ifRoom"/>
-    <item android:id="@+id/action_userlist"
-        android:title="@string/userlist"
+    <item android:id="@+id/action_friends"
+        android:title="@string/my_friends"
         android:icon="@drawable/ic_group_white_24dp"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_userlist"
+        android:title="@string/userlist"
+        app:showAsAction="never" />
     <item android:id="@+id/action_tutorial"
         android:title="@string/Tutorial"
         app:showAsAction="never" />

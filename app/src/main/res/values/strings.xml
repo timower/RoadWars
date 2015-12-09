@@ -75,6 +75,7 @@
     <string name="minigame_started">Minigame started!</string>
     <string name="other_offline">Other player is offline</string>
     <string name="error_start_minigame">Error starting minigame</string>
+    <string name="X">X</string>
 
     <!-- UserSearchActivity -->
     <string name="search_for_user">Search for user</string>
@@ -107,7 +108,7 @@
 
     <!-- AboutActivity -->
     <string name="creators">Creators:</string>
-    <string name="creator_names">Jan Vermaelen \n Jef Versyck \n Laura Vranken \n Thomas Vranken \n Timothy Werquin \n Holger Willems</string>
+    <string name="creator_names" translatable="false">Jan Vermaelen \nJef Versyck\nLaura Vranken\nThomas Vranken\nTimothy Werquin\nHolger Willems</string>
     <string name="icon">Icon</string>
     <string name="version_str">Version: %s</string>
     <string name="about">About</string>
@@ -125,6 +126,8 @@
     <string name="Tutorial">Tutorial</string>
     <string name="welcome_tutorial">Welcome to RoadWars!</string>
     <string name="welcome_tutorial_extra">This quick tutorial will guide you through the main features of this app.</string>
+    <string name="aim_tutorial">The aim!</string>
+    <string name="aim_tutorial_extra">Conquer streets and become owner by earning the highest amount of points. Fill the map with your own specific color!</string>
     <string name="start_tutorial">Start your first game!</string>
     <string name="start_tutorial_extra">Push the start button. Ride the bike. You will get points depending on your speed and time spent in the street. Be sure your speed is between 10km/h and 45 km/h. Collect your points afterwards by pressing the stop button.</string>
     <string name="friends_tutorial">Make Friends!</string>
@@ -134,7 +137,15 @@
     <string name="minigames_tutorial">Play Minigames!</string>
     <string name="minigames_tutorial_extra">At the ranking page of a street, you will get in the right corner the opportunity to play some awesome minigames to earn more points, alone or with friends. The competition awaits!</string>
     <string name="tutorial_button">Join the war!</string>
-    <string name="X">X</string>
+
+    <!-- NFCActivity-->
+    <string name="no_nfc">Sorry this device does not have NFC.</string>
+    <string name="enable_nfc">Please enable NFC via Settings.</string>
+    <string name="enable_beam">Please enable Android Beam.</string>
+    <string name="hold_phones_together">Please hold your phones together.</string>
+
+    <!--WorldRanking-->
+    <string name="WorldRank">World Ranking</string>
     <string name="streets">Streets</string>
 
     <!--ChangeUserInfo-->

@@ -2,6 +2,7 @@ package org.peno.b4.roadwars;
 
 import android.content.Context;
 import android.location.Location;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,8 @@ public class MiniGameManager {
     public boolean startGame(Minigame minigame) {
         if (PositionManager.getInstance().start()) {
             if (minigame.start()) {
+                Vibrator vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(500);
                 runningMiniGame = minigame;
                 drawUI();
                 //TODO: find better way:
