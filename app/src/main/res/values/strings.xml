@@ -77,7 +77,6 @@
     <string name="error_start_minigame">Error starting minigame</string>
     <string name="X">X</string>
 
-
     <!-- UserSearchActivity -->
     <string name="search_for_user">Search for user</string>
     <string name="search">Search</string>
@@ -149,6 +148,8 @@
     <string name="WorldRank">World Ranking</string>
     <string name="streets">Streets</string>
 
-
-
+    <!--ChangeUserInfo-->
+    <string name="change_info">Change info</string>
+    <string name="change_ok">Your info has been changed</string>
+    <string name="change_failed">Failed to change your info</string>
 </resources>

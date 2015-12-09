@@ -42,6 +42,8 @@ public class UserInfoActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        infoName = getIntent().getStringExtra(EXTRA_NAME);
+
         connectionManager = ConnectionManager.getInstance(this, this);
 
         //TODO: if more crashes when app was killed -> add everywhere:
@@ -61,7 +63,6 @@ public class UserInfoActivity extends AppCompatActivity
         if (infoName == null) {
             infoName = connectionManager.user;
         }
-
         if (!infoName.equals(connectionManager.user)) {
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(getString(R.string.user_info));
@@ -105,6 +106,11 @@ public class UserInfoActivity extends AppCompatActivity
                 Intent intent1 = new Intent(this, FriendsActivity.class);
                 startActivity(intent1);
                 return super.onOptionsItemSelected(item);
+            case R.id.change_info:
+                Intent intent = new Intent(this, ChangeUserInfoActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

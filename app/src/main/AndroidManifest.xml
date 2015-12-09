@@ -104,7 +104,7 @@
         <activity android:name=".CameraActivity" />
         <activity
             android:name=".TutorialActivity"
-            android:label="@string/Tutorial"></activity>
+            android:label="@string/Tutorial"/>
         <activity
             android:name= ".WorldRankActivity"
             android:label="@string/WorldRank">
@@ -112,6 +112,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.peno.b4.roadwars.MainActivity" />
         </activity>
+        <activity android:name=".ChangeUserInfoActivity"/>
     </application>
 
 </manifest>

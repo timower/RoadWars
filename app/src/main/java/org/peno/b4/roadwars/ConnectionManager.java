@@ -280,6 +280,12 @@ public class ConnectionManager {
         sendRequest("req", "get-world-ranking", "key", key, "user", user);
     }
 
+    public void changeUserInfo(String name, String pass, String email, int color) {
+        sendRequest("req", "change-user-info", "key", key, "user", user, "name", name, "pass", pass,
+                "email", email, "color", color);
+        this.user = name;
+        saveSharedPrefs();
+    }
     /**
      * main communication class,
      *  the class starts a connection with the server and listens for responses

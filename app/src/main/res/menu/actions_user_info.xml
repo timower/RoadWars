@@ -6,4 +6,7 @@
         android:icon="@drawable/ic_group_white_24dp"
         android:visible="false"
         app:showAsAction="ifRoom" />
+    <item android:id="@+id/change_info"
+        android:title="@string/change_info"
+        app:showAsAction="never" />
 </menu>
