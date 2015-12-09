@@ -437,7 +437,7 @@ public class PositionManager implements LocationListener {
 
         UIobjects.speedText.setText(context.getString(R.string.speed_info, speed)); //TODO: support mph
         //UIobjects.speedText.setText(context.getString(R.string.speed_info, speed*conversion factor))
-        UIobjects.speedText.setTextColor((speed > 10.0f && speed < 45.0f)? Color.GREEN : Color.RED);
+        UIobjects.speedText.setTextColor((speed > 10.0f && speed < 45.0f)? Color.rgb(0, 153, 55) : Color.RED);
 
         drawRoute();
 
