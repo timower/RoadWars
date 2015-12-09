@@ -43,9 +43,6 @@ public class UserInfoActivity extends AppCompatActivity
         super.onResume();
 
         infoName = getIntent().getStringExtra(EXTRA_NAME);
-        if (infoName == null) {
-            infoName = connectionManager.user;
-        }
 
         connectionManager = ConnectionManager.getInstance(this, this);
 
