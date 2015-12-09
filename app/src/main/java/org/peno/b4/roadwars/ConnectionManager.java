@@ -283,8 +283,6 @@ public class ConnectionManager {
     public void changeUserInfo(String name, String pass, String email, int color) {
         sendRequest("req", "change-user-info", "key", key, "user", user, "name", name, "pass", pass,
                 "email", email, "color", color);
-        this.user = name;
-        saveSharedPrefs();
     }
     /**
      * main communication class,
@@ -326,6 +324,11 @@ public class ConnectionManager {
                                 if (resObj.getBoolean("res")) {
                                     ConnectionManager.this.key = resObj.getString("key");
                                     ConnectionManager.this.saveSharedPrefs();
+                                }
+                            } else if (req.equals("change-user-info")) {
+                                if (resObj.getBoolean("res")) {
+                                    ConnectionManager.this.user = resObj.getString("name");
+                                    saveSharedPrefs();
                                 }
                             }
                             if (responseListener != null)
