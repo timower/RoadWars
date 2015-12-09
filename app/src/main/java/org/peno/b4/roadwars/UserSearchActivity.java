@@ -143,20 +143,20 @@ public class UserSearchActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_allow_nfc:
                 if (nfcAdapter == null) {
-                    Toast.makeText(this, "Sorry this device does not have NFC.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.no_nfc, Toast.LENGTH_LONG).show();
                     return true;
                 }
 
                 if (!nfcAdapter.isEnabled()) {
-                    Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.enable_nfc, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
                     return true;
                 }else if(!nfcAdapter.isNdefPushEnabled()){
-                    Toast.makeText(this, "Please enable Android Beam.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.enable_beam, Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(Settings.ACTION_NFCSHARING_SETTINGS));
                     return true;
                 }
-                Toast.makeText(this, "Please hold your phones together.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.hold_phones_together, Toast.LENGTH_LONG).show();
                 nfcAdapter.setNdefPushMessageCallback(this, this);
                 return true;
         }

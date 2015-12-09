@@ -106,4 +106,8 @@
     <string name="streets">straten</string>
     <string name="aim_tutorial">Het doel!</string>
     <string name="aim_tutorial_extra">Verover straten en word eigenaar door het hoogste aantal punten te verdienen. Vul de kaart met jouw eigen specifieke kleur!</string>
+    <string name="hold_phones_together">Houd de smartphones tegen elkaar aub</string>
+    <string name="no_nfc">Deze smartphone ondersteunt geen NFC</string>
+    <string name="enable_beam">Zet Android Beam aan aub</string>
+    <string name="enable_nfc">Zet NFC aan aub</string>
 </resources>

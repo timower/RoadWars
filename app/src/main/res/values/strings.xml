@@ -140,5 +140,9 @@
 
     <string name="X">X</string>
     <string name="streets">Streets</string>
+    <string name="no_nfc">Sorry this device does not have NFC.</string>
+    <string name="enable_nfc">Please enable NFC via Settings.</string>
+    <string name="enable_beam">Please enable Android Beam.</string>
+    <string name="hold_phones_together">Please hold your phones together.</string>
 
 </resources>
