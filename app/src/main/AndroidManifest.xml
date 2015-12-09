@@ -104,8 +104,9 @@
         <activity android:name=".CameraActivity" />
         <activity
             android:name=".TutorialActivity"
-            android:label="@string/Tutorial"></activity>
-        <activity android:name=".WorldRankActivity"></activity>
+            android:label="@string/Tutorial"/>
+        <activity android:name=".WorldRankActivity"/>
+        <activity android:name=".ChangeUserInfoActivity"/>
     </application>
 
 </manifest>

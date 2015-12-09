@@ -137,4 +137,8 @@
     <string name="X">X</string>
     <string name="streets">Streets</string>
 
+    <!--ChangeUserInfo-->
+    <string name="change_info">Change info</string>
+    <string name="change_ok">Your info has been changed</string>
+    <string name="change_failed">Failed to change your info</string>
 </resources>

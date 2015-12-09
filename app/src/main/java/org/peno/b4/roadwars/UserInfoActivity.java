@@ -43,9 +43,6 @@ public class UserInfoActivity extends AppCompatActivity
         super.onResume();
 
         infoName = getIntent().getStringExtra(EXTRA_NAME);
-        if (infoName == null) {
-            infoName = connectionManager.user;
-        }
 
         connectionManager = ConnectionManager.getInstance(this, this);
 
@@ -63,6 +60,9 @@ public class UserInfoActivity extends AppCompatActivity
     }
 
     private void getUserInfo() {
+        if (infoName == null) {
+            infoName = connectionManager.user;
+        }
         if (!infoName.equals(connectionManager.user)) {
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(getString(R.string.user_info));
@@ -106,6 +106,11 @@ public class UserInfoActivity extends AppCompatActivity
                 Intent intent1 = new Intent(this, FriendsActivity.class);
                 startActivity(intent1);
                 return super.onOptionsItemSelected(item);
+            case R.id.change_info:
+                Intent intent = new Intent(this, ChangeUserInfoActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
