@@ -42,9 +42,6 @@ public class UserInfoActivity extends AppCompatActivity
         super.onResume();
 
         infoName = getIntent().getStringExtra(EXTRA_NAME);
-        if (infoName == null) {
-            infoName = connectionManager.user;
-        }
 
         connectionManager = ConnectionManager.getInstance(this, this);
 
@@ -62,6 +59,10 @@ public class UserInfoActivity extends AppCompatActivity
     }
 
     private void getUserInfo() {
+        if (infoName == null) {
+            infoName = connectionManager.user;
+        }
+
         if (!infoName.equals(connectionManager.user)) {
             if (getSupportActionBar() != null)
                 getSupportActionBar().setTitle(getString(R.string.user_info));

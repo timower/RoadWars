@@ -44,10 +44,9 @@
             android:id="@+id/aboutTextNames"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:layout_alignBaseline="@+id/aboutTextCreators"
-            android:layout_alignBottom="@+id/aboutTextCreators"
             android:layout_toRightOf="@+id/aboutTextCreators"
-            android:layout_toEndOf="@+id/aboutTextCreators" />
+            android:layout_toEndOf="@+id/aboutTextCreators"
+            android:layout_alignTop="@id/aboutTextCreators"/>
 
 
         <TextView
@@ -59,8 +58,6 @@
             android:layout_below="@+id/aboutTextNames"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
-
-
 
     </RelativeLayout>
 </ScrollView>
