@@ -75,6 +75,8 @@
     <string name="minigame_started">Minigame started!</string>
     <string name="other_offline">Other player is offline</string>
     <string name="error_start_minigame">Error starting minigame</string>
+    <string name="X">X</string>
+
 
     <!-- UserSearchActivity -->
     <string name="search_for_user">Search for user</string>
@@ -137,12 +139,16 @@
     <string name="minigames_tutorial_extra">At the ranking page of a street, you will get in the right corner the opportunity to play some awesome minigames to earn more points, alone or with friends. The competition awaits!</string>
     <string name="tutorial_button">Join the war!</string>
 
-
-    <string name="X">X</string>
-    <string name="streets">Streets</string>
+    <!-- NFCActivity-->
     <string name="no_nfc">Sorry this device does not have NFC.</string>
     <string name="enable_nfc">Please enable NFC via Settings.</string>
     <string name="enable_beam">Please enable Android Beam.</string>
     <string name="hold_phones_together">Please hold your phones together.</string>
+
+    <!--WorldRanking-->
+    <string name="WorldRank">World Ranking</string>
+    <string name="streets">Streets</string>
+
+
 
 </resources>

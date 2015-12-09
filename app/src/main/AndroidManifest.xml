@@ -105,7 +105,13 @@
         <activity
             android:name=".TutorialActivity"
             android:label="@string/Tutorial"></activity>
-        <activity android:name=".WorldRankActivity"></activity>
+        <activity
+            android:name= ".WorldRankActivity"
+            android:label="@string/WorldRank">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.peno.b4.roadwars.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
