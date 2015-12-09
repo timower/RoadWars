@@ -24,8 +24,6 @@ public class MinigameSelectorActivity extends AppCompatActivity
     private ConnectionManager connectionManager;
     private String street;
 
-
-
     private TextView connectionLostBanner;
 
     private String opponent;
@@ -58,7 +56,6 @@ public class MinigameSelectorActivity extends AppCompatActivity
             if (result) {
                 //MiniGameManager.getInstance().startRaceGame(street, opponent);
                 if (MiniGameManager.getInstance().startGame(new StreetRaceGame(this, street, opponent))) {
-                    Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                     finish();
@@ -108,7 +105,6 @@ public class MinigameSelectorActivity extends AppCompatActivity
     public void FotorondeClicked(View view) {
         // start photo ronde:
         if (MiniGameManager.getInstance().startGame(new PhotoGame(this, street))) {
-            Toast.makeText(this, getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

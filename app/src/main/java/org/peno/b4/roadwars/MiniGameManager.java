@@ -61,6 +61,7 @@ public class MiniGameManager {
             if (minigame.start()) {
                 Vibrator vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.vibrate(500);
+                Toast.makeText(context, context.getString(R.string.minigame_started), Toast.LENGTH_SHORT).show();
                 runningMiniGame = minigame;
                 drawUI();
                 //TODO: find better way:

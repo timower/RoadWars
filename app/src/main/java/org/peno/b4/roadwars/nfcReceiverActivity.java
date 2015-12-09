@@ -8,9 +8,13 @@ import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import org.json.JSONObject;
 import org.peno.b4.roadwars.Minigames.StreetRaceGame;
 
-public class nfcReceiverActivity extends AppCompatActivity {
+public class nfcReceiverActivity extends AppCompatActivity implements ConnectionManager.ResponseListener {
+
+    private String opponent;
+    private String street;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +42,14 @@ public class nfcReceiverActivity extends AppCompatActivity {
                     String naam = delen[1];
                     ConnectionManager.getInstance().nfcFriend(naam);
                     Toast.makeText(this, getString(R.string.nfc_friend), Toast.LENGTH_LONG).show();
+                    finish();
                     break;
                 case Utils.MINIGAME_NFC_INTENT:
                     if (delen.length != 3)
                         finish();
-                    MiniGameManager instance = MiniGameManager.getInstance();
-                    instance.startGame(new StreetRaceGame(instance.context, delen[1], delen[2]));
+                    street = delen[1];
+                    opponent = delen[2];
+                    ConnectionManager.getInstance(this, this).startMinigame(opponent, street);
                     break;
 
             }
@@ -51,6 +57,32 @@ public class nfcReceiverActivity extends AppCompatActivity {
         }
         //Intent intent2 = new Intent(this, MainActivity.class);
         //startActivity(intent2);
-        finish();
+        //finish();
+    }
+
+    @Override
+    public boolean onResponse(String req, Boolean result, JSONObject response) {
+        if (req.equals("start-minigame")) {
+            if (result) {
+                //MiniGameManager.getInstance().startRaceGame(street, opponent);
+                if (MiniGameManager.getInstance().startGame(new StreetRaceGame(this, street, opponent))) {
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(this, R.string.error_start_minigame, Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {
+                Toast.makeText(this, getString(R.string.other_offline), Toast.LENGTH_LONG).show();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onConnectionLost(String reason) {
+
     }
 }

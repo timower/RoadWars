@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Vibrator;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
