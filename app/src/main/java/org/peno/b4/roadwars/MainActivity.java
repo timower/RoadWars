@@ -392,6 +392,10 @@ public class MainActivity extends AppCompatActivity
                 Intent tutorial = new Intent(this,TutorialActivity.class);
                 startActivity(tutorial);
                 return super.onOptionsItemSelected(item);
+            case R.id.action_friends:
+                Intent friends = new Intent(this,FriendsActivity.class);
+                startActivity(friends);
+                return super.onOptionsItemSelected(item);
             case R.id.action_start_stop:
                     if (!positionManager.started) {
                         //Toast.makeText(this, "GPS is Enabled", Toast.LENGTH_SHORT).show();
