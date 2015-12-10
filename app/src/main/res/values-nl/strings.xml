@@ -111,6 +111,9 @@
     <string name="enable_beam">Zet Android Beam aan aub</string>
     <string name="enable_nfc">Zet NFC aan aub</string>
     <string name="WorldRank">Wereldranglijst</string>
+    <string name="change_failed">Info wijzigen mislukt</string>
+    <string name="change_info">Wijzig info</string>
+    <string name="change_ok">Jouw info is gewijzigd</string>
 
 
 </resources>
