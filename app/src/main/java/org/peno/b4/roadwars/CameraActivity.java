@@ -97,7 +97,7 @@ public class CameraActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         connectionManager = ConnectionManager.getInstance(this, this);
-        sensorManager.registerListener(this, orientation, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, orientation, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
@@ -131,23 +131,32 @@ public class CameraActivity extends AppCompatActivity
         double latTarget = target.latitude;
         double longTarget = target.longitude;
 
-        float result[] = new float[2];
+        float result[] = new float[3];
 
-        Location.distanceBetween(latTarget, longTarget, latPosition, longPosition, result);
-        double target_angle = result[1] + 180;
+        Location.distanceBetween(latPosition, longPosition, latTarget, longTarget, result);
+        double target_angle = result[1]; // start bearing
         double position_angle = event.values[0];
-        double angle_difference = Math.abs(target_angle - position_angle);
-        angle_difference = (angle_difference + 180) % 360 - 180;
+        double angle_difference = angle_distance(target_angle, position_angle);
 
-        if (Math.abs(angle_difference) < Utils.PICTURE_RADIUS) {
+        if (angle_difference < Utils.PICTURE_RADIUS) {
             capturedImage.setVisibility(View.VISIBLE);
         } else {
             capturedImage.setVisibility(View.GONE);
         }
+        /*
+
+        TextView test = (TextView)findViewById(R.id.camera_info);
+        test.setText("orient: " + position_angle + "\ntarget: " + target_angle + "\ndiff: " + angle_difference);
+        */
     }
 
     public boolean onResponse(String req, Boolean result, JSONObject response) {
         return false;
+    }
+
+    private double angle_distance(double a, double b) {
+        double d = Math.abs(a - b) % 360;
+        return d > 180 ? 360 - d : d;
     }
 
     @Override

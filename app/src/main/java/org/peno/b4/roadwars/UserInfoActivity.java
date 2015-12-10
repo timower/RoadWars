@@ -42,8 +42,6 @@ public class UserInfoActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        infoName = getIntent().getStringExtra(EXTRA_NAME);
-
         connectionManager = ConnectionManager.getInstance(this, this);
 
         //TODO: if more crashes when app was killed -> add everywhere:
