@@ -141,6 +141,11 @@ public class PhotoGame extends Minigame {
         uiObjects.container.setBackgroundColor(Color.WHITE);
     }
 
+    @Override
+    public LatLng getTarget() {
+        return new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+    }
+
     private void clearUI() {
         if (marker != null)
             marker.remove();

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.location.Geocoder;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.peno.b4.roadwars.ConnectionManager;
 import org.peno.b4.roadwars.MiniGameManager;
 
@@ -43,5 +45,7 @@ public abstract class Minigame {
 
     public abstract void onLocationChanged(Location location);
     public abstract void drawUI(MiniGameManager.UIObjects uiObjects);
+
+    public abstract LatLng getTarget();
 
 }

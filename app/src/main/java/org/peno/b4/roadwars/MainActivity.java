@@ -8,8 +8,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
     //private static final String TAG = "MainActivity";
     private static final int notId = 14;
 
-    private LatLng lastCameraPos;
+    private LatLngBounds lastCameraPos;
 
     private ConnectionManager connectionManager;
     private PositionManager positionManager;
@@ -465,27 +465,40 @@ public class MainActivity extends AppCompatActivity
              */
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
+                // don't change camera if waiting for connection:
                 if (progressTracker.visible()) {
                     return;
                 }
                 //Log.d(TAG, "camera changed");
                 VisibleRegion reg = mMap.getProjection().getVisibleRegion();
                 LatLngBounds bounds = reg.latLngBounds;
-                float dist = 0;
+                float[] neDist = new float[1];
+                float[] swDist = new float[1];
                 if (lastCameraPos != null) {
-                    Point p1 = mMap.getProjection().toScreenLocation(lastCameraPos);
-                    dist = p1.x * p1.x + p1.y * p1.y;
-                    //Log.d(TAG, "dist: " + dist);
+                    Location.distanceBetween(bounds.northeast.latitude, bounds.northeast.longitude,
+                            lastCameraPos.northeast.latitude, lastCameraPos.northeast.longitude, neDist);
+                    Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude,
+                            lastCameraPos.southwest.latitude, lastCameraPos.southwest.longitude, swDist);
+
+                    //Log.d("CAM", "neDist: " + neDist[0] + " swDist: " + swDist[0] + " z: " + cameraPosition.zoom);
                 }
 
-                if (lastCameraPos == null || dist > 700 * 700) {
-                    //Log.d(TAG, "getting street");
+                float zoom = cameraPosition.zoom;
+
+
+                // 10.000.000 is about 1/3 of my screen, TODO: test other screens
+                if (lastCameraPos == null || neDist[0] * Math.pow(2, zoom) > 10000000 || swDist[0] * Math.pow(2, zoom) > 10000000 ) {
+                    //Log.d("CAM", "getting street");
                     connectionManager.getAllStreets(bounds);
-                    lastCameraPos = bounds.northeast;
+                    lastCameraPos = bounds;
                 }
-
             }
         });
+
+        // get bounds when first starting
+        if (connectionManager != null && connectionManager.user != null) {
+            connectionManager.getAllStreets(mMap.getProjection().getVisibleRegion().latLngBounds);
+        }
     }
 
     /** Starts the Street Rank Activity for the selected street.
@@ -623,7 +636,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (pointsTable.getVisibility() == View.VISIBLE) {
+        if (pointsTable_container.getVisibility() == View.VISIBLE) {
             pointsTable_container.setVisibility(View.GONE);
         }
         else {
