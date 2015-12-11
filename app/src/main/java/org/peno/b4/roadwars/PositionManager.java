@@ -462,7 +462,15 @@ public class PositionManager implements LocationListener {
                     .radius(location.getAccuracy()));
         }
         //UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16.5f));
-        UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+        if (minigameManager.runningMiniGame != null && minigameManager.runningMiniGame.getTarget() != null) {
+            LatLng target = minigameManager.runningMiniGame.getTarget();
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(pos);
+            builder.include(target);
+            UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 20));
+        } else {
+            UIobjects.mMap.moveCamera(CameraUpdateFactory.newLatLng(pos));
+        }
     }
 
     private void drawRoute() {

@@ -32,7 +32,7 @@ public class MiniGameManager {
     private UIObjects UIobjects;
     public Context context;
 
-    private Minigame runningMiniGame;
+    public Minigame runningMiniGame;
 
     private static MiniGameManager instance = null;
 

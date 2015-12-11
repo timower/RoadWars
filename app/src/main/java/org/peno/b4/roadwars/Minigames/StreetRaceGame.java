@@ -98,6 +98,11 @@ public class StreetRaceGame extends Minigame{
         uiObjects.container.setBackgroundColor(Color.WHITE);
     }
 
+    @Override
+    public LatLng getTarget() {
+        return target;
+    }
+
     private void clearUI() {
         if (marker != null)
             marker.remove();

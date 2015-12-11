@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.location.Location;
 import android.view.View;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.peno.b4.roadwars.MiniGameManager;
 
 /**
@@ -51,5 +53,10 @@ public class UIGame extends Minigame {
         uiObjects.container.setVisibility(View.VISIBLE);
         uiObjects.textView.setText(text);
         uiObjects.container.setBackgroundColor(Color.WHITE);
+    }
+
+    @Override
+    public LatLng getTarget() {
+        return null;
     }
 }
