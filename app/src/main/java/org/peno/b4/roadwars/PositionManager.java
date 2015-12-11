@@ -155,7 +155,8 @@ public class PositionManager implements LocationListener {
         @Override
         protected void onPostExecute(PolylineOptions res) {
             //TODO: check if errors:
-            pOptions = res;
+            if (res != null)
+                pOptions = res;
             if (res != null && UIobjects != null) {
                 userRoute.remove();
                 userRoute = UIobjects.mMap.addPolyline(res);
