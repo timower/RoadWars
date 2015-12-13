@@ -136,14 +136,39 @@
                                 android:text="@string/username"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
-                                android:gravity="center"/>
+                                android:layout_gravity="center" />
+                            <TextView
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="@string/friend_streets_owned"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:paddingRight="8dp"
+                                android:paddingLeft="8dp"/>
                             <TextView
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
                                 android:text="@string/remove_friend"
                                 android:textSize="18sp"
-                                android:textStyle="bold"
-                                />
+                                android:textStyle="bold"/>
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
                         </TableRow>
                     </TableLayout>
                 </LinearLayout>

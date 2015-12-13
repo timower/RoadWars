@@ -11,11 +11,11 @@
 
     <!-- RegisterActivity -->
     <string name="register">Register</string>
-    <string name="user_name">Username:</string>
+    <string name="user_name">Name:</string>
     <string name="email">E-mail:</string>
     <string name="color">Color</string>
     <string name="color_profile">Color:</string>
-    <string name="username">Username</string>
+    <string name="username">Name</string>
     <string name="email_address">Email address</string>
     <string name="choose_a_color">Choose a color: </string>
     <string name="hue">Hue</string>
@@ -85,7 +85,7 @@
     <!-- FriendsActivity -->
     <string name="friends">Friends</string>
     <string name="my_friends">My friends</string>
-    <string name="remove_friend">Remove friend</string>
+    <string name="remove_friend">Remove</string>
     <string name="new_requests">New requests</string>
     <string name="search_new_friends">Search new friends!</string>
     <string name="remove">remove</string>
@@ -98,6 +98,7 @@
     <string name="friend_removed">Friend %s removed!</string>
     <string name="friend_request_accepted">Request from %s accepted!</string>
     <string name="friend_request_declined">Request from %s declined!</string>
+    <string name="friend_streets_owned">Streets</string>
 
     <!-- CameraActivity -->
     <string name="capture">Capture</string>
