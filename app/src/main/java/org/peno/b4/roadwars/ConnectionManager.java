@@ -3,6 +3,7 @@ package org.peno.b4.roadwars;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -338,6 +339,9 @@ public class ConnectionManager {
                             err.printStackTrace();
                             // ignore wrong json..
                         }
+                    } else {
+                        // stop when eof is receivend
+                        break;
                     }
                 }
             } catch (IOException e){
