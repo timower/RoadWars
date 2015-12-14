@@ -207,7 +207,7 @@ public class ConnectionManager {
     }
 
     public void getAllPoints(String name) {
-        sendRequest("req", "get-all-points", "key", key, "user", user, "info-user", name);
+        sendRequest("req", "get-all-points2", "key", key, "user", user, "info-user", name);
     }
 
     public void getStreetRank(String street) {

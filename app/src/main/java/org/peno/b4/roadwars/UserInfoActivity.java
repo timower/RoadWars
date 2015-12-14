@@ -215,6 +215,7 @@ public class UserInfoActivity extends AppCompatActivity
                 }
                 return true;
             case "get-all-points":
+            case "get-all-points2":
                 if (result) {
                     try {
                         JSONArray points = response.getJSONArray("points");
