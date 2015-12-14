@@ -79,8 +79,9 @@ public class ChangeUserInfoActivity extends AppCompatActivity
     }
 
     public void changeInfoClicked() {
-        String name = ((EditText) findViewById(R.id.user_name)).getText().toString();
+        String name = ((EditText) findViewById(R.id.user_name)).getText().toString().trim();
         String pass = ((EditText) findViewById(R.id.password)).getText().toString();
+        String pass2 = ((EditText) findViewById(R.id.password2)).getText().toString();
         String email = ((EditText) findViewById(R.id.email)).getText().toString();
 
         View color = findViewById(R.id.colorView);
@@ -90,6 +91,8 @@ public class ChangeUserInfoActivity extends AppCompatActivity
             Toast.makeText(this, getString(R.string.fill_name), Toast.LENGTH_SHORT).show();
         } else if (email.equals("") || !email.matches("..*@..*\\...*")) {
             Toast.makeText(this, getString(R.string.fill_email), Toast.LENGTH_SHORT).show();
+        } else if (!pass.equals(pass2)) {
+            Toast.makeText(this, getString(R.string.match_pass), Toast.LENGTH_SHORT).show();
         } else if (colorCode == Color.rgb(0, 0, 0)) {
             Toast.makeText(this, getString(R.string.choose_color), Toast.LENGTH_SHORT).show();
         } else connectionManager.changeUserInfo(name, pass, email, colorCode);

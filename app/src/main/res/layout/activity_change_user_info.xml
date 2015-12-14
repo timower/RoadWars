@@ -44,6 +44,13 @@
             android:hint="@string/password"
             android:id="@+id/password"
             android:layout_below="@id/user_name"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:hint="@string/confirm_password"
+            android:id="@+id/password2"
+            android:layout_below="@id/password"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -51,7 +58,7 @@
             android:inputType="textEmailAddress"
             android:hint="@string/email_address"
             android:id="@+id/email"
-            android:layout_below="@id/password"/>
+            android:layout_below="@id/password2"/>
 
         <TextView
             android:layout_width="wrap_content"

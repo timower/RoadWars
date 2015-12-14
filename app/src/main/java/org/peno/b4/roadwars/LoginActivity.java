@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity implements ConnectionManage
     public void loginClick(View view) {
         EditText userNameView = (EditText) findViewById(R.id.user_name);
         EditText passWordView = (EditText) findViewById(R.id.pass_word);
-        username = userNameView.getText().toString();
+        username = userNameView.getText().toString().trim();
         String password = passWordView.getText().toString();
 
         connectionManager.login(username, password);
