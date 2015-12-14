@@ -103,6 +103,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         JSONArray sub = friends.getJSONArray(i);
                         final String name = sub.getString(0);
                         final int userHSV = sub.getInt(1);
+                        final int streetsint = sub.getInt(2);
 
                         //Log.d("tag", "for-loop started" + name);
 
@@ -114,6 +115,19 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         username.setText(name);
                         username.setGravity(Gravity.CENTER);
                         username.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent UserInfoActivityIntent = new Intent(getApplicationContext(), UserInfoActivity.class);
+                                UserInfoActivityIntent.putExtra(UserInfoActivity.EXTRA_NAME, name);
+                                startActivity(UserInfoActivityIntent);
+                            }
+                        });
+
+                        TextView streets = new TextView(this);
+                        streets.setLayoutParams(rowParams);
+                        streets.setText(String.valueOf(streetsint));
+                        streets.setGravity(Gravity.CENTER);
+                        streets.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Intent UserInfoActivityIntent = new Intent(getApplicationContext(), UserInfoActivity.class);
@@ -142,6 +156,7 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
 
                         nRow.addView(playerColor);
                         nRow.addView(username);
+                        nRow.addView(streets);
                         nRow.addView(remove);
 
                         table.addView(nRow);
