@@ -260,7 +260,7 @@ public class PositionManager implements LocationListener {
         this.geocoder = new Geocoder(ctx);
         this.routeInfo = new RouteInfo();
         this.geoApiContext = new GeoApiContext().setApiKey(
-                context.getString(R.string.google_maps_key));
+                context.getString(R.string.google_server_key));
         this.bicycleBitmap = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.usericon);
 
