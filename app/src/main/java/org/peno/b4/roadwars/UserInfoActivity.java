@@ -1,6 +1,7 @@
 package org.peno.b4.roadwars;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -229,10 +230,12 @@ public class UserInfoActivity extends AppCompatActivity
 
                         for (int i = 0; i < length; i++) {
                             JSONArray subA = points.getJSONArray(i);
-                            if (subA.length() != 2)
-                                continue;
                             final String street = subA.getString(0);
                             int pointsS = subA.getInt(1);
+                            boolean owner = false;
+                            if (subA.length() == 3) {
+                                owner = subA.getInt(2) == 1;
+                            }
 
                             TableRow nRow = new TableRow(this);
                             nRow.setLayoutParams(tableParams);
@@ -247,6 +250,9 @@ public class UserInfoActivity extends AppCompatActivity
                                     startActivity(intent);
                                 }
                             });
+                            if (owner) {
+                                streetView.setTextColor(Color.GREEN);
+                            }
 
                             TextView pointsView = new TextView(this);
                             pointsView.setLayoutParams(rowParams);

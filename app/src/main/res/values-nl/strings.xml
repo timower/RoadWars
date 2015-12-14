@@ -56,7 +56,7 @@
     <string name="or_register"><u>Of registreer!</u></string>
     <string name="other_offline">Andere speler is offline</string>
     <string name="owner_toast">Eigenaar van %1$s: %2$s</string>
-    <string name="password">Paswoord</string>
+    <string name="password">Wachtwoord</string>
     <string name="player_lose">Jij bent verloren</string>
     <string name="player_win">Jij bent gewonnen, punten: %d</string>
     <string name="points">Punten</string>
@@ -115,6 +115,8 @@
     <string name="change_info">Wijzig info</string>
     <string name="change_ok">Jouw info is gewijzigd</string>
     <string name="friend_streets_owned">Straten</string>
+    <string name="confirm_password">Bevestig wachtwoord</string>
+    <string name="match_pass">Wachtwoorden komen niet overeen</string>
 
 
 </resources>

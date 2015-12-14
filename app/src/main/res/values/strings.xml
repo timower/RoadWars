@@ -153,4 +153,6 @@
     <string name="change_info">Change info</string>
     <string name="change_ok">Your info has been changed</string>
     <string name="change_failed">Failed to change your info</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="match_pass">Passwords don\'t match</string>
 </resources>

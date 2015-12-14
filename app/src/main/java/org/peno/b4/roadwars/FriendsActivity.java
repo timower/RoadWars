@@ -103,7 +103,12 @@ public class FriendsActivity extends AppCompatActivity implements ConnectionMana
                         JSONArray sub = friends.getJSONArray(i);
                         final String name = sub.getString(0);
                         final int userHSV = sub.getInt(1);
-                        final int streetsint = sub.getInt(2);
+
+                        int tempRank = 0;
+                        if (sub.length() == 3)
+                            tempRank = sub.getInt(2);
+
+                        final int streetsint = tempRank;
 
                         //Log.d("tag", "for-loop started" + name);
 
