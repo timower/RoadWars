@@ -15,6 +15,7 @@ import org.peno.b4.roadwars.Minigames.StreetRaceGame;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Static constants and functions used across different activities;
@@ -30,6 +31,9 @@ public class Utils {
     public static final String FRIEND_NFC_INTENT = "add_friend";
     public static final String MINIGAME_NFC_INTENT = "join_minigame";
     public static final double PICTURE_RADIUS = 15.0;
+
+    //TODO: fix
+    public static final Locale locale = new Locale("nl", "be");
 
     public static String removeNumbers(String orig) {
         String street = "";

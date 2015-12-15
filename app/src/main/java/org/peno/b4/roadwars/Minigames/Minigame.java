@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.peno.b4.roadwars.ConnectionManager;
 import org.peno.b4.roadwars.MiniGameManager;
+import org.peno.b4.roadwars.Utils;
 
 /**
  *
@@ -26,7 +27,7 @@ public abstract class Minigame {
         this.fullName = name;
         this.points = points;
         this.context = context.getApplicationContext();
-        geocoder = new Geocoder(this.context);
+        geocoder = new Geocoder(this.context, Utils.locale);
         this.connectionManager = ConnectionManager.getInstance();
     }
 

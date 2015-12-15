@@ -257,7 +257,7 @@ public class PositionManager implements LocationListener {
 
         this.UIobjects = o;
         this.context = ctx.getApplicationContext();
-        this.geocoder = new Geocoder(ctx);
+        this.geocoder = new Geocoder(ctx, Utils.locale);
         this.routeInfo = new RouteInfo();
         this.geoApiContext = new GeoApiContext().setApiKey(
                 context.getString(R.string.google_server_key));
