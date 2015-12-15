@@ -331,6 +331,7 @@ public class PositionManager implements LocationListener {
         }
 
         progressTracker.showProgressBar(ProgressTracker.REASON_GPS);
+        gotFirstLocation = false;
         return true;
     }
 

@@ -117,6 +117,7 @@
     <string name="friend_streets_owned">Straten</string>
     <string name="confirm_password">Bevestig wachtwoord</string>
     <string name="match_pass">Wachtwoorden komen niet overeen</string>
+    <string name="user_long">Gebruikersnaam moet korter dan 15 tekens zijn</string>
 
 
 </resources>

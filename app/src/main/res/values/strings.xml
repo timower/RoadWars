@@ -155,4 +155,5 @@
     <string name="change_failed">Failed to change your info</string>
     <string name="confirm_password">Confirm password</string>
     <string name="match_pass">Passwords don\'t match</string>
+    <string name="user_long">Username must be less than 15 characters</string>
 </resources>
