@@ -130,9 +130,11 @@ public class Utils {
                         //Log.d("IMP", "started-minigame");
                         if (minigameInstance != null) {
                             String street = response.getString("street");
+                            String name = response.getString("name");
                             if (!minigameInstance.startGame(new StreetRaceGame(minigameInstance.context,
-                                    street, response.getString("name")))) {
+                                    street, name))) {
                                 Toast.makeText(minigameInstance.context, R.string.error_start_minigame, Toast.LENGTH_SHORT).show();
+                                ConnectionManager.getInstance().stopMinigame(name, street);
                             }
                         }/*  else {
                             //throw new RuntimeException("what????");
