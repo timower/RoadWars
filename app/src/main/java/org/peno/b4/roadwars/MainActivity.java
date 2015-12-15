@@ -39,6 +39,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements ConnectionManager.ResponseListener, OnMapReadyCallback,
@@ -428,7 +429,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        geocoder = new Geocoder(this);
+        geocoder = new Geocoder(this, Utils.locale);
 
         positionManager = PositionManager.getInstance(this,
                 new PositionManager.UIObjects(mMap, speedText, pointsTable_container, pointsTable, connectionLostBanner));
