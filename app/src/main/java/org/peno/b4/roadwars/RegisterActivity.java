@@ -77,6 +77,7 @@ public class RegisterActivity extends AppCompatActivity
         int colorCode = ((ColorDrawable)color.getBackground()).getColor();
 
         if (name.equals("")) {Toast.makeText(this, getString(R.string.fill_name), Toast.LENGTH_SHORT).show();}
+        else if (name.length() > 15) {Toast.makeText(this, R.string.user_long, Toast.LENGTH_SHORT).show();}
         else if (pass.equals("")) {Toast.makeText(this, getString(R.string.fill_pass), Toast.LENGTH_SHORT).show();}
         else if (!pass.equals(pass2)) {Toast.makeText(this, R.string.match_pass, Toast.LENGTH_SHORT).show();}
         else if (email.equals("") || !email.matches("..*@..*\\...*")) {

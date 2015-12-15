@@ -89,6 +89,8 @@ public class ChangeUserInfoActivity extends AppCompatActivity
 
         if (name.equals("")) {
             Toast.makeText(this, getString(R.string.fill_name), Toast.LENGTH_SHORT).show();
+        } else if (name.length() > 15) {
+            Toast.makeText(this, R.string.user_long, Toast.LENGTH_SHORT).show();
         } else if (email.equals("") || !email.matches("..*@..*\\...*")) {
             Toast.makeText(this, getString(R.string.fill_email), Toast.LENGTH_SHORT).show();
         } else if (!pass.equals(pass2)) {

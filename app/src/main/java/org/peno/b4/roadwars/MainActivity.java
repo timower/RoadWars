@@ -116,8 +116,6 @@ public class MainActivity extends AppCompatActivity
             editor.putBoolean("shown-tut", true);
             editor.apply();
         }
-
-
     }
 
     /** Resumes the activity. Restarts server connection and checks login.
@@ -530,7 +528,7 @@ public class MainActivity extends AppCompatActivity
         if(progressTracker.visible()){
             return;
         }
-        pointsTable_container.setVisibility(View.GONE);
+        hidePointsTable();
         // lookup street & show toast (in onLoginResult)
         String street = Utils.lookupStreet(geocoder, latLng);
         if (street != null)
@@ -604,32 +602,6 @@ public class MainActivity extends AppCompatActivity
         streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
     }
 
-    /**
-     * Guides the user to activation of the GPS
-     */
-    /*
-    private void showGPSDisabledAlertToUser(){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("GPS is disabled in your device. Would you like to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes, continue to settings", new DialogInterface.OnClickListener(){
-                            public void onClick(DialogInterface dialog, int id){
-                                startActivity(new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                            }
-                        });
-
-        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface dialog, int id){
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-    }
-    */
-
     public void onMinigameStopClicked(View view) {
         MiniGameManager.getInstance().stop();
     }
@@ -637,7 +609,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         if (pointsTable_container.getVisibility() == View.VISIBLE) {
-            pointsTable_container.setVisibility(View.GONE);
+            hidePointsTable();
         }
         else {
             finishAffinity();
@@ -651,7 +623,7 @@ public class MainActivity extends AppCompatActivity
 
     public void startPositionManager() {
         if (positionManager.start()) {
-            pointsTable_container.setVisibility(View.GONE);
+            hidePointsTable();
             showStartedNotification();
             showInfoText();
             connectionManager.getUserInfo(connectionManager.user);
@@ -659,5 +631,13 @@ public class MainActivity extends AppCompatActivity
             //TODO: show gps dialog if gps is disabled?
         }
         invalidateOptionsMenu();
+    }
+
+    private void hidePointsTable() {
+        if (pointsTable_container.getVisibility() == View.VISIBLE) {
+            // reset points table for next run
+            pointsTable.removeViews(1, pointsTable.getChildCount()-1);
+        }
+        pointsTable_container.setVisibility(View.GONE);
     }
 }
