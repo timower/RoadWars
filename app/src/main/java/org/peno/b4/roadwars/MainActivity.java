@@ -599,8 +599,8 @@ public class MainActivity extends AppCompatActivity
         GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions()
                 .image(BitmapDescriptorFactory.fromBitmap(Utils.getStreetBitmap(markerCache, originalBitmap, hue)))
                 .position(new LatLng(lat, lng), 40);
-
-        streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
+        if (mMap != null)
+            streetMarkers.put(name, mMap.addGroundOverlay(groundOverlayOptions));
     }
 
     public void onMinigameStopClicked(View view) {
